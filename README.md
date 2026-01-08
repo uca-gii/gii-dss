@@ -2,7 +2,7 @@
 
 Apuntes de la asignatura Diseño de Sistemas Software del Grado en Ingeniería Informática de la Universidad de Cádiz.
 
-Curso 2024-25
+**Curso 2025-26**
 
 ## Slides
 
