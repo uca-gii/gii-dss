@@ -2,8 +2,8 @@
 marp: true
 author:
 - Juan Manuel Dodero
-date: Febrero 2025
-subject: Diseño de Sistemas Software, curso 2024/25
+date: Enero 2026
+subject: Diseño de Sistemas Software, curso 2025/26
 title: Patrones de Diseño
 description: Apuntes de Diseño de Sistemas Software - Patrones de diseño
 ---
