@@ -22,7 +22,6 @@ h2 {
   text-align: center;
 }
 
-<style>
 img[alt~="center"] {
   display: block;
   margin: 0 auto;
@@ -31,6 +30,7 @@ img[alt~="center"] {
 emph {
   color: #E87B00;
 }
+</style>
 
 # DISEÑO DE SISTEMAS SOFTWARE
 
@@ -38,6 +38,7 @@ emph {
 h2 {
   text-align: left;
 }
+</style>
 
 ## Bloques
 
@@ -89,6 +90,7 @@ section {
   flex-direction: column;
   justify-content: flex-start;  /* alinea al inicio (arriba) */
 }
+</style>
 
 ![bg](./img/AthensParthenon.jpg)
 
@@ -106,6 +108,7 @@ section {
   flex-direction: column;
   justify-content: flex-start;  /* alinea al inicio (arriba) */
 }
+</style>
 
 ![bg](./img/SydneyOperaHouse.jpg)
 
@@ -415,6 +418,8 @@ The software architect is in charge of creating and maintaining the software arc
 
 ---
 
+## Key ideas
+
 - **Definition**: *the set of significant decisions, the style of design, the organization into components and the way of communication.*
 - **Process**: *evolutionary, addressing risks, proofs of concepts*
 - **Inputs**: *business objectives, software requirements and know-how*
@@ -441,9 +446,7 @@ Frameworks for creating architectures: *C4 model*
 
 ---
 
-### Introduction
-
----
+## Introduction
 
 ### **Documenting** software architectures helps us understand the **big picture** of the systems, providing a **shared** vision and a common **vocabulary** for all stakeholders.
 
@@ -691,19 +694,15 @@ end Hello_World;
 
 The first approach to software architecture
 
----
-
-![w:700](./figures/Sketch.jpg)
+![bg right:60%](./img/Sketch.jpg)
 
 ---
 
 ### Diagrams
 
-Sketches are later beautified with diagramming tools *PowerPoint\**.
+Sketches are later beautified with diagramming tools (*PowerPoint*).
 
----
-
-![w:900](./figures/SampleArchitecture.png)
+![bg left:70% fit](./img/SampleArchitecture.png)
 
 ---
 
@@ -739,6 +738,7 @@ Sketches are later beautified with diagramming tools *PowerPoint\**.
 ### Tool support
 
 #### Graphical modeling environments
+
 - Creation of visual models by dragging and dropping modeling elements
 - Examples: *ArgoUML, Enterprise Architect, Visual Paradigm, Modelio, etc.*
 
@@ -746,7 +746,7 @@ Sketches are later beautified with diagramming tools *PowerPoint\**.
 
 #### Modelio
 
-![w:700](./figures/Modelio.png)
+![bg right:75% 90%](./img/Modelio.png)
 
 ---
 
@@ -759,9 +759,17 @@ Sketches are later beautified with diagramming tools *PowerPoint\**.
 
 ---
 
+<style scoped>
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  /* alinea al inicio (arriba) */
+}
+</style>
+
 #### PlantUML
 
-![w:900](./figures/PlantUML.png)
+![bg right:70% fit](./img/PlantUML.png)
 
 ---
 
@@ -778,7 +786,7 @@ Sketches are later beautified with diagramming tools *PowerPoint\**.
 
 ---
 
-![bg left](./figures/UML_Diagrams.jpeg)
+![bg left](./img/UML_Diagrams.jpeg)
 
 ### UML diagrams
 
@@ -812,7 +820,7 @@ There are 14 types of diagrams. We need for guidelines regarding the number and 
 
 ---
 
-![bg w:85%](./figures/C4_Abstractions.png)
+![bg w:85%](./img/C4_Abstractions.png)
 
 ---
 
@@ -830,11 +838,11 @@ The highest level of abstraction and describes something that delivers value to 
 
 #### Example of a System Context diagram
 
-![w:800px](./figures/C4_SystemContext.png)
+![w:800px](./img/C4_SystemContext.png)
 
 ---
 
-![bg w:85%](./figures/C4_Abstractions.png)
+![bg w:85%](./img/C4_Abstractions.png)
 
 ---
 
@@ -857,11 +865,11 @@ A separately runnable/deployable unit
 
 #### Example of a Container Diagram
 
-![w:800px](./figures/C4_Containers.png)
+![w:800px](./img/C4_Containers.png)
 
 ---
 
-![bg w:85%](./figures/C4_Abstractions.png)
+![bg w:85%](./img/C4_Abstractions.png)
 
 ---
 
@@ -892,7 +900,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram  (Jar files)
 
-![w:700px](./figures/JAR_Components.png)
+![w:700px](./img/JAR_Components.png)
 
 *UML component diagram*
 
@@ -912,7 +920,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram</small>
 
-![w:500px](./figures/C4_Components_Modified.png)
+![w:500px](./img/C4_Components_Modified.png)
 
 *C4 version*
 
@@ -922,7 +930,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram
 
-![w:600](./figures/UML_Components.png)
+![w:600](./img/UML_Components.png)
 
 *UML component diagram*
 
@@ -930,7 +938,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram
 
-![w:1100](./figures/UML_Packages.png)
+![w:1100](./img/UML_Packages.png)
 
 *UML package diagram*
 
@@ -938,7 +946,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 ---
 
-![bg w:85%](./figures/C4_Abstractions.png)
+![bg w:85%](./img/C4_Abstractions.png)
 
 ---
 
@@ -958,7 +966,7 @@ Ideally, these diagrams would be **automatically generated** using tooling (e.g.
 
 #### Example of a Code Diagram (UML class diagram)
 
-![w:800px](./figures/C4_Code.png)
+![w:800px](./img/C4_Code.png)
 
 
 
@@ -976,7 +984,7 @@ This diagram shows the system landscape from an IT perspective. It is a high-lev
 
 #### Example of a System Landscape diagram
 
-![w:800px](./figures/C4_Landscape.png)
+![w:800px](./img/C4_Landscape.png)
 
 ---
 
@@ -990,7 +998,7 @@ The diagram is based upon *UML communication diagram*.
 
 #### Example of a Dynamic diagram
 
-![w:800px](./figures/C4_Dynamic.png)
+![w:800px](./img/C4_Dynamic.png)
 
 ---
 
@@ -1004,7 +1012,7 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 #### Example of a Deployment diagram
 
-![w:800px](./figures/C4_Deployment.png)
+![w:800px](./img/C4_Deployment.png)
 
 ---
 
@@ -1024,7 +1032,7 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 ---
 
-![w:800px](./figures/Structurizr.png)
+![w:800px](./img/Structurizr.png)
 
 ## Software architecture as code
 
