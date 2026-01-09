@@ -77,6 +77,7 @@ The role of the software architect
 Benefits
 
 ---
+<!-- _class: lead -->
 
 ## Definitions
 
@@ -130,14 +131,20 @@ section {
 - etc.
 
 ---
+<style scoped>
+section { text-align: center; }
+</style>
 
-### ¿buildings == software?
+### **Buildings** ≈ **Software**?
 
 Both are developed by teams using **tools**, **patterns** and **tactics** and are affected by **trends**
 
 ---
+<style scoped>
+section { text-align: center; }
+</style>
 
-### ¿buildings != software?
+### **Buildings** ≠ **Software**?
 
 Buildings are **stable** environments with **physical** limits and many difficulties to change, software is a **virtual** artifact with evolving nature and it is easier to **change**
 
@@ -197,10 +204,17 @@ The **set of design decisions** that can be simultaneously applied to **several 
 ## Architecture design process
 
 ---
+<style scoped>
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  /* alinea al inicio (arriba) */
+}
+</style>
 
 ### Waterfall development
 
-![bg right:60% 90%](./img/Waterfall.png)
+![bg right:60% fit](./img/Waterfall.png)
 
 ---
 
@@ -215,6 +229,7 @@ The **set of design decisions** that can be simultaneously applied to **several 
 ### Agile development
 
 ![w:1050](./img/Scrum.png)
+
 <small>The *Scrum* framework</small>
 
 ---
@@ -231,14 +246,17 @@ The **set of design decisions** that can be simultaneously applied to **several 
 - Many organizations started to not create any design at all, causing long-term maintainability issues.
 
 ---
+<style scoped>
+section { text-align: center; }
+</style>
 
 ### How much up front design should you do?
 
-#### **0\%** ?
-
-#### **100\%** ?
+#### **0\%** ... **100\%**?
 
 ---
+
+#### Up front design
 
 > Big design up front is dumb.
 > Doing no design up front is even dumber.
@@ -261,19 +279,21 @@ The **set of design decisions** that can be simultaneously applied to **several 
 - Propose **hypotheses** and then write some code to validate whether the solution posed is feasible and fulfills the expected requirements.
 - Prove the architecture with concrete **experiments**, and proof of concepts.
 - Identify and control **risks** and tackle the highest priority ones in the early stages.
-- However, not all decisions have to be made in the beginning. In fact, it is much better to defer decisions until they are strictly needed. We should **keep the options open** for as long as possible.
+- However, not all decisions have to be made in the beginning. It is much better to defer decisions until they are strictly needed. We should **keep the options open** for as long as possible.
 
 ---
 
 ### Laws of Software Architecture
 
-**#1. Everything in software architecture is a trade off**
+#### **1. Everything in software architecture is a trade off**
+
 All meaningful decisions have advantages and downsides
 
-**#2. 'Why' is more important than 'How'**
+#### **2. 'Why' is more important than 'How'**
+
 Question everything
 
-![bg right:50% 120%](./img/ArchitectureDesignProcess.png)
+![bg right:45% 120%](./img/ArchitectureDesignProcess.png)
 
 ---
 
@@ -285,11 +305,11 @@ Question everything
 
 The creation process of the software architecture starts with a set of inputs:
 
-- Business objectives,
-- Functional requirements,
-- Information requirements,
-- Non-functional requirements,
-- and constraints.
+- Business objectives
+- Functional requirements
+- Information requirements
+- Non-functional requirements
+- Constraints
 
 ---
 
@@ -305,7 +325,7 @@ What are the **goals** (measurable) of the system to develop or maintain?
 
 ---
 
-![bg left:60% fit](./img/UML_UseCase.png)
+![bg left:60% 95%](./img/UML_UseCase.png)
 
 ### Functional requirements
 
@@ -313,7 +333,7 @@ Some requirements engineering techniques should be conducted prior to designing 
 
 ---
 
-![bg left:60% fit](./img/UML_DomainModel.png)
+![bg left:60% 90%](./img/UML_DomainModel.png)
 
 ### Information requirements
 
@@ -321,7 +341,7 @@ The static nature of the system is modeled with a conceptual model considering t
 
 ---
 
-![bg left:60% fit](./img/SysML_Requirements.png)
+![bg left:60% 90%](./img/SysML_Requirements.png)
 
 ### Non-functional requirements
 
@@ -342,16 +362,18 @@ Quality attribute requirements, namely performance efficiency, compatibility, op
 
 ---
 
-Software architecture is **embedded** in the **source code** itself,
+### Process outputs
 
-However, there are other aspects that are **not** directly (easily) **observable** in the code.
+- Software architecture is **embedded** in the **source code** itself,
+
+- However, there are other aspects that are **not** directly (easily) **observable** in the code.
 
 ---
 
 ### Alternatives for describing architectures
 
 - **Architectural Decision Records (ADR)**, by using structured templates
-- **Textual representations**, by using Architecture Description Languages (ADLs)
+- **Textual representations**, by using Architecture Description Languages (ADL)
 - **Visual models**, according to well-known specifications like UML or SysML
 
 ---
@@ -438,7 +460,7 @@ The software architect is in charge of creating and maintaining the software arc
 
 ### Lesson contents
 
-Introduction
+Architecture description
 Architectural decision records: *Y-statement and MADR*
 Architecture description languages: *AADL*
 Architecture models: *UML*
@@ -446,21 +468,16 @@ Frameworks for creating architectures: *C4 model*
 
 ---
 
-## Introduction
+### Architecture description (I)
 
-### **Documenting** software architectures helps us understand the **big picture** of the systems, providing a **shared** vision and a common **vocabulary** for all stakeholders.
+**Documenting** software architectures helps us understand the **big picture** of the systems, providing a **shared** vision and a common **vocabulary** for all stakeholders.
 
 ---
 
-### Architecture description
+### Architecture description (II)
 
 - In the **building** industry, architecture is usually documented with site plans, floor plans, elevation views, cross-section views, and detailed drawings.
 - In **Software Engineering**, architecture description is the explicit work product expressing an architecture of a system, usually via code, texts and graphics.
-
----
-
-### Software architecture is **embedded** in the **source code** itself,
-However, there are other aspects that are **not** directly (easily) **observable** in the code.
 
 ---
 
@@ -477,7 +494,7 @@ However, there are other aspects that are **not** directly (easily) **observable
 
 ---
 
-### Architectural decision records (ADRs)
+### Architectural decision records (ADR)
 
 - The architecture of a software system can be seen as the set of **major design decisions** on the system.
 
@@ -489,7 +506,7 @@ Let's see some examples of decisions...
 
 ---
 
-#### Examples of feature decisions
+#### Examples of **feature** decisions
 
 - *Create a system from scratch or extend a base platform?*
 
@@ -497,7 +514,7 @@ Let's see some examples of decisions...
 
 ---
 
-#### Examples of decisions on the technology decisions
+#### Examples of **technology** decisions
 
 - *C++ or Java for programming the system?*
 
@@ -507,7 +524,7 @@ Let's see some examples of decisions...
 
 ---
 
-#### Examples of infrastructure decisions
+#### Examples of **infrastructure** decisions
 
 - *A relational database (e.g., Oracle, MySQL, PostgreSQL, etc.) or a NoSQL database (MongoDB, Redis, Neo4J, etc.)*
 
@@ -517,15 +534,15 @@ Let's see some examples of decisions...
 
 ---
 
-#### Examples of decisions on tactics for improving availability and performance
+#### Examples of decisions on tactics for improving **availability** and **performance**
 
-- Using ping/echo or heartbeat strategy for detecting faults with external systems?
+- *Using ping/echo or heartbeat strategy for detecting faults with external systems?*
 
-- In case of system exhaustion when receiving external events, do we reduce the sampling rate or prioritize the source events?
+- *In case of system exhaustion when receiving external events, do we reduce the sampling rate or prioritize the source events?*
 
 ---
 
-#### Examples of decisions on patterns/styles
+#### Examples of decisions on **patterns/styles**
 
 - *Model View Controller (MVC) or Pipe and Filters for structuring our software components?*
 
@@ -533,9 +550,9 @@ Let's see some examples of decisions...
 
 ---
 
-#### Examples of decisions on coding
+#### Examples of decisions on **coding**
 
-- *Google/Microsoft/Mozilla C++ coding styles?*
+- *Google/Microsoft/Epic C++ coding styles?*
 
 - *Code organization by domain responsibilities or technical responsibilities?*
 
@@ -548,14 +565,22 @@ Let's see some examples of decisions...
 - These decisions must be defined using a proper **format** and **structure**, for example, using Y-statements or MADRs.
 
 ---
+
 ### Y-statement template
 
-*In the context of **\<use case\/user story u\>**, facing **\<concern c\>** we decided for **\<option o\>** and neglected **\<other options\>**, to achieve **\<system qualities/desired consequences>**, accepting **<downside/undesired consequences>**, because **\<additional rationale\>**.*
+1. **In the context of** `<use case/user story/functional req/component U>`,
+2. **facing** `<non-functional req/quality concern C>`,
+3. **we decided for** `<selected option O>`,
+4. **and neglected** `<alternatiove options>`,
+5. **to achieve** `<benefit/quality attributes/desired consequences>`,
+6. **accepting** `<drawbacks/downside/undesired consequences>`,
+7. **because** `<additional rationale>`.
 
 ---
+
 #### Example of a Y-statement template
 
-*In the context of the **Web shop service**, facing the need to **keep user session data consistent and current across shop instances**, we decided for the **Database Session State pattern** and against **Client Session State** or **Server Session State** to achieve **data consistency and cloud elasticity**, accepting **that a session database needs to be designed and implemented**.*
+*In the context of the <emph>Web shop service</emph>, facing the need to <emph>keep user session data consistent and current across shop instances</emph>, we decided for the <emph>Database Session State pattern</emph> and against <emph>Client Session State</emph> or <emph>Server Session State</emph> to achieve <emph>data consistency and cloud elasticity</emph>, accepting that <emph>a session database needs to be designed and implemented</emph>.*
 
 ---
 
@@ -567,7 +592,7 @@ Let's see some examples of decisions...
 
 #### Example of a MADR
 
-```
+```madr
 # Choose a format and structure for managing ADRs
 
 ## Context and Problem Statement
@@ -590,7 +615,7 @@ Which format and structure should these records follow?
 
 ### Example of a MADR (cont.)
 
-```
+```madr
 ## Decision Outcome
 
 Chosen option: "MADR 2.1.0", because
@@ -611,7 +636,7 @@ Chosen option: "MADR 2.1.0", because
 
 ---
 
-### Architecture description languages (ADLs)
+### Architecture Description Languages (**ADL**)
 
 - **Formal languages** targeted at designing software architectures
 
@@ -746,7 +771,7 @@ Sketches are later beautified with diagramming tools (*PowerPoint*).
 
 #### Modelio
 
-![bg right:75% 90%](./img/Modelio.png)
+![bg right:75% 80%](./img/Modelio.png)
 
 ---
 
@@ -895,21 +920,19 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 -- *Martin Fowler*
 
-
 ---
 
 #### Example of a Component diagram  (Jar files)
 
 ![w:700px](./img/JAR_Components.png)
 
-*UML component diagram*
+<small>UML component diagram</small>
 
 ---
 
 ### Component <small>(alternative definition)</small>
 
 > A component is a **grouping of related functionality (classes) encapsulated behind a well-defined interface**.
-
 > Aspects such as how those components are organized (packages, modules, JAR file, DLL, namespaces, shared library, etc) is a separate and orthogonal concern. In the C4 model, components are not separately deployable units.
 
 -- *Simon Brown, C4 model*
@@ -956,7 +979,7 @@ Code elements (e.g. classes, interfaces, objects, functions, database tables, et
 
 ---
 
-## Level 4: Code Diagram
+### Level 4: Code Diagram
 
 This level of detail shows how each component is implemented as code, using **UML class diagrams**.
 
@@ -969,8 +992,10 @@ Ideally, these diagrams would be **automatically generated** using tooling (e.g.
 ![w:800px](./img/C4_Code.png)
 
 
-
 ---
+<style scoped>
+section { text-align: center; }
+</style>
 
 ### More diagrams?
 
