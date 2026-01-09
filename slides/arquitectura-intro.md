@@ -656,7 +656,7 @@ Chosen option: "MADR 2.1.0", because
 
 #### AADL example
 
-```
+```aadl
 package Hello_World                                 -- Entities are attached to a package
 public
   subprogram Hello_Spg_1
@@ -678,7 +678,7 @@ public
 
 ---
 
-```
+```aadl
   process node_a
                                   --  A process, gathers several threads as subcomponents
   end node_a;
@@ -700,7 +700,7 @@ public
   system implementation rma.impl
    subcomponents
     node_a : process node_a.impl;
-    cpu	   : processor cpu;
+    cpu    : processor cpu;
    properties
     Actual_Processor_Binding           -- Binding relations between hardware and software
        => (reference (cpu)) applies to node_a;    -- node_a is allocated resources on cpu
@@ -746,7 +746,7 @@ Sketches are later beautified with diagramming tools (*PowerPoint*).
 - Provide well-defined **semantics** and unambiguous **understanding**.
 - Examples: **UML** and **SysML**
 - **Model-Based** Software/System Engineering (MBSE)
-  -  **Model-Driven** Software/System Engineering (MDSE)
+- **Model-Driven** Software/System Engineering (MDSE)
 - Architectural **models** created with those languages capture totally or partially the **design decisions** during the creation of the system architecture.
 
 ---
@@ -835,13 +835,15 @@ There are 14 types of diagrams. We need for guidelines regarding the number and 
 
 ### C4 model
 
-- C4 model is an approach, devised by *Simon Brown*, for describing and **communicating** software architectures to different types of **audiences**.
+- Simon Brown's approach for describing and **communicating** software architectures to different types of **audiences**.
 
-- Follows the idea of *Google Maps**, i.e., to see the system as a **map** at various levels of detail.
+- View the system as a **map** at various levels of detail.
 
-- **Abstraction**-first approach and **notation independent**
+- **Abstraction**-first approach and **notation**-independent
 
-- Simple diagrams based on **boxes** and **lines**, but can be also created with **UML/SysML** with the appropriate use of packages, components and stereotypes.
+- Simple diagrams based on **boxes** and **lines**, but can be also created with **UML/SysML** using packages, components and stereotypes.
+
+![bg right:40% fit](./img/c4model.png)
 
 ---
 
@@ -906,8 +908,6 @@ Its intended audience is software architects and developers.
 
 Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
-
-
 ---
 
 ### Component
@@ -937,17 +937,13 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 -- *Simon Brown, C4 model*
 
-
-
 ---
 
 #### Example of a Component diagram</small>
 
 ![w:500px](./img/C4_Components_Modified.png)
 
-*C4 version*
-
-
+<small>C4 version</small>
 
 ---
 
@@ -963,9 +959,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 ![w:1100](./img/UML_Packages.png)
 
-*UML package diagram*
-
-
+<small>UML package diagram</small>
 
 ---
 
@@ -991,7 +985,6 @@ Ideally, these diagrams would be **automatically generated** using tooling (e.g.
 
 ![w:800px](./img/C4_Code.png)
 
-
 ---
 <style scoped>
 section { text-align: center; }
@@ -1013,7 +1006,7 @@ This diagram shows the system landscape from an IT perspective. It is a high-lev
 
 ---
 
-###  Dynamic diagram
+### Dynamic diagram
 
 This diagram can be useful when you want to show how elements in a static model **collaborate at runtime** to implement a **user story, use case, feature**, etc.
 
@@ -1041,7 +1034,7 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 ---
 
-###  Tooling for C4 model
+### Tooling for C4 model
 
 - Diagramming tools:
   - Visual: *Microsoft Visio, Visual Paradigm*
@@ -1053,13 +1046,22 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 ---
 
-## Let's practise..
+<style scoped>
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  /* alinea al inicio (arriba) */
+}
+h3 {
+  text-align: center;
+}
+</style>
 
----
-
-![w:800px](./img/Structurizr.png)
+### Let's practise..
 
 ## Software architecture as code
+
+![bg 65%](./img/Structurizr.png)
 
 ---
 
@@ -1067,10 +1069,10 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 1. Create a user and a new workspace in Structurizr to design the architecture of the "*ACME Access Control System*".
 2. Create the **C4 context diagram** to show that the security staff is in charge of registering and authorizing new users in the system and providing them with ID cards based on NFC technology. Both external users and invited will be able to enter ACME's premises using their cards.
+
 ---
 
-## Practical activity (cont.)
+### Practical activity (cont.)
 
 3. Create the **C4 container diagram** to depict that the system is based on a headless app written in Python that reads NFC cards and communicates with an Oracle database to authorize users and log user activity. In addition, there is a Qt-desktop application for managing users stored in the database.
-
 4. Create the **deployment diagram** to depict that the Pythons apps will run on two PLC Raspberry Pi, the database will be hosted and replicated in two machines on the ACME datacenter, and the desktop application will be running on the Security staff's computer.
