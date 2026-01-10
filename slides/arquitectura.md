@@ -1065,3 +1065,14 @@ h3 {
 
 3. Create the **C4 container diagram** to depict that the system is based on a headless app written in Python that reads NFC cards and communicates with an Oracle database to authorize users and log user activity. In addition, there is a Qt-desktop application for managing users stored in the database.
 4. Create the **deployment diagram** to depict that the Python apps will run on two PLC Raspberry Pi, the database will be hosted and replicated in two machines on the ACME datacenter, and the desktop application will be running on the Security staff's computer.
+
+---
+
+# REFERENCES
+
+- Mark Richards: Software Architecture Monday, https://www.developertoarchitect.com/lessons/
+- Simon Brown: The C4 model for software architecture, https://c4model.com/
+- Markdown Architectural Decision Records, https://adr.github.io/madr/
+- AADL standard, https://www.aadl.info/
+- Structurizr, https://structurizr.com/
+- PlantUML, https://plantuml.com/
