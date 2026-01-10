@@ -5,32 +5,36 @@ description: Apuntes de Diseño de Sistemas Software - Patrones de diseño
 marp: true
 subject: Diseño de Sistemas Software, curso 2025/26
 title: Architecture
+theme: gaia
+style: |
+  h1 {
+    text-align: center;
+  }
+  h2 {
+    color: #043287ff;
+    text-align: center;
+  }
+
+  img[alt~="center"] {
+    display: block;
+    margin: 0 auto;
+  }
+
+  emph {
+    color: #E87B00;
+  }
+
+  inverse {
+    color: var(--color-background);
+    background-color: var(--color-foreground);
+    padding: 0.1em 0.3em;
+    border-radius: 0.2em;
+  }
 ---
 
 <!-- size: 16:9 -->
 
-<!-- theme: default -->
-
 <!-- paginate: false -->
-
-<style>
-h1 {
-  text-align: center;
-}
-h2 {
-  color: darkblue;
-  text-align: center;
-}
-
-img[alt~="center"] {
-  display: block;
-  margin: 0 auto;
-}
-
-emph {
-  color: #E87B00;
-}
-</style>
 
 # DISEÑO DE SISTEMAS SOFTWARE
 
@@ -60,6 +64,7 @@ h2 {
 <!--3. Architectural tactics-->
 
 ---
+<!-- _class: lead -->
 
 ## INTRODUCTION TO SOFTWARE ARCHITECTURES
 
@@ -82,7 +87,6 @@ Benefits
 ## Definitions
 
 ---
-
 <!-- _class: invert -->
 
 <style scoped>
@@ -93,35 +97,21 @@ section {
 }
 </style>
 
-![bg](./img/AthensParthenon.jpg)
+### Architecture
 
-### Architecture (I)
-
-- The **process** and the **product** of planning, designing, and constructing buildings or **other** structures.
-
----
-
-<!-- _class: invert -->
-
-<style scoped>
-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;  /* alinea al inicio (arriba) */
-}
-</style>
+The **process** and the **product** of planning, designing, and constructing buildings or **other physical** structures.
 
 ![bg](./img/SydneyOperaHouse.jpg)
 
-### Architecture (II)
+<br><br><br><br><br>
 
-- The **style of design** and **method** of construction of buildings and other physical structures.
+The **style of design** and **method** of construction of buildings and other physical structures.
 
 ---
 
-![bg right:50% 120%](./img/Naval.png)
+![bg right:50% 90%](./img/Naval.png)
 
-### Architecture applies to several **disciplines**:
+### Architecture applies to several **disciplines**
 
 - landscape architecture
 - interior architecture,
@@ -131,24 +121,21 @@ section {
 - etc.
 
 ---
-<style scoped>
-section { text-align: center; }
-</style>
+<!-- _class: lead -->
 
 ### **Buildings** ≈ **Software**?
 
 Both are developed by teams using **tools**, **patterns** and **tactics** and are affected by **trends**
 
 ---
-<style scoped>
-section { text-align: center; }
-</style>
+<!-- _class: lead -->
 
 ### **Buildings** ≠ **Software**?
 
 Buildings are **stable** environments with **physical** limits and many difficulties to change, software is a **virtual** artifact with evolving nature and it is easier to **change**
 
 ---
+<!-- _class: lead -->
 
 ### The architecture of **anything**
 
@@ -158,6 +145,7 @@ Buildings are **stable** environments with **physical** limits and many difficul
 -- *Samuel Holcman*
 
 ---
+<!-- _class: lead -->
 
 ### Architecture of a **system**
 
@@ -166,6 +154,7 @@ Buildings are **stable** environments with **physical** limits and many difficul
 -- *ISO/IEC/IEEE 42010*
 
 ---
+<!-- _class: lead -->
 
 ### The architecture of a **software system**
 
@@ -177,17 +166,16 @@ Buildings are **stable** environments with **physical** limits and many difficul
 
 ### **Software** architecture
 
-> The **set of significant decisions** about the **organization of a software system**, the selection of the **structural elements and their interfaces** ...together with their **behavior** ..., the **composition** of these ... elements ..., and the **architectural style** ...
+> The **set of significant decisions** about the **organization of a software system**, the selection of the **structural elements and their interfaces** ...together with their **behavior** ..., the **composition** of these ... elements ..., and the **architectural style**
 
 -- *Kruchten: The Rational Unified Process*
-
----
 
 > Architecture represents the **significant decisions**, where significance is measured by **cost of change**.
 
 --*Grady Booch*
 
 ---
+<!-- _class: lead -->
 
 ### The **software architecture** can be considered the **blueprint** to build and maintain a software system.
 
@@ -197,9 +185,12 @@ Buildings are **stable** environments with **physical** limits and many difficul
 
 The **set of design decisions** that can be simultaneously applied to **several related systems** within an application **domain** and with explicitly defined **variation points**.
 
+<br><br><br>  
+
 <small>A **Software Product Line** is a set of software-intensive systems that share a **common**, managed set of **features** satisfying the specific needs of a particular **market segment** or mission.</small>
 
 ---
+<!-- _class: lead -->
 
 ## Architecture design process
 
@@ -228,7 +219,7 @@ section {
 
 ### Agile development
 
-![w:1050](./img/Scrum.png)
+![bg 80%](./img/Scrum.png)
 
 <small>The *Scrum* framework</small>
 
@@ -246,9 +237,6 @@ section {
 - Many organizations started to not create any design at all, causing long-term maintainability issues.
 
 ---
-<style scoped>
-section { text-align: center; }
-</style>
 
 ### How much up front design should you do?
 
@@ -256,7 +244,11 @@ section { text-align: center; }
 
 ---
 
-#### Up front design
+### How much up front design should you do?
+
+#### **0\%** ... **100\%**?
+
+### Up front design
 
 > Big design up front is dumb.
 > Doing no design up front is even dumber.
@@ -296,6 +288,7 @@ Question everything
 ![bg right:45% 120%](./img/ArchitectureDesignProcess.png)
 
 ---
+<!-- _class: lead -->
 
 ## Process inputs
 
@@ -357,6 +350,7 @@ Quality attribute requirements, namely performance efficiency, compatibility, op
 - **Hardware** constraints: sensor and actuator manufacturers, execution platforms, etc.
 
 ---
+<!-- _class: lead -->
 
 ## Process outputs
 
@@ -377,22 +371,17 @@ Quality attribute requirements, namely performance efficiency, compatibility, op
 - **Visual models**, according to well-known specifications like UML or SysML
 
 ---
+<!-- _class: lead -->
 
 ## The role of the software architect
 
 ---
 
-### The role of the software architect
-
-The software architect is in charge of creating and maintaining the software architecture
-
----
-
 ### Skills
 
-- On many occasions, this role is assumed by one of the **senior** developers.
-- Possess good **interpersonal skills** to deal with stakeholders who may have different (even contradictory) needs
-- Have a solid knowledge of the **business domain**.
+- This role is usually assumed by a **senior** developer.
+- Good **interpersonal skills** to deal with stakeholders who may have different (even contradictory) needs
+- Solid knowledge of the **business domain**.
 - Aware of **new** development techniques, practices, and tools.
 - **Self-experience** for correctly applying best practices, design principles, and patterns.
 
@@ -413,6 +402,7 @@ The software architect is in charge of creating and maintaining the software arc
 - Explicitly **document** the software architectures by means of visual models or textual representations.
 
 ---
+<!-- _class: lead -->
 
 ## Benefits
 
@@ -422,19 +412,20 @@ The software architect is in charge of creating and maintaining the software arc
 
 - The way of programming should always be the same and follow the same structure, the resulting code will be easily recognizable and ...
 
-   - facilitates the development and maintenance of the software.
-   - simplifies the deployment and operation of the systems.
+- facilitates the development and maintenance of the software.
+- simplifies the deployment and operation of the systems.
 
 ---
 
 ### Benefits (II)
 
 - The software architecture documentation provides...
-   - a clear vision and roadmap for the team to follow.
-   - a common language to express, negotiate and resolve the stakeholder's expectations.
-   - a valuable resource to be used as the basis for the training of new project members.
+  - a clear vision and roadmap for the team to follow.
+  - a common language to express, negotiate and resolve the stakeholder's expectations.
+  - a valuable resource to be used as the basis for the training of new project members.
 
 ---
+<!-- _class: lead -->
 
 ## Key ideas
 
@@ -451,6 +442,7 @@ The software architect is in charge of creating and maintaining the software arc
 - **Benefits**: *code easy to maintain, documentation helpful for all.*
 
 ---
+<!-- _class: lead -->
 
 ## COMMUNICATING ARCHITECTURES
 
@@ -489,6 +481,7 @@ Frameworks for creating architectures: *C4 model*
 - How they **communicate** themselves?
 
 ---
+<!-- _class: lead -->
 
 ## Architectural decision records
 
@@ -568,21 +561,22 @@ Let's see some examples of decisions...
 
 ### Y-statement template
 
-1. **In the context of** `<use case/user story/functional req/component U>`,
-2. **facing** `<non-functional req/quality concern C>`,
-3. **we decided for** `<selected option O>`,
-4. **and neglected** `<alternatiove options>`,
-5. **to achieve** `<benefit/quality attributes/desired consequences>`,
-6. **accepting** `<drawbacks/downside/undesired consequences>`,
-7. **because** `<additional rationale>`.
+1. **In the context of** <inverse>use case/user story/functional req/component</inverse>,
+2. **facing** <inverse>non-functional req/quality concern</inverse>,
+3. **we decided for** <<inverse>selected option</inverse>,
+4. **and neglected** <inverse>alternative options</inverse>,
+5. **to achieve** <inverse>benefit/quality attributes/desired consequences</inverse>,
+6. **accepting** <inverse>drawbacks/downside/undesired consequences</inverse>,
+7. **because** <inverse>additional rationale</inverse>.
 
 ---
 
 #### Example of a Y-statement template
 
-*In the context of the <emph>Web shop service</emph>, facing the need to <emph>keep user session data consistent and current across shop instances</emph>, we decided for the <emph>Database Session State pattern</emph> and against <emph>Client Session State</emph> or <emph>Server Session State</emph> to achieve <emph>data consistency and cloud elasticity</emph>, accepting that <emph>a session database needs to be designed and implemented</emph>.*
+*In the context of the <inverse>Web shop service</inverse>, facing the need to <inverse>keep user session data consistent and current across shop instances</inverse>, we decided for the <inverse>Database Session State pattern</inverse> and against <inverse>Client Session State</inverse> or <inverse>Server Session State</inverse> to achieve <inverse>data consistency and cloud elasticity</inverse>, accepting that <inverse>a session database needs to be designed and implemented</inverse>.*
 
 ---
+<!-- _class: lead -->
 
 ### Markdown Architecture Decision Records (MADR)
 
@@ -631,6 +625,7 @@ Chosen option: "MADR 2.1.0", because
 ```
 
 ---
+<!-- _class: lead -->
 
 ## Architecture description languages
 
@@ -696,7 +691,11 @@ public
   system rma
                                 --  A system combines both hardware and software elements
   end rma;
+```
 
+---
+
+```aadl
   system implementation rma.impl
    subcomponents
     node_a : process node_a.impl;
@@ -710,6 +709,7 @@ end Hello_World;
 ```
 
 ---
+<!-- _class: lead -->
 
 ## Architecture models
 
@@ -818,6 +818,7 @@ section {
 There are 14 types of diagrams. We need for guidelines regarding the number and type of notations to use.
 
 ---
+<!-- _class: lead -->
 
 ## Frameworks for creating architectures
 
@@ -833,9 +834,9 @@ There are 14 types of diagrams. We need for guidelines regarding the number and 
 
 ---
 
-### C4 model
+### Simon Brown's C4 model
 
-- Simon Brown's approach for describing and **communicating** software architectures to different types of **audiences**.
+- Approach for describing and **communicating** software architectures to different types of **audiences**.
 
 - View the system as a **map** at various levels of detail.
 
@@ -843,7 +844,7 @@ There are 14 types of diagrams. We need for guidelines regarding the number and 
 
 - Simple diagrams based on **boxes** and **lines**, but can be also created with **UML/SysML** using packages, components and stereotypes.
 
-![bg right:40% fit](./img/c4model.png)
+![bg left:25% fit](./img/c4model.png)
 
 ---
 
@@ -856,6 +857,7 @@ There are 14 types of diagrams. We need for guidelines regarding the number and 
 This diagram focuses on **people** (actors, roles, personas, etc) and **software systems** rather than technologies, protocols, and other low-level details. It's the sort of diagram that you could show to **non-technical people**. This includes the software system you are modeling, and the other software systems upon which your software system **depends** (or vice versa).
 
 ---
+<!-- _class: lead -->
 
 #### Software System
 
@@ -865,11 +867,7 @@ The highest level of abstraction and describes something that delivers value to 
 
 #### Example of a System Context diagram
 
-![w:800px](./img/C4_SystemContext.png)
-
----
-
-![bg w:85%](./img/C4_Abstractions.png)
+![bg right:70% 95%](./img/C4_SystemContext.png)
 
 ---
 
@@ -892,11 +890,7 @@ A separately runnable/deployable unit
 
 #### Example of a Container Diagram
 
-![w:800px](./img/C4_Containers.png)
-
----
-
-![bg w:85%](./img/C4_Abstractions.png)
+![bg right:70% 95%](./img/C4_Containers.png)
 
 ---
 
@@ -916,7 +910,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 -- *Clemens Szyperski*
 
-> Software components are libraries, i.e., **things that are independently replaceable and upgradeable**. Examples would include Java's jars, C#'s assemblies, Ruby's gems, and Javascript's modules.
+> Software components are libraries, i.e., **things that are independently replaceable and upgradeable**. Examples: Java's jars, C#'s assemblies, Ruby's gems, and Javascript's modules.
 
 -- *Martin Fowler*
 
@@ -924,7 +918,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram  (Jar files)
 
-![w:700px](./img/JAR_Components.png)
+![bg right:60% 85%](./img/JAR_Components.png)
 
 <small>UML component diagram</small>
 
@@ -941,7 +935,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram</small>
 
-![w:500px](./img/C4_Components_Modified.png)
+![bg right:70% 65%](./img/C4_Components_Modified.png)
 
 <small>C4 version</small>
 
@@ -949,7 +943,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram
 
-![w:600](./img/UML_Components.png)
+![bg right:70% 65%](./img/UML_Components.png)
 
 *UML component diagram*
 
@@ -962,10 +956,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 <small>UML package diagram</small>
 
 ---
-
-![bg w:85%](./img/C4_Abstractions.png)
-
----
+<!-- _class: lead -->
 
 ### Code
 
@@ -983,12 +974,10 @@ Ideally, these diagrams would be **automatically generated** using tooling (e.g.
 
 #### Example of a Code Diagram (UML class diagram)
 
-![w:800px](./img/C4_Code.png)
+![bg right:70% 95%](./img/C4_Code.png)
 
 ---
-<style scoped>
-section { text-align: center; }
-</style>
+<!-- _class: lead -->
 
 ### More diagrams?
 
@@ -1002,7 +991,7 @@ This diagram shows the system landscape from an IT perspective. It is a high-lev
 
 #### Example of a System Landscape diagram
 
-![w:800px](./img/C4_Landscape.png)
+![bg right:70% 95%](./img/C4_Landscape.png)
 
 ---
 
@@ -1016,7 +1005,7 @@ The diagram is based upon *UML communication diagram*.
 
 #### Example of a Dynamic diagram
 
-![w:800px](./img/C4_Dynamic.png)
+![bg right:70% 95%](./img/C4_Dynamic.png)
 
 ---
 
@@ -1030,7 +1019,7 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 #### Example of a Deployment diagram
 
-![w:800px](./img/C4_Deployment.png)
+![bg right:70% 95%](./img/C4_Deployment.png)
 
 ---
 
@@ -1075,4 +1064,4 @@ h3 {
 ### Practical activity (cont.)
 
 3. Create the **C4 container diagram** to depict that the system is based on a headless app written in Python that reads NFC cards and communicates with an Oracle database to authorize users and log user activity. In addition, there is a Qt-desktop application for managing users stored in the database.
-4. Create the **deployment diagram** to depict that the Pythons apps will run on two PLC Raspberry Pi, the database will be hosted and replicated in two machines on the ACME datacenter, and the desktop application will be running on the Security staff's computer.
+4. Create the **deployment diagram** to depict that the Python apps will run on two PLC Raspberry Pi, the database will be hosted and replicated in two machines on the ACME datacenter, and the desktop application will be running on the Security staff's computer.
