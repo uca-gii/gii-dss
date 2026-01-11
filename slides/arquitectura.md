@@ -61,8 +61,6 @@ h2 {
 3. Architectural principles
 4. Architectural patterns
 
-<!--3. Architectural tactics-->
-
 ---
 <!-- _class: lead -->
 
@@ -449,11 +447,20 @@ Quality attribute requirements, namely performance efficiency, compatibility, op
 - **Visual models**, according to well-known specifications like UML or SysML
 
 ---
-<!-- _class: lead -->
 
-## Expectations
+<!-- _class: invert -->
+
+<style scoped>
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;  /* alinea al inicio (arriba) */
+}
+</style>
 
 ### The role of the software architect
+
+![bg](./img/architect_role.png)
 
 ---
 
