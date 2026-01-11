@@ -134,6 +134,14 @@ Both are developed by teams using **tools**, **patterns** and **tactics** and ar
 
 Buildings are **stable** environments with **physical** limits and many difficulties to change, software is a **virtual** artifact with evolving nature and it is easier to **change**
 
+<!--
+¿Es el software realmente como un edificio? > Históricamente, hemos usado la metáfora de la construcción porque nos ayuda a visualizar planos y cimientos. Sin embargo, a diferencia de un edificio, el software no es estático. Mientras que mover el baño de una casa 10 metros a la derecha una vez construida es casi imposible, en el software el cambio es nuestra realidad diaria.
+
+La arquitectura de software depende totalmente del contexto. Por ejemplo, en 2002, una arquitectura de microservicios habría sido una locura por el altísimo coste de las licencias de servidores físicos; hoy, gracias al Open Source y la nube, es el estándar.
+
+Pregunta para clase: Si el software es tan fácil de cambiar comparado con el hormigón, ¿por qué seguimos necesitando "planear" tanto? (Pista: buscad la respuesta en la siguiente sección sobre "decisiones significativas").
+-->
+
 ---
 <!-- _class: lead -->
 
@@ -162,6 +170,17 @@ Buildings are **stable** environments with **physical** limits and many difficul
 
 -- *Bob Martin*
 
+<!--
+Más allá de las "Cajas y Líneas"
+
+Una definición moderna que va más allá de la estructura técnica: la arquitectura se divide en cuatro dimensiones clave:
+1. Estructura: El estilo de la arquitectura (ej. microservicios o capas).
+2. Características de arquitectura: Los famosos "-ilities" (disponibilidad, escalabilidad, seguridad) que el sistema debe soportar para tener éxito.
+3. Componentes lógicos: Cómo se agrupa el código (visto a veces en diagramas UML de componentes).
+4. Decisiones arquitectónicas: Las reglas que definen cómo se construye el sistema (ej. "la capa de presentación nunca accede directamente a la base de datos").
+
+-->
+
 ---
 
 ### **Software** architecture
@@ -174,20 +193,74 @@ Buildings are **stable** environments with **physical** limits and many difficul
 
 --*Grady Booch*
 
+<!--
+El enfoque del arquitecto: Mientras un desarrollador se enfoca en que el código funcione (funcionalidad), el arquitecto se obsesiona con el PORQUÉ. Como dice su Segunda Ley de la Arquitectura: "El porqué es más importante que el cómo".
+
+Ejemplo práctico: No basta con decir "usaremos una cola de mensajes" (el cómo); el arquitecto debe justificar "usaremos una cola porque necesitamos escalabilidad elástica ante picos de tráfico, asumiendo el coste de la consistencia eventual" (el porqué y el compromiso).
+
+La Ley del "Depende" y los Compromisos (Trade-offs): La cita de Grady Booch la resumen Ford y Richards en su Primera Ley de la Arquitectura: "Todo en la arquitectura de software es un compromiso (trade-off)".
+
+-->
+
 ---
 <!-- _class: lead -->
 
 ### The **software architecture** can be considered the **blueprint** to build and maintain a software system.
 
+<!--
+
+Si un consultor os dice "esta es la mejor arquitectura" sin mencionar ni una sola desventaja, ¡es que está intentando venderos algo!. Una decisión arquitectónica no es "blanco o negro", sino que existe en un espectro.
+
+Pregunta rápida: ¿Preferiríais un sistema que nunca falla pero tarda 10 segundos en responder, o uno que falla una vez al mes pero responde en milisegundos? No hay respuesta correcta: depende de si estás haciendo software para un hospital o para una red social.
+
+Por último, recordad que las decisiones no se toman una vez y se olvidan. Debido a la evolución tecnológica, el arquitecto debe evaluar continuamente la vitalidad de su arquitectura: lo que era una decisión brillante hace tres años, hoy puede ser una deuda técnica insoportable
+
+-->
+
 ---
+<!-- _class: lead -->
 
 ### **Reference** architecture
 
 The **set of design decisions** that can be simultaneously applied to **several related systems** within an application **domain** and with explicitly defined **variation points**.
 
-<br><br><br>  
+<!--
 
-<small>A **Software Product Line** is a set of software-intensive systems that share a **common**, managed set of **features** satisfying the specific needs of a particular **market segment** or mission.</small>
+Reutilizando la Sabiduría Arquitectónica: ¿Habéis notado que cuando usamos un framework como Spring o Angular, ya nos viene impuesta una "forma" de organizar nuestras clases y componentes? Esto se acerca mucho a lo que llamamos una arquitectura de referencia.
+
+La arquitectura no es solo la estructura técnica, sino el conjunto de decisiones significativas. Una arquitectura de referencia es, por tanto, una plantilla de decisiones probadas que podemos aplicar a varios sistemas dentro de un mismo dominio.
+
+¿Por qué usar una arquitectura de referencia? 
+
+- Nos ahorra tener que "redescubrir la rueda" para problemas comunes (seguridad, persistencia, etc.).
+
+- Proporciona un lenguaje común para el equipo (segunda ley: el "porqué" es vital).
+
+Ejemplo práctico: Si trabajáis en el sector bancario, existen arquitecturas de referencia que ya definen cómo deben comunicarse los servicios de pago para ser seguros y escalables.
+
+--> 
+
+---
+<!-- _class: lead -->
+
+### **Software Product Line** (SPL)
+
+A **Software Product Line** is a set of software-intensive systems that share a **common**, managed set of **features** satisfying the specific needs of a particular **market segment** or mission.
+
+<!--
+
+El siguiente nivel: Software Product Lines (SPL)
+
+Si la arquitectura de referencia es el "plano maestro", una Línea de Producto de Software es como una fábrica de software configurada para crear variantes de un mismo producto.
+
+Ford y Richards advierten sobre un peligro aquí relacionado con su Primera Ley: "Todo es un compromiso (trade-off)":
+
+- La ventaja: Podéis lanzar 10 aplicaciones distintas para 10 clientes compartiendo el 80% del código y la estructura.
+- El compromiso (trade-off): La arquitectura se vuelve más compleja porque debe soportar "puntos de variación". Si intentáis que vuestra arquitectura sirva para todo, acabaréis con una arquitectura genérica e inmanejable que no hace nada bien.
+
+Pregunta para reflexionar: Imaginad que sois arquitectos en una empresa de videojuegos. ¿Crearíais una arquitectura de referencia distinta para cada juego, o intentaríais crear una SPL que sirva para todos los juegos de carreras de la compañía? Recordad: ¡cada decisión tiene su coste!
+
+-->
 
 ---
 <!-- _class: lead -->
