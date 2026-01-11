@@ -347,8 +347,11 @@ section {
 - However, not all decisions have to be made in the beginning. It is much better to defer decisions until they are strictly needed. We should **keep the options open** for as long as possible.
 
 ---
+<!-- _class: lead -->
 
 ### Laws of Software Architecture
+
+---
 
 #### **1. Everything in software architecture is a trade off**
 
@@ -358,7 +361,9 @@ All meaningful decisions have advantages and downsides
 
 Question everything
 
-![bg right:45% 120%](../img/ArchitectureDesignProcess.png)
+#### **3. Most architecture decisions aren’t binary but rather exist on a spectrum be‐ tween extremes.**
+
+![bg left:35% 120%](../img/ArchitectureDesignProcess.png)
 
 ---
 <!-- _class: lead -->
@@ -446,7 +451,22 @@ Quality attribute requirements, namely performance efficiency, compatibility, op
 ---
 <!-- _class: lead -->
 
-## The role of the software architect
+## Expectations
+
+### The role of the software architect
+
+---
+
+### Expectations of a (Software) Architect
+
+- Make architecture decisions
+- Continually analyze the architecture
+- Keep current with latest trends
+- Ensure compliance with decisions
+- Understand diverse technologies, frameworks, platforms, and environments
+- Know the business domain
+- Lead a team and possess interpersonal skills
+- Understand and navigate organizational politics
 
 ---
 
