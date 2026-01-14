@@ -1,0 +1,49 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Marp: Generar HTML",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "marp --allow-local-files --config-file ${workspaceFolder}/marp/marp-engine.js --html ${file} -o ${fileDirname}/html/${fileBasenameNoExtension}.html"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Marp: Generar PDF",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+         "-c",
+        "marp --allow-local-files --config-file ${workspaceFolder}/marp/marp-engine.js --pdf --html ${file} -o ${fileDirname}/pdf/${fileBasenameNoExtension}.pdf --pdf-outlines --pdf-outlines.pages=false --pdf-outlines.headings=true"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "Copiar imágenes",
+      "type": "shell",
+      "command": "sh",
+      "args": [
+        "-c",
+        "mkdir -p ${fileDirname}/html/img && rsync -aiz --update ${fileDirname}/img/ ${fileDirname}/html/img/"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    }
+  ]
+}
