@@ -99,7 +99,7 @@ section {
 
 The **process** and the **product** of planning, designing, and constructing buildings or **other physical** structures.
 
-![bg](../img/SydneyOperaHouse.jpg)
+![bg](./img/SydneyOperaHouse.jpg)
 
 <br><br><br><br><br>
 
@@ -107,7 +107,7 @@ The **style of design** and **method** of construction of buildings and other ph
 
 ---
 
-![bg right:50% 90%](../img/Naval.png)
+![bg right:50% 90%](./img/Naval.png)
 
 ### Architecture applies to several **disciplines**
 
@@ -276,7 +276,7 @@ section {
 
 ### Waterfall development
 
-![bg right:60% fit](../img/Waterfall.png)
+![bg right:60% fit](./img/Waterfall.png)
 
 ---
 
@@ -290,7 +290,7 @@ section {
 
 ### Agile development
 
-![bg 80%](../img/Scrum.png)
+![bg 80%](./img/Scrum.png)
 
 <small>The *Scrum* framework</small>
 
@@ -361,7 +361,7 @@ Question everything
 
 #### **3. Most architecture decisions aren’t binary but rather exist on a spectrum be‐ tween extremes.**
 
-![bg left:35% 120%](../img/ArchitectureDesignProcess.png)
+![bg left:35% 120%](./img/ArchitectureDesignProcess.png)
 
 ---
 <!-- _class: lead -->
@@ -394,7 +394,7 @@ What are the **goals** (measurable) of the system to develop or maintain?
 
 ---
 
-![bg left:60% 95%](../img/UML_UseCase.png)
+![bg left:60% 95%](./img/UML_UseCase.png)
 
 ### Functional requirements
 
@@ -402,7 +402,7 @@ Some requirements engineering techniques should be conducted prior to designing 
 
 ---
 
-![bg left:60% 90%](../img/UML_DomainModel.png)
+![bg left:60% 90%](./img/UML_DomainModel.png)
 
 ### Information requirements
 
@@ -410,7 +410,7 @@ The static nature of the system is modeled with a conceptual model considering t
 
 ---
 
-![bg left:60% 90%](../img/SysML_Requirements.png)
+![bg left:60% 90%](./img/SysML_Requirements.png)
 
 ### Non-functional requirements
 
@@ -820,7 +820,7 @@ end Hello_World;
 
 The first approach to software architecture
 
-![bg right:60%](../img/Sketch.jpg)
+![bg right:60%](./img/Sketch.jpg)
 
 ---
 
@@ -828,7 +828,7 @@ The first approach to software architecture
 
 Sketches are later beautified with diagramming tools (*PowerPoint*).
 
-![bg left:70% fit](../img/SampleArchitecture.png)
+![bg left:70% fit](./img/SampleArchitecture.png)
 
 ---
 
@@ -872,7 +872,7 @@ Sketches are later beautified with diagramming tools (*PowerPoint*).
 
 #### Modelio
 
-![bg right:75% 80%](../img/Modelio.png)
+![bg right:75% 80%](./img/Modelio.png)
 
 ---
 
@@ -895,7 +895,7 @@ section {
 
 #### PlantUML
 
-![bg right:70% fit](../img/PlantUML.png)
+![bg right:70% fit](./img/PlantUML.png)
 
 ---
 
@@ -912,7 +912,7 @@ section {
 
 ---
 
-![bg left](../img/UML_Diagrams.jpeg)
+![bg left](./img/UML_Diagrams.jpeg)
 
 ### UML diagrams
 
@@ -945,11 +945,11 @@ There are 14 types of diagrams. We need for guidelines regarding the number and 
 
 - Simple diagrams based on **boxes** and **lines**, but can be also created with **UML/SysML** using packages, components and stereotypes.
 
-![bg left:25% fit](../img/c4model.png)
+![bg left:25% fit](./img/c4model.png)
 
 ---
 
-![bg w:85%](../img/C4_Abstractions.png)
+![bg w:85%](./img/C4_Abstractions.png)
 
 ---
 
@@ -968,7 +968,7 @@ The highest level of abstraction and describes something that delivers value to 
 
 #### Example of a System Context diagram
 
-![bg right:70% 95%](../img/C4_SystemContext.png)
+![bg right:70% 95%](./img/C4_SystemContext.png)
 
 ---
 
@@ -991,7 +991,7 @@ A separately runnable/deployable unit
 
 #### Example of a Container Diagram
 
-![bg right:70% 95%](../img/C4_Containers.png)
+![bg right:70% 95%](./img/C4_Containers.png)
 
 ---
 
@@ -1019,7 +1019,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram  (Jar files)
 
-![bg right:60% 85%](../img/JAR_Components.png)
+![bg right:60% 85%](./img/JAR_Components.png)
 
 <small>UML component diagram</small>
 
@@ -1036,7 +1036,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram</small>
 
-![bg right:70% 65%](../img/C4_Components_Modified.png)
+![bg right:70% 65%](./img/C4_Components_Modified.png)
 
 <small>C4 version</small>
 
@@ -1044,7 +1044,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 #### Example of a Component diagram
 
-![bg right:70% 65%](../img/UML_Components.png)
+![bg right:70% 65%](./img/UML_Components.png)
 
 UML component diagram
 
@@ -1052,7 +1052,7 @@ UML component diagram
 
 #### Example of a Component diagram
 
-![w:1100](../img/UML_Packages.png)
+![w:1100](./img/UML_Packages.png)
 
 <small>UML package diagram</small>
 
@@ -1075,7 +1075,7 @@ Ideally, these diagrams would be **automatically generated** using tooling (e.g.
 
 #### Example of a Code Diagram (UML class diagram)
 
-![bg right:70% 95%](../img/C4_Code.png)
+![bg right:70% 95%](./img/C4_Code.png)
 
 ---
 <!-- _class: lead -->
@@ -1092,7 +1092,7 @@ This diagram shows the system landscape from an IT perspective. It is a high-lev
 
 #### Example of a System Landscape diagram
 
-![bg right:70% 95%](../img/C4_Landscape.png)
+![bg right:70% 95%](./img/C4_Landscape.png)
 
 ---
 
@@ -1106,7 +1106,7 @@ The diagram is based upon *UML communication diagram*.
 
 #### Example of a Dynamic diagram
 
-![bg right:70% 95%](../img/C4_Dynamic.png)
+![bg right:70% 95%](./img/C4_Dynamic.png)
 
 ---
 
@@ -1120,7 +1120,7 @@ This deployment diagram is based upon *UML deployment diagram*.
 
 #### Example of a Deployment diagram
 
-![bg right:70% 95%](../img/C4_Deployment.png)
+![bg right:70% 95%](./img/C4_Deployment.png)
 
 ---
 
@@ -1151,7 +1151,7 @@ h3 {
 
 ## Software architecture as code
 
-![bg 65%](../img/Structurizr.png)
+![bg 65%](./img/Structurizr.png)
 
 ---
 
