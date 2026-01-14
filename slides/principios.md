@@ -334,6 +334,20 @@ Cómo implementar la interfaz de comparación de un Handler en C++
 Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__
 
 ---
+
+## Conceptos de diseño
+
+- __Responsabilidad única__: La lógica de generación de identificadores (ej. limpiar caracteres, validar formato) debe estar aislada de la lógica de negocio principal.
+
+- __Acoplamiento__ (bajo): El sistema principal debe usar interfaces para generar IDs, sin depender de si se usa un UUID, una secuencia o un algoritmo custom.
+  
+- __Cohesión__ (alta): Agrupar métodos relacionados con la manipulación de IDs en un único componente.
+
+- __Encapsulamiento__: Ocultar los detalles algorítmicos de la construcción del identificador tras los métodos públicos. 
+
+- __Reutilización y flexibilidad__: Permitir la reutilización del componente de identificación en otros sistemas y facilitar la adaptación a futuros cambios.
+
+---
 <style scoped>
 h2 {
   color: blue;
