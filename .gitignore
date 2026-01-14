@@ -5,7 +5,7 @@ apuntes/construccion-sw/site/
 .DS_Store
 
 # VS Code
-.vscode/
+# .vscode/
 
 # Output
 *.html
