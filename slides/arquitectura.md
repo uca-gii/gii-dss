@@ -236,7 +236,7 @@ La arquitectura no es solo la estructura técnica, sino el conjunto de decisione
 
 Ejemplo práctico: Si trabajáis en el sector bancario, existen arquitecturas de referencia que ya definen cómo deben comunicarse los servicios de pago para ser seguros y escalables.
 
---> 
+-->
 
 ---
 <!-- _class: lead -->
@@ -300,10 +300,10 @@ section {
 
 - Agile manifesto values:
 
-   - **Individuals and interactions** over *processes and tools*
-   - **Customer collaboration** over *contract negotiation*
-   - **Responding to change** over *following a plan*
-   - **Working software** over *comprehensive documentation*
+  - **Individuals and interactions** over *processes and tools*
+  - **Customer collaboration** over *contract negotiation*
+  - **Responding to change** over *following a plan*
+  - **Working software** over *comprehensive documentation*
 
 - Many organizations started to not create any design at all, causing long-term maintainability issues.
 
@@ -1046,7 +1046,7 @@ Alternatively, we can use **UML component diagrams or UML package diagrams**.
 
 ![bg right:70% 65%](../img/UML_Components.png)
 
-*UML component diagram*
+UML component diagram
 
 ---
 
@@ -1171,9 +1171,9 @@ h3 {
 
 # REFERENCES
 
-- Mark Richards: Software Architecture Monday, https://www.developertoarchitect.com/lessons/
-- Simon Brown: The C4 model for software architecture, https://c4model.com/
-- Markdown Architectural Decision Records, https://adr.github.io/madr/
-- AADL standard, https://www.aadl.info/
-- Structurizr, https://structurizr.com/
-- PlantUML, https://plantuml.com/
+- Mark Richards: Software Architecture Monday, <https://www.developertoarchitect.com/lessons/>
+- Simon Brown: The C4 model for software architecture, <https://c4model.com/>
+- Markdown Architectural Decision Records, <https://adr.github.io/madr/>
+- AADL standard, <https://www.aadl.info/>
+- Structurizr, <https://structurizr.com/>
+- PlantUML, <https://plantuml.com/>
