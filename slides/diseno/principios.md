@@ -6,7 +6,6 @@ date: Enero 2026
 subject: Diseño de Sistemas Software, curso 2025/26
 title: Principios de Diseño
 description: Apuntes de Diseño de Sistemas Software - Principios de diseño
-mermaid: true 
 ---
 
 <!-- size: 16:9 -->
@@ -23,14 +22,20 @@ h2 {
 h3 {
   color: #005877;
 }
-
 img[alt~="center"] {
   display: block;
   margin: 0 auto;
 }
-
 emph {
   color: #E87B00;
+}
+.cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.cols > div {
+  align-self: start;
 }
 </style>
 
@@ -141,6 +146,9 @@ III. Arquitectura de software
 
 <!-- paginate: true -->
 
+<div class="cols">
+<div>
+
 ## Casos prácticos
 
 Caso 1. Identificadores
@@ -149,7 +157,8 @@ Caso 3. Caballeros de la mesa redonda
 Caso 4. Figuras geométricas
 <!--Caso 4. [Guitarras Paco](#guitarras)-->
 
----
+</div>
+<div>
 
 <style scoped>
 li {
@@ -164,17 +173,24 @@ li {
 - Reutilización
 - Principios SOLID
 
+</div>
+</div>
+
 ---
 
 <!-- paginate: false -->
 
-# CASO PRÁCTICO 1: <br> Identificadores
+<style scoped>
+h2 {
+  text-align: center;
+}
+</style>
+
+## CASO PRÁCTICO 1 <br> Identificadores
 
 ---
 
 <!-- paginate: true -->
-
-## Identificadores
 
 <style scoped>
 p {
@@ -186,65 +202,127 @@ h2, h3 {
 }
 </style>
 
-### Pregunta
-
 ¿Cómo diseñar la identificación de los empleados de una empresa? 
 
----
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 55% 45%;
+}
+</style>
 
 ### Versión inicial: Identificadores v0.1
 
+<div class="cols">
+<div>
+
 ```java
-  class Empleado {
-    private int dni;
-    Empleado (String dni) throws NumberFormatException {
-      this.dni = new Integer(dni).intValue();
-    }
-    int getDni() {
-      return dni;
-    }
-    public String toString() {
-      return new Integer(dni).toString();
-    }
-    public int compareTo(Empleado otro) {
-       return this.dni - otro.getDni();
-    }
-    public boolean equals(Empleado otro) {
-       return dni==otro.getDni();
-    }
+class Empleado implements Comparable<Empleado> {
+  private final int dni;
+
+  Empleado(String dni) {
+    this.dni = Integer.parseInt(dni);
+  }
+
+  public int getDni() {
+    return dni;
+  }
+
+  @Override
+  public String toString() {
+    return Integer.toString(dni);
   }
 ```
 
+</div>
+<div>
+
+```java
+  @Override
+  public int compareTo(Empleado otro) {
+    return Integer.compare(this.dni,
+                           otro.getDni());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Empleado otro))
+      return false;
+    return dni == otro.dni;
+  }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(dni);
+  }
+}
+```
+
+</div>
+</div>
+
 ---
 
-#### Críticas:
+#### Nuevos requisitos:
 
-- __Flexibilidad__: El Real Decreto 338/1990 regula el uso de NIFs en lugar de DNIs. ¡Hay que cambiar toda la implementación!
+- El Real Decreto 338/1990 regula el uso de NIFs en lugar de DNIs. ¡Hay que cambiar toda la implementación!
 
 ### Implementación alternativa: Identificadores v0.2
 
+<div class="cols">
+<div>
+
 ```java
-  class Empleado {
-    private String nif;
-    Empleado (String nif) {
-      this.nif = nif
-    }
-    String getNif() { return nif; }
-    public String toString() { return nif; }
-    public int compareTo(Empleado otro) {
-       return nif.compareTo(otro.getNif());
-    }
-    public boolean equals(Empleado otro) {
-       return nif.equals(otro.getId());
-    }
+class Empleado implements Comparable<Empleado> {
+  private final String nif;
+
+  Empleado(String nif) {
+    this.nif = nif;
+  }
+
+  public String getNif() {
+    return nif;
+  }
+
+  @Override
+  public String toString() {
+    return nif;
   }
 ```
+
+</div>
+<div>
+
+```java
+  @Override
+  public int compareTo(Empleado otro) {
+    return this.nif.compareTo(otro.getNif());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Empleado otro)) return false;
+    return nif.equals(otro.nif);
+  }
+
+  @Override
+  public int hashCode() {
+    return nif.hashCode();
+  }
+}
+```
+
+</div>
+</div>
 
 ---
 
 #### Críticas:
 
-- __Reutilización__: Posiblemente haya más situaciones (algunas futuras) donde hagan falta _identificadores_ que incluso pueden cambiar. Por ejemplo: números de la seguridad social, tarjetas de identidad, números de cuenta corriente, IBAN, etc.
+- __Flexibilidad__ / __Reutilización__: Posiblemente haya más situaciones (algunas futuras) donde hagan falta _identificadores_ que incluso pueden cambiar.
+- Ejemplo: UUID, números de la seguridad social, tarjetas de identidad, números de cuenta corriente, IBAN, etc.
 
 ### Hacemos refactoring: patrón _handler_
 
@@ -254,11 +332,57 @@ h2, h3 {
 
 ---
 
-## Patrón Handler
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+</style>
 
-![Diseño de un handler](./img/handler.png)
+## Diseño de un Handler
 
----
+<div class="cols">
+<div>
+
+@startuml
+  skinparam classAttributeIconSize 0
+  skinparam linetype ortho
+  class Identifiable {
+    - id : Handler
+    + getId() : Handler
+    + Identifiable(Handler)
+  }
+  interface Handler {
+    + toString() : String
+    + compareTo(Handler) : int
+  }
+  class ConcreteHandler1 {
+    - id : int
+    + ConcreteHandler1(int)
+    + ConcreteHandler1(Handler)
+  }
+  class ConcreteHandler2 {
+    - id : String
+    + ConcreteHandler2(String)
+    + ConcreteHandler2(Handler)
+  }
+
+  ' Esto fuerza a Identifiable a quedarse a la izquierda de Handler
+  Identifiable -[hidden]right-> Handler
+  
+  ' Ajustamos la flecha de uso para que apunte a la derecha
+  Identifiable .right.> Handler : <<uses>>
+
+  ' La notación <|.. coloca el padre (Handler) arriba y los hijos abajo por defecto.
+  Handler <|.. ConcreteHandler1 : <<implements>>
+  Handler <|.. ConcreteHandler2 : <<implements>>
+
+  ' Truco extra: Mantener los hijos al mismo nivel visual
+  ConcreteHandler1 -[hidden]right-> ConcreteHandler2
+@enduml
+
+</div>
+<div>
 
 - __Identifiable__: Clase cliente que necesita identificar a sus objetos a través de algún atributo identificador
 
@@ -266,47 +390,99 @@ h2, h3 {
 
 - __ConcreteHandler__: Implementación concreta de la interfaz `Handler`
 
+</div>
+</div>
+
 ---
 
-### Implementación del patrón
+<div class="cols">
+<div>
+
+### Implementación del diseño en Java
 
 ```java
-  interface Handler{
-      String toString();
-      int compareTo(Handler otro);
+interface Handler<T extends Comparable<? super T>>
+    extends Comparable<Handler<T>> {
+  T getId();
+
+  @Override
+  public boolean equals(Object o);
+
+  @Override
+  default int compareTo(Handler<T> otro) {
+    return getId().compareTo(otro.getId());
+  }
+}
+```
+
+</div>
+<div>
+
+```java
+final class IdentificadorNumerico
+    implements Handler<Integer> {
+  private final Integer id;
+
+  IdentificadorNumerico(String id) {
+    this.id = Integer.valueOf(id);
   }
 
-  class IdentificadorNumerico implements Handler {
-    private int id;
-    IdentificadorNumerico (String id) throws NumberFormatException {
-      this.id = new Integer(id).intValue();
-    }
-    public String toString() {
-      return new Integer(id).toString();
-    }
-    public int compareTo(Handler otro) {
-      return toString().compareTo(otro.toString());
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof IdentificadorNumerico otro))
+      return false;
+    return id.equals(otro.id);
   }
+
+  @Override
+  public Integer getId() {
+    return id;
+  }
+
+  @Override
+  public String toString() {
+    return id.toString();
+  }
+}
 ```
+
+</div>
+</div>
 
 ---
 
-### El patrón en los lenguajes
+### Conceptos de diseño
+
+- __Responsabilidad única__: La lógica de generación de identificadores (ej. limpiar caracteres, validar formato) debe estar aislada de la lógica de negocio principal.
+
+- __Acoplamiento__ (bajo): El sistema principal debe usar interfaces para generar IDs, sin depender de si se usa un UUID, una secuencia o un algoritmo custom.
+  
+- __Cohesión__ (alta): Agrupar métodos relacionados con la manipulación de IDs en un único componente.
+
+- __Encapsulamiento__: Ocultar los detalles algorítmicos de la construcción del identificador tras los métodos públicos. 
+
+- __Reutilización y flexibilidad__: Permitir la reutilización del componente de identificación en otros sistemas y facilitar la adaptación a futuros cambios.
+
+---
+
+### Implementación en los lenguajes
 
 #### Java: Identificadores con `java.lang.Comparable`
 
-`Comparable` es una interfaz implementada por `String`, `File`, `Date`, etc. y todas las llamadas _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
+`Comparable<T>` es una interfaz que define el orden natural entre objetos del mismo tipo. La implementan `String`, `File`, `Date`, etc. y las _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
 
-__Métodos de la interfaz__:
+__Método de la interfaz__:
 
 ```java
-  public int compareTo(Object o) throws ClassCastException
+  public int compareTo(T o)
 ```
+
+El tipo `T` garantiza seguridad de tipos: un `Comparable<Empleado>` solo se compara con `Empleado`, evitando casts y errores en tiempo de ejecución.
 
 ---
 
-__Invariantes:__
+__Invariantes:__ las debe asegurar cualquier implementación de `compareTo`
 
 `sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
 
@@ -314,9 +490,12 @@ __Invariantes:__
 
 `x.compareTo(y)=0` $\Rightarrow$ `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
 
-__Consistencia con `equals`__:
+__Consistencia con `equals`__: recomendable pero no exigible
 
 `(x.compareTo(y)=0)` $\Leftrightarrow$ `(x.equals(y))`
+
+> [!NOTE]
+> En Java no se puede definir un método `default` en una `interface` que sea override‑equivalent a un método público de Object (como equals, hashCode, toString). Puedes declararlo de forma abstracta en la interfaz, pero no darle implementación default.
 
 ---
 
@@ -335,17 +514,29 @@ Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-co
 
 ---
 
-## Conceptos de diseño
+__Sobrecarga de operadores en C++__:
 
-- __Responsabilidad única__: La lógica de generación de identificadores (ej. limpiar caracteres, validar formato) debe estar aislada de la lógica de negocio principal.
+```c++
+template <typename T>
+struct Handler {
+    T id;
+    explicit Handler(T v) : id(std::move(v)) {}
+    bool operator==(const Handler& other) const = default;
+    auto operator<=>(const Handler& other) const = default;
+};
+using NumericHandler = Handler<int>;
+using StringHandler  = Handler<std::string>;
+```
 
-- __Acoplamiento__ (bajo): El sistema principal debe usar interfaces para generar IDs, sin depender de si se usa un UUID, una secuencia o un algoritmo custom.
-  
-- __Cohesión__ (alta): Agrupar métodos relacionados con la manipulación de IDs en un único componente.
-
-- __Encapsulamiento__: Ocultar los detalles algorítmicos de la construcción del identificador tras los métodos públicos. 
-
-- __Reutilización y flexibilidad__: Permitir la reutilización del componente de identificación en otros sistemas y facilitar la adaptación a futuros cambios.
+```c++
+int main() {
+    StringHandler a{"EMP-001"};
+    StringHandler b{"EMP-002"};
+    auto ord = (a <=> b);  // OK
+    NumericHandler c{123};
+    // bool same = (a == c);  // ERROR: tipos distintos
+}
+```
 
 ---
 <style scoped>
@@ -354,30 +545,43 @@ h2 {
 }
 </style>
 
+<div class="cols">
+<div>
+
 ## Reutilización y flexibilidad
 
 - __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos (afecta a la fase de __desarrollo__)
 - __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar (afecta a la fase de __mantenimiento adaptativo__)
 
----
+</div>
+<div>
 
-### El árbol de la Calidad del Software (_SQA tree_)
+### El árbol de la calidad del software
 
 ![Reutilización vs flexibilidad, width:600px](./img/sqa-tree.png)
+
+</div>
+</div>
 
 ---
 
 <!-- paginate: false -->
 
-# CASO PRÁCTICO 2: <br> Pruebas Unitarias
+<style scoped>
+h2 {
+  text-align: center;
+}
+</style>
+
+## CASO PRÁCTICO 2 <br> Pruebas unitarias
 
 ---
 
 <!-- paginate: true -->
 
-## jUnit: Framework de pruebas unitarias
+### jUnit: Framework de pruebas unitarias
 
-- JUnit es un framework en Java que sirve para diseñar, construir y ejecutar **pruebas unitarias**
+- JUnit es un framework en Java que sirve para diseñar, construir y ejecutar __pruebas unitarias__
 - Una prueba unitaria comprueba la corrección de un _módulo_ de software en cuanto a funcionalidades que ofrece.
 - En el caso de Java, las pruebas unitarias comprueban la corrección de cada uno de los métodos de _cada clase_.
 
@@ -392,7 +596,17 @@ p {
 
 ---
 
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 45% 55%;
+}
+</style>
+
 ### ¿Cómo se probaba `Saludo.java` sin bibliotecas de pruebas unitarias?
+
+<div class="cols">
+<div>
 
 ```java
 class Saludo {
@@ -402,15 +616,18 @@ class Saludo {
   void saludar() {
     System.out.println("Hola Mundo!");
   }
+  
   /**
   * Imprime un mensaje
   */
   void saludar(String mensaje) {
     System.out.println(mensaje);
   }
+  
 ```
 
----
+</div>
+<div>
 
 Incluir un método `main` que pruebe la funcionalidad de la clase:
 
@@ -427,6 +644,9 @@ Incluir un método `main` que pruebe la funcionalidad de la clase:
   }
 }
 ```
+
+</div>
+</div>
 
 ---
 
@@ -447,20 +667,20 @@ Incluir un método `main` que pruebe la funcionalidad de la clase:
 #### Caso de prueba con jUnit 4
 
 ```java
-  import org.junit.*;
-  import static org.junit.Assert.*;
+import org.junit.*;
+import static org.junit.Assert.*;
 
-  public class SaludoTest {
-    public static void main(String args[]) {
-      junit.textui.TestRunner.run(SaludoTest.class);
-    }
-    @Test
-    public void saludar() {
-      Saludo hola = new Saludo();
-      assert( hola!=null );
-      assertEquals("Hola Mundo!", hola.saludar() );
-    }
+public class SaludoTest {
+  public static void main(String args[]) {
+    junit.textui.TestRunner.run(SaludoTest.class);
   }
+  @Test
+  public void saludar() {
+    Saludo hola = new Saludo();
+    assert( hola!=null );
+    assertEquals("Hola Mundo!", hola.saludar() );
+  }
+}
 ```
 
 ---
@@ -493,6 +713,9 @@ p {
 
 ---
 
+<div class="cols">
+<div>
+
 #### Caso de prueba con jUnit 3
 
 Veamos una versión anterior de jUnit, que expone más claramente las _tripas_ del framework
@@ -513,17 +736,12 @@ public class SaludoTest extends TestCase {
 }
 ```
 
----
+</div>
+<div>
 
 ### Diseño del framework jUnit
 
 <!-- ![Clases del framework jUnit, width:600px](./img/junit-design-1.png)-->
-
-<style>
-section > img {
-  align-self: flex-start;
-}
-</style>
 
 @startuml
 
@@ -570,6 +788,9 @@ TestDecorator --|> Assert
 
 @enduml
 
+</div>
+</div>
+
 ---
 
 ### Ejemplo: aplicación de comercio electrónico
@@ -589,6 +810,9 @@ Diseño de pruebas unitarias de `ShoppingCart` para:
 - Etc.
 
 ---
+
+<div class="cols">
+<div>
 
 #### Utilización del framework jUnit
 
@@ -615,7 +839,8 @@ ShoppingCartTestCase -down-> ShoppingCart
 
 @enduml
 
----
+</div>
+<div>
 
 #### ShoppingCart
 
@@ -633,9 +858,15 @@ public class ShoppingCart {
 }
 ```
 
+</div>
+</div>
+
 ---
 
 #### ShoppingCartTestCase con jUnit 3
+
+<div class="cols">
+<div>
 
 ```java
 import junit.framework.TestCase;
@@ -658,11 +889,6 @@ public class ShoppingCartTest extends TestCase {
       bookCart.empty();
       assertTrue(bookCart.isEmpty());
   }
-```
-
----
-
-```java  
   public void testProductAdd() {
       Product book = new Product("Refactoring", 53.95);
       bookCart.addItem(book);
@@ -670,6 +896,12 @@ public class ShoppingCartTest extends TestCase {
       assertEquals(expectedBalance, bookCart.getBalance(), 0.0);
       assertEquals(2, bookCart.getItemCount());
   }
+```
+
+</div>
+<div>
+
+```java  
   public void testProductRemove() throws ProductNotFoundException {
       bookCart.removeItem(defaultBook);
       assertEquals(0, bookCart.getItemCount());
@@ -684,11 +916,6 @@ public class ShoppingCartTest extends TestCase {
           ...
       }
   }
-```
-
----
-
-```java
   public static Test suite() {
       // Use reflection to add all testXXX() methods
          TestSuite suite = new TestSuite(ShoppingCartTest.class);
@@ -704,9 +931,12 @@ public class ShoppingCartTest extends TestCase {
 }
 ```
 
+</div>
+</div>
+
 ---
 
-Ahora agrupamos varios casos de prueba en una misma _suite_:
+Podemos agrupar varios casos de prueba en una misma _suite_:
 
 ```java
 import junit.framework.Test;
@@ -738,6 +968,9 @@ public class MyTestRunner {
 
 #### ShoppingCartTestCase con jUnit 4
 
+<div class="cols">
+<div>
+
 ```java
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -762,7 +995,8 @@ public class ShoppingCartTest {
   }
 ```
 
----
+</div>
+<div>
 
 ```java  
   @Test
@@ -792,6 +1026,9 @@ public class ShoppingCartTest {
   }
 }
 ```
+
+</div>
+</div>
 
 ---
 
@@ -850,15 +1087,80 @@ p, h3 {
 
 ### Ejercicio propuesto: CreditCardTest
 
-Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit 4.
+Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit versión 4.
 
 ---
 
 ### Arquitectura del framework jUnit
 
-![Clases del framework jUnit, width:700px](./img/junit-patterns.png)
+<div class="cols">
+<div>
 
-En la arquitectura del framework se observan diversos patrones: Composite, Command, Adapter, Factory, Decorator, etc.
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+
+' 1. Definición de Nodos
+interface Test <<Composite:Component>> {
+    + run(TestResult)
+}
+
+class TestResult <<Collecting Parameter>> {
+}
+
+abstract class TestCase <<Command>> <<Template Method>> <<Composite:Leaf>> <<Pluggable Selector>> {
+    - fName
+    + run(TestResult)
+    + {abstract} runTest()
+    + setUp()
+    + tearDown()
+}
+
+class TestSuite <<Composite>> {
+    + run(TestResult)
+    + addTest(Test)
+}
+
+' Clase anónima o concreta para el Adapter
+class " " as AdapterClass <<Adapter (Class)>> {
+    + runTest()
+}
+
+' 2. Relaciones Jerárquicas (Verticales)
+Test <|.. TestCase
+Test <|.. TestSuite
+TestCase <|-- AdapterClass
+
+' 3. Relaciones Horizontales y Estructurales
+' Alineación forzada: TestCase a la izquierda de TestSuite
+TestCase -[hidden]right-> TestSuite
+
+' Agregación (Composite)
+TestSuite o-up-> "*" Test : fTests
+
+' Dependencia
+TestCase -left-> TestResult
+
+@enduml
+
+<!-- ![Clases del framework jUnit, width:700px](./img/junit-patterns.png) -->
+
+</div>
+<div>
+
+En la arquitectura del framework se observan diversos patrones:
+
+- Composite
+- Command
+- Adapter
+- Factory
+- Decorator
+- etc.
+
+</div>
+</div>
 
 ---
 
