@@ -80,6 +80,15 @@
 _¿De qué fecha data cada paradigma?_
 _Ordenar cronológicamente_
 
+```mermaid
+timeline
+    title Timeline de paradigmas
+    1958 : Funcional
+    1966 : Orientado a Objetos
+    1968 : Estructurado
+    1997 : Orientado a Aspectos
+    2018 : Orientado a Datos
+```
 
 #### Respuesta
 
