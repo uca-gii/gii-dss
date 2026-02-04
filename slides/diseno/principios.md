@@ -54,48 +54,93 @@ section { text-align: center; }
 
 <!-- paginate: true -->
 
-![bg left:50% Problemas](./img/design-problems.png)
+<style scoped>
+h3 {
+  text-align: center;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  /* alinea al inicio (arriba) */
+}
+.two-cols {
+  display: flex;
+  gap: 2rem;
+}
+.two-cols .left,
+.two-cols .right {
+  flex: 1;
+}
+.two-cols .right {
+  text-align: right;
+}
+</style>
 
 ### Problemáticas
 
-- Variabilidad
-- Acoplamiento
-- Complejidad
-- Robustez
-- Reutilización
-- Flexibilidad
+![bg bottom Problemas 70%](./img/design-problems.png)
+
+<div class="two-cols">
+<div class="left">
+
+Variabilidad
+Acoplamiento
+Complejidad
+Robustez
+Reutilización
+Flexibilidad
+
+</div>
+<div class="right">
+
+Sobreingeniería
+Deuda técnica
+Carga cognitiva
+Rendimiento
+Resiliencia
+Costes
+
+</div>
+</div>
 
 ---
 
-![bg right:50% Principios](./img/design-principles.png)
-
-### Principios
-
-- Ocultación: OCP, ISP, LSP
-- Cohesión: SRP
-- Ortogonalidad: DIP
-
----
-
-![bg left:50% Técnicas](./img/design-techniques.png)
+<div class="cols">
+<div>
 
 ### Técnicas
 
 - Refactoring
-- Bibliotecas y frameworks
-- Contratos
 - Inyección de dependencias
+- Contratos
+- Aspectos
 - Patrones
+- Frameworks
+
+</div>
+<div>
+
+### Principios
+
+- SRP: Single Responsibility Principle
+- OCP: Open/Closed Principle
+- ISP: Interface Segregation Principle
+- LSP: Liskov Substitution Principle
+- DIP: Dependency Inversion Principle
+
+</div>
+</div>
 
 ---
 
 ### Paradigmas
 
 - Estructurado (E. W. Dijsktra)
-- Orientado a Objetos (O. J. Dahl & K. Nygaard)
+- Orientado a objetos (O. J. Dahl & K. Nygaard)
 - Funcional (J. McCarthy)
-- Orientado a Aspectos (G. Kiczales)
-- [Orientado a Datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
+- Orientado a aspectos (G. Kiczales)
+- [Orientado a datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
 
 ---
 
@@ -163,7 +208,6 @@ Caso 1. Identificadores
 Caso 2. Framework de pruebas unitarias
 Caso 3. Caballeros de la mesa redonda
 Caso 4. Figuras geométricas
-<!--Caso 4. [Guitarras Paco](#guitarras)-->
 
 </div>
 <div>
@@ -176,10 +220,13 @@ li {
 
 ## Conceptos teóricos
 
+- Cohesión y acoplamiento
 - Bibliotecas y frameworks
-- Inyección de dependencias
-- Reutilización
+- Inyección de dependencias / Inversión de control
+- Reutilización y flexibilidad
 - Principios SOLID
+- Orientación a aspectos
+- Diseño por contratos
 
 </div>
 </div>
@@ -1044,30 +1091,49 @@ public class ShoppingCartTest {
 
 ---
 
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 60% 40%;
+}
+</style>
+
+<div class="cols">
+<div>
+
 #### EcommerceTestSuite con jUnit 3
 
 ```java
-  public class EcommerceTestSuite extends TestSuite {
-      //...
-      public static Test suite() {
-          TestSuite suite = new TestSuite();
-          suite.addTest(ShoppingCartTest.suite());
-          suite.addTest(CreditCardTest.suite());
-          // etc.
-          return suite;
-      }
+public class EcommerceTestSuite extends TestSuite {
+  //...
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(ShoppingCartTest.suite());
+    suite.addTest(CreditCardTest.suite());
+    // etc.
+    return suite;
   }
+}
 ```
+
+</div>
+<div>
 
 #### EcommerceTestSuite con jUnit 4
 
 ```java
-  @RunWith(Suite.class)
-  @SuiteClasses({ ShoppingCartTest.class, CreditCardTest.class })
-  public class EcommerceTestSuite {
-      //...
-  }
+@RunWith(Suite.class)
+@SuiteClasses({
+    ShoppingCartTest.class,
+    CreditCardTest.class
+})
+public class EcommerceTestSuite {
+    //...
+}
 ```
+
+</div>
+</div>
 
 ---
 
@@ -1190,7 +1256,6 @@ h2 {
 
 ---
 
-
 #### Flujo de control en un framework
 
 ![Flujo de control en una framework, width:1200px](./img/framework.png)
@@ -1231,7 +1296,7 @@ h3 {
 
 ### Framework vs. biblioteca
 
-- API orientado a objetos vs. API generalmente funcional
+- API orientado a objetos vs. API basado en funciones (en general)
 - Flujo de control invertido
 - Programador _cliente_ (código específico) vs. programador de _API_ (código reutilizable)
 
@@ -1239,41 +1304,63 @@ h3 {
 
 ### Principios y técnicas de un framework
 
-- **Abstracción**
+- __Abstracción__
   - Clases y componentes abstractos
   - Interfaces abiertas
   - Uso de patrones de diseño
   - Componentes de un dominio específico
 
-- Máxima **cohesión**, mínimo **acoplamiento**
+- Máxima __cohesión__, mínimo __acoplamiento__
   - Minimizar dependencias: Una clase A presenta una dependencia con otra clase B (A $\rightarrow$ B) si la primera usa una instancia de la segunda.
   - Cuando no se pueden eliminar las dependencias, mantener las abstractas e __inyectar__ las concretas.
 
 ---
 
+#### Dependencias
+
 > Coupling is the enemy of change, because it links together things that must change in parallel
-> 
+>
 > D. Thomas & A. Hunt, [The Pragmatic Programmer](https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/), 20th Anniversary Edition, 2019
+
+- La reducción de dependencias debe ser estratégica, es decir, centrada en los puntos del sistema que cambian con distinta frecuencia.
+
+- Si A y B cambian al mismo tiempo, no hay demasiado problema porque A $\rightarrow$ B
+
+- Si cambian con distinta frecuencia...
 
 ---
 
-- **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
+#### Inyección de dependencias
+
+Una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
 ---
 
 <!-- paginate: false -->
 
-# CASO PRÁCTICO 3: <br> Caballeros de la mesa redonda
+<style scoped>
+h2,h3 {
+  text-align: center;
+}
+</style>
+
+## CASO PRÁCTICO 3
+
+### Caballeros de la mesa redonda
 
 ---
 
-<!-- paginate: true -->
-
-## Ejemplo: tomado de [Spring in Action](bibliografia.html#spring)
-
----
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 53% 47%;
+}
+</style>
 
 Añadir pruebas unitarias al programa siguiente:
+
+<div class="cols">
+<div>
 
 ```java
 public class KnightOfTheRoundTable {
@@ -1291,13 +1378,17 @@ public class KnightOfTheRoundTable {
 }
 ```
 
----
+ </div>
+<div>
 
 ```java
 public class HolyGrailQuest {
-  public HolyGrailQuest() { /*...*/ }
+  public HolyGrailQuest() {
+    /*...*/
+  }
 
-  public HolyGrail embark() throws GrailNotFoundException {
+  public HolyGrail embark()
+          throws GrailNotFoundException {
     HolyGrail grail = null;
     // Look for grail ...
     return grail;
@@ -1305,6 +1396,9 @@ public class HolyGrailQuest {
 
 }
 ```
+
+</div>
+</div>
 
 ---
 
@@ -1449,12 +1543,17 @@ package "roundTable::test" {
 
 Ocultar la implementación detrás de una interfaz:
 
+<div class="cols">
+<div>
+
 ```java
 public interface Knight {
-  Object embarkOnQuest() throws QuestFailedException;
+  Object embarkOnQuest()
+          throws QuestFailedException;
 }
 
-public class KnightOfTheRoundTable implements Knight {
+public class KnightOfTheRoundTable
+             implements Knight {
   private String name;
   private Quest quest;
 
@@ -1462,13 +1561,15 @@ public class KnightOfTheRoundTable implements Knight {
     this.name = name;
     quest = new HolyGrailQuest();
   }
-  public Object embarkOnQuest() throws QuestFailedException {
+  public Object embarkOnQuest()
+          throws QuestFailedException {
     return quest.embark();
   }
 }
 ```
 
----
+</div>
+<div>
 
 ```java
 public interface Quest {
@@ -1478,14 +1579,22 @@ public interface Quest {
 
 public class HolyGrailQuest implements Quest {
   public HolyGrailQuest() { /*...*/ }
-  public Object embark() throws QuestFailedException {
-    // Do whatever it means to embark on a quest
+  public Object embark()
+          throws QuestFailedException {
+    // Do whatever it means
+    // to embark on a quest
     return new HolyGrail();
   }
 }
 ```
 
+</div>
+</div>
+
 ---
+
+<div class="cols">
+<div>
 
 #### Dependencias
 
@@ -1535,7 +1644,8 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 
 @enduml
 
----
+</div>
+<div>
 
 #### Pegas:
 
@@ -1544,11 +1654,13 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 <style scoped>
 p {
   color: red;
-  text-align: center;
 }
 </style>
 
 ¿Debe ser el caballero responsable de obtener un desafío?
+
+</div>
+</div>
 
 ---
 
@@ -1634,7 +1746,7 @@ h2 {
 
 Es la base de la inyección de dependencias
 
-> The question is: _what aspect of control are they inverting?_ [...] Early **user interfaces** were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With **graphical** (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
+> The question is: _what aspect of control are they inverting?_ [...] Early __user interfaces__ were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With __graphical__ (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
 >
 > –– Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]
 
@@ -1645,10 +1757,10 @@ Es la base de la inyección de dependencias
 #### IoC–Inversion of Control / DI–Dependency Injection
 
 - Una aplicación está compuesta por dos o más clases que colaboran.
-- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa o **contenedor** que los coordina.
+- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa o __contenedor__ que los coordina.
 - IoC = Inversión de la responsabilidad de cómo un objeto obtiene referencias a los objetos con los que colabora
 - Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su _interfaz_, no por su _implementación_, ni por cómo fueron instanciados.
-- Entonces la dependencia puede cambiarse por una implementación distinta (incluso en **tiempo de ejecución**)
+- Entonces la dependencia puede cambiarse por una implementación distinta (incluso en __tiempo de ejecución__)
 - _Hollywood Principle: Don't call us, we'll call you"._
 
 ---
@@ -1712,194 +1824,17 @@ __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightar
 
 ---
 
-<!--
+<!-- paginate: false -->
 
-# CASO PRÁCTICO 4: <br> Guitarras Paco
-
----
-
-## Guitarras Paco
-
-El cliente (Paco) quiere:
-
-- Mantener un inventario de guitarras
-
-- Encontrar guitarras para sus clientes
-
-Problemas de la aplicación heredada:
-
-- Caso de uso: un cliente busca una guitarra flamenca ‘Valeriano Bernal’, pero no encuentra ninguna
-
-- ¿Problemas?
-
----
-
-### Una aplicación heredada
-
-![Guitar e Inventory, width:700px](./img/guitar_m1b.png)
-
----
-
-![Guitar, width:400px](./img/uml_guitar_m1.png)
-
----
-
-![Inventory, width:1100px](./img/uml_inventory_m1.png)
-
----
-
-### Implementación: Guitarra
-
-```java
-  public class Guitar {
-     private String serialNumber, builder, model, type, backWood, topWood;
-     private double price;
-
-     public Guitar(String serialNumber, double price,
-                        String builder, String model, String type,
-                        String backWood, String topWood) {
-        this.serialNumber = serialNumber;
-        this.price = price;
-        this.builder = builder;
-        this.model = model;
-        this.type = type;
-        this.backWood = backWood;
-        this.topWood = topWood;
-     }
-
-     public String getSerialNumber() {return serialNumber;}
-     public double getPrice() {return price;}
-     public void setPrice(float newPrice) {
-        this.price = newPrice;
-     }
-     public String getBuilder() {return builder;}
-     public String getModel() {return model;}
-     public String getType() {return type;}
-     public String getBackWood() {return backWood;}
-     public String getTopWood() {return topWood;}
-  }
-```
-
----
-
-### Implementación: Inventario
-
-```java
-public class Inventory {
-  private List guitars;
-  public Inventory() { guitars = new LinkedList(); }
-  public void addGuitar(String serialNumber, double price,
-                        String builder, String model,
-                        String type, String backWood, String topWood) {
-    Guitar guitar = new Guitar(serialNumber, price, builder,
-                               model, type, backWood, topWood);
-    guitars.add(guitar);
-  }
-  public Guitar getGuitar(String serialNumber) {
-    for (Iterator i = guitars.iterator(); i.hasNext(); ) {
-      Guitar guitar = (Guitar)i.next();
-      if (guitar.getSerialNumber().equals(serialNumber)) {
-        return guitar;
-      }
-    }
-    return null;
-  }
-```
-
----
-```java
-  public Guitar search(Guitar searchGuitar) {
-    for (Iterator i = guitars.iterator(); i.hasNext(); ) {
-      Guitar guitar = (Guitar)i.next();
-      String builder = searchGuitar.getBuilder().toLowerCase();
-      if ((builder != null) && (!builder.equals("")) &&
-          (!builder.equals(guitar.getBuilder().toLowerCase())))
-        continue;
-      String model = searchGuitar.getModel().toLowerCase();
-      if ((model != null) && (!model.equals("")) &&
-          (!model.equals(guitar.getModel().toLowerCase())))
-        continue;
-      String type = searchGuitar.getType().toLowerCase();
-      if ((type != null) && (!searchGuitar.equals("")) &&
-          (!type.equals(guitar.getType().toLowerCase())))
-        continue;
-      String backWood = searchGuitar.getBackWood().toLowerCase();
-      if ((backWood != null) && (!backWood.equals("")) &&
-          (!backWood.equals(guitar.getBackWood().toLowerCase())))
-        continue;
-      String topWood = searchGuitar.getTopWood().toLowerCase();
-      if ((topWood != null) && (!topWood.equals("")) &&
-          (!topWood.equals(guitar.getTopWood().toLowerCase())))
-        continue;
-      return guitar;
-    }
-    return null;
-  }
-}
-```
-
----
-
-## Algunos problemas
-
-- Se compara el fabricante sin tener en cuenta mayúsculas/minúsculas
-
-- Se comparan todos los campos sin tener en cuenta
-    mayúsculas/minúsculas
-
-- No hay definidas constantes para cada fabricante
-
-¿Estas soluciones abordan el verdadero problema?
-
-Preguntar a Paco...
-
----
-
-### Preguntar al cliente
-
-Preguntemos a Paco, que no tiene por qué saber nada de objetos ni bases
-de datos:
-
-- ¿Sólo vendes guitarras?
-
-- ¿Cómo actualizas el inventario?
-
-- ¿Cómo funciona la búsqueda de guitarras?
-
-- ¿Necesitarás informes de inventario y de ventas?
-
----
-
-### Respuestas del cliente
-
-Paco dice que:
-
-- Los clientes no siempre conocen las características exactas de la guitarra que quieren
-
-- Los clientes suelen buscar guitarras dentro de un rango de precios
-
-- Suele haber más de una guitarra que casa con las necesidades del cliente
-
-- Sí, necesito informes y demás, pero ¡la prioridad nº 1 es encontrar las guitarras!
-
----
 <style scoped>
-p, h2 {
-  color: red;
+h2,h3 {
   text-align: center;
 }
 </style>
 
-## Ejercicio
+## CASO PRÁCTICO 4
 
-Hacer refactoring de la aplicación heredada de Guitarras Paco
-
----
--->
-
-<!-- paginate: false -->
-
-# CASO PRÁCTICO 4: <br> Figuras geométricas
+### Figuras geométricas
 
 ---
 
@@ -1907,7 +1842,7 @@ Hacer refactoring de la aplicación heredada de Guitarras Paco
 
 ## Principios SOLID
 
-Los principios SOLID nos dicen:
+Los principios SOLID de [Uncle Bob Martin](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) nos dicen:
 
 - Cómo organizar en __módulos__ (en OO, __clases__) las estructuras de datos y las funciones
 - Cómo deben quedar _interconectadas_ las clases (vía __dependencias__)
@@ -1917,10 +1852,6 @@ El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
 - _flexibles_: tolerantes a los cambios
 - _poco complejas_: fáciles de comprender
 - _reutilizables_: la base de componentes útiles para muchos sistemas software
-
-[Uncle Bob Martin principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design))
-
-[comment]: http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
 
 En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
 

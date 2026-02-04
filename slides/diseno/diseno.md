@@ -91,9 +91,6 @@ Caso 1. Identificadores
 Caso 2. Framework de pruebas unitarias
 Caso 3. Caballeros de la mesa redonda
 Caso 4. Figuras geométricas
-<!--
-Caso 4. [Guitarras Paco](#guitarras)
--->
 
 </div>
 <div>
@@ -1080,13 +1077,13 @@ En la arquitectura del framework se observan diversos patrones:
 
 ### Principios y técnicas de un framework
 
-- **Abstracción**
+- __Abstracción__
   - Clases y componentes abstractos
   - Interfaces abiertas
   - Uso de patrones de diseño
   - Componentes de un dominio específico
 
-- Máxima **cohesión**, mínimo **acoplamiento**
+- Máxima __cohesión__, mínimo __acoplamiento__
   - Minimizar dependencias: Una clase A presenta una dependencia con otra clase B (A $\rightarrow$ B) si la primera usa una instancia de la segunda.
   - Cuando no se pueden eliminar las dependencias, mantener las abstractas e __inyectar__ las concretas.
 
@@ -1096,10 +1093,14 @@ En la arquitectura del framework se observan diversos patrones:
 > D. Thomas & A. Hunt, [The Pragmatic Programmer](https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/), 20th Anniversary Edition, 2019
 
 
-- **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
+#### Inyección de dependencias
+
+Una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
 
 
-# CASO PRÁCTICO 3: <br> Caballeros de la mesa redonda
+## CASO PRÁCTICO 3
+
+### Caballeros de la mesa redonda
 
 
 ## Ejemplo: tomado de [Spring in Action](bibliografia.html#spring)
@@ -1451,7 +1452,7 @@ Ejercicio: Discutir el tipo de retorno `Object` de `embarkOnQuest`:
 
 Es la base de la inyección de dependencias
 
-> The question is: _what aspect of control are they inverting?_ [...] Early **user interfaces** were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With **graphical** (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
+> The question is: _what aspect of control are they inverting?_ [...] Early __user interfaces__ were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With __graphical__ (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
 >
 > –– Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]
 
@@ -1461,10 +1462,10 @@ Es la base de la inyección de dependencias
 #### IoC–Inversion of Control / DI–Dependency Injection
 
 - Una aplicación está compuesta por dos o más clases que colaboran.
-- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa o **contenedor** que los coordina.
+- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa o __contenedor__ que los coordina.
 - IoC = Inversión de la responsabilidad de cómo un objeto obtiene referencias a los objetos con los que colabora
 - Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su _interfaz_, no por su _implementación_, ni por cómo fueron instanciados.
-- Entonces la dependencia puede cambiarse por una implementación distinta (incluso en **tiempo de ejecución**)
+- Entonces la dependencia puede cambiarse por una implementación distinta (incluso en __tiempo de ejecución__)
 - _Hollywood Principle: Don't call us, we'll call you"._
 
 
@@ -1516,180 +1517,14 @@ __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightar
 - Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
 
 
-<!--
+## CASO PRÁCTICO 4
 
-# CASO PRÁCTICO 4: <br> Guitarras Paco
-
-
-## Guitarras Paco
-
-El cliente (Paco) quiere:
-
-- Mantener un inventario de guitarras
-
-- Encontrar guitarras para sus clientes
-
-Problemas de la aplicación heredada:
-
-- Caso de uso: un cliente busca una guitarra flamenca ‘Valeriano Bernal’, pero no encuentra ninguna
-
-- ¿Problemas?
-
-
-### Una aplicación heredada
-
-![](./img/guitar_m1b.png)
-
-
-![](./img/uml_guitar_m1.png)
-
-
-![](./img/uml_inventory_m1.png)
-
-
-### Implementación: Guitarra
-
-```java
-  public class Guitar {
-     private String serialNumber, builder, model, type, backWood, topWood;
-     private double price;
-
-     public Guitar(String serialNumber, double price,
-                        String builder, String model, String type,
-                        String backWood, String topWood) {
-        this.serialNumber = serialNumber;
-        this.price = price;
-        this.builder = builder;
-        this.model = model;
-        this.type = type;
-        this.backWood = backWood;
-        this.topWood = topWood;
-     }
-
-     public String getSerialNumber() {return serialNumber;}
-     public double getPrice() {return price;}
-     public void setPrice(float newPrice) {
-        this.price = newPrice;
-     }
-     public String getBuilder() {return builder;}
-     public String getModel() {return model;}
-     public String getType() {return type;}
-     public String getBackWood() {return backWood;}
-     public String getTopWood() {return topWood;}
-  }
-```
-
-
-### Implementación: Inventario
-
-```java
-public class Inventory {
-  private List guitars;
-  public Inventory() { guitars = new LinkedList(); }
-  public void addGuitar(String serialNumber, double price,
-                        String builder, String model,
-                        String type, String backWood, String topWood) {
-    Guitar guitar = new Guitar(serialNumber, price, builder,
-                               model, type, backWood, topWood);
-    guitars.add(guitar);
-  }
-  public Guitar getGuitar(String serialNumber) {
-    for (Iterator i = guitars.iterator(); i.hasNext(); ) {
-      Guitar guitar = (Guitar)i.next();
-      if (guitar.getSerialNumber().equals(serialNumber)) {
-        return guitar;
-      }
-    }
-    return null;
-  }
-```
-
-```java
-  public Guitar search(Guitar searchGuitar) {
-    for (Iterator i = guitars.iterator(); i.hasNext(); ) {
-      Guitar guitar = (Guitar)i.next();
-      String builder = searchGuitar.getBuilder().toLowerCase();
-      if ((builder != null) && (!builder.equals("")) &&
-          (!builder.equals(guitar.getBuilder().toLowerCase())))
-        continue;
-      String model = searchGuitar.getModel().toLowerCase();
-      if ((model != null) && (!model.equals("")) &&
-          (!model.equals(guitar.getModel().toLowerCase())))
-        continue;
-      String type = searchGuitar.getType().toLowerCase();
-      if ((type != null) && (!searchGuitar.equals("")) &&
-          (!type.equals(guitar.getType().toLowerCase())))
-        continue;
-      String backWood = searchGuitar.getBackWood().toLowerCase();
-      if ((backWood != null) && (!backWood.equals("")) &&
-          (!backWood.equals(guitar.getBackWood().toLowerCase())))
-        continue;
-      String topWood = searchGuitar.getTopWood().toLowerCase();
-      if ((topWood != null) && (!topWood.equals("")) &&
-          (!topWood.equals(guitar.getTopWood().toLowerCase())))
-        continue;
-      return guitar;
-    }
-    return null;
-  }
-}
-```
-
-
-## Algunos problemas
-
-- Se compara el fabricante sin tener en cuenta mayúsculas/minúsculas
-
-- Se comparan todos los campos sin tener en cuenta
-    mayúsculas/minúsculas
-
-- No hay definidas constantes para cada fabricante
-
-¿Estas soluciones abordan el verdadero problema?
-
-Preguntar a Paco...
-
-
-### Preguntar al cliente
-
-Preguntemos a Paco, que no tiene por qué saber nada de objetos ni bases
-de datos:
-
-- ¿Sólo vendes guitarras?
-
-- ¿Cómo actualizas el inventario?
-
-- ¿Cómo funciona la búsqueda de guitarras?
-
-- ¿Necesitarás informes de inventario y de ventas?
-
-
-### Respuestas del cliente
-
-Paco dice que:
-
-- Los clientes no siempre conocen las características exactas de la guitarra que quieren
-
-- Los clientes suelen buscar guitarras dentro de un rango de precios
-
-- Suele haber más de una guitarra que casa con las necesidades del cliente
-
-- Sí, necesito informes y demás, pero ¡la prioridad nº 1 es encontrar las guitarras!
-
-
-## Ejercicio
-
-Hacer refactoring de la aplicación heredada de Guitarras Paco
-
--->
-
-
-# CASO PRÁCTICO 4: <br> Figuras geométricas
+### Figuras geométricas
 
 
 ## Principios SOLID
 
-Los principios SOLID nos dicen:
+Los principios SOLID de [Uncle Bob Martin](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) nos dicen:
 
 - Cómo organizar en __módulos__ (en OO, __clases__) las estructuras de datos y las funciones
 - Cómo deben quedar _interconectadas_ las clases (vía __dependencias__)
@@ -1699,10 +1534,6 @@ El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
 - _flexibles_: tolerantes a los cambios
 - _poco complejas_: fáciles de comprender
 - _reutilizables_: la base de componentes útiles para muchos sistemas software
-
-[Uncle Bob Martin principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design))
-
-[comment]: http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod
 
 En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
 
