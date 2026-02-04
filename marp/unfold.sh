@@ -201,6 +201,22 @@ def _extract_title_from_front_matter(fm: str) -> str | None:
     return None
 
 
+def _extract_first_heading(text: str) -> str | None:
+    for line in text.split("\n"):
+        m = re.match(r"^\s*#\s+(.+?)\s*$", line)
+        if m:
+            return m.group(1).strip()
+    return None
+
+
+def _slugify_github(text: str) -> str:
+    s = text.strip().lower()
+    s = re.sub(r"[^\w\s-]", "", s)
+    s = re.sub(r"\s+", "-", s)
+    s = re.sub(r"-{2,}", "-", s)
+    return s.strip("-")
+
+
 def _split_fenced_code_blocks(text: str):
     # Split into segments where even indices are outside fenced code blocks.
     # This is a lightweight splitter for triple-backtick fences.
@@ -397,6 +413,16 @@ def _cleanup_whitespace(text: str) -> str:
     return text.strip() + "\n"
 
 
+def _remove_slide_separators(text: str) -> str:
+    # Remove Marp slide separators (---) outside code blocks.
+    lines = []
+    for ln in text.split("\n"):
+        if re.match(r"^\s*---\s*$", ln):
+            continue
+        lines.append(ln)
+    return "\n".join(lines)
+
+
 def _remove_style_blocks_outside_code(text: str) -> str:
     # GitHub sanitizes <style> anyway; remove to keep plain Markdown.
     return re.sub(r"<style\b[^>]*>.*?</style>", "", text, flags=re.S | re.I)
@@ -423,6 +449,7 @@ def _process_one_file(path: str) -> str:
             out.append(_convert_plantuml_fenced_block(seg))
         else:
             seg = _convert_plantuml_at_blocks(seg)
+            seg = _remove_slide_separators(seg)
             seg = _remove_style_blocks_outside_code(seg)
             seg = _normalize_inline_html_outside_code(seg)
             seg = _rewrite_marp_images(seg)
@@ -445,20 +472,37 @@ if not ordered:
 
 out_chunks = []
 
-folder_name = os.path.basename(INPUT_DIR.rstrip(os.sep))
-out_chunks.append(
-    "# " + folder_name + "\n\n"
-    "> [!NOTE]\n"
-    "> Mermaid blocks (```mermaid) render in GitHub.\n"
-    "> PlantUML blocks are embedded as images via kroki.io; the source is kept in <details>.\n\n"
-)
+toc_entries = []
+slug_counts: dict[str, int] = {}
+for path in ordered:
+    raw = _read_text(path)
+    fm, rest = _parse_yaml_front_matter(raw)
+    title = _extract_title_from_front_matter(fm) if fm else None
+    if not title:
+        title = _extract_first_heading(rest)
+    if not title:
+        title = os.path.splitext(os.path.basename(path))[0]
+
+    slug = _slugify_github(title)
+    if not slug:
+        slug = "section"
+    if slug in slug_counts:
+        slug_counts[slug] += 1
+        slug = f"{slug}-{slug_counts[slug]}"
+    else:
+        slug_counts[slug] = 0
+
+    toc_entries.append((title, slug))
+
+out_chunks.append("## Índice\n\n")
+for title, slug in toc_entries:
+    out_chunks.append(f"- [{title}](#{slug})\n")
+out_chunks.append("\n")
 
 for idx, path in enumerate(ordered):
     rel = os.path.relpath(path, INPUT_DIR)
     out_chunks.append(f"<!-- Source: {rel} -->\n")
     out_chunks.append(_process_one_file(path))
-    if idx != len(ordered) - 1:
-        out_chunks.append("\n---\n\n")
 
 tmp = OUT_FILE + ".tmp"
 with open(tmp, "w", encoding="utf-8", newline="\n") as f:

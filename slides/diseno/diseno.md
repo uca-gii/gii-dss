@@ -1,13 +1,13 @@
+## Índice
+
+- [Principios de Diseño](#principios-de-diseño)
+- [Patrones de Diseño](#patrones-de-diseño)
 
 <!-- Source: principios.md -->
 # DISEÑO DE SISTEMAS SOFTWARE
 
----
-
 
 ## INTRODUCCIÓN
-
----
 
 
 ![Background image](./img/design-problems.png)
@@ -21,7 +21,6 @@
 - Reutilización
 - Flexibilidad
 
----
 
 ![Background image](./img/design-principles.png)
 
@@ -31,7 +30,6 @@
 - Cohesión: SRP
 - Ortogonalidad: DIP
 
----
 
 ![Background image](./img/design-techniques.png)
 
@@ -43,7 +41,6 @@
 - Inyección de dependencias
 - Patrones
 
----
 
 ### Paradigmas
 
@@ -53,15 +50,12 @@
 - Orientado a Aspectos (G. Kiczales)
 - [Orientado a Datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
 
----
-
 
 #### Preguntas
 
 _¿De qué fecha data cada paradigma?_
 _Ordenar cronológicamente_
 
----
 
 #### Respuesta
 
@@ -75,7 +69,6 @@ _¿De qué fecha data cada paradigma?_
 - Orientado a Aspectos (1997)
 - Orientado a Datos (2018)
 
----
 
 ### Bloques
 
@@ -83,12 +76,10 @@ I. Principios de diseño OO
 II. Patrones de diseño
 III. Arquitectura de software
 
----
 
+# PRINCIPIOS DE DISEÑO
 
-# PRINCIPIOS DE DISEÑO <br> Orientado a Objetos
-
----
+## Orientado a objetos
 
 
 <div class="cols">
@@ -118,12 +109,10 @@ Caso 4. [Guitarras Paco](#guitarras)
 </div>
 </div>
 
----
 
+## CASO PRÁCTICO 1
 
-## CASO PRÁCTICO 1 <br> Identificadores
-
----
+### Identificadores
 
 
 ¿Cómo diseñar la identificación de los empleados de una empresa?
@@ -180,7 +169,6 @@ class Empleado implements Comparable<Empleado> {
 </div>
 </div>
 
----
 
 #### Nuevos requisitos:
 
@@ -235,7 +223,6 @@ class Empleado implements Comparable<Empleado> {
 </div>
 </div>
 
----
 
 #### Críticas:
 
@@ -247,8 +234,6 @@ class Empleado implements Comparable<Empleado> {
 - Manejo de _identificadores_ de forma independiente de la implementación del objeto identificado.
 
 - Cambio fácil de implementación de los identificadores (`int`, `String`, etc.) hacia cualquier tipo básico o clase primitiva, sencilla o compuesta.
-
----
 
 
 ## Diseño de un Handler
@@ -314,7 +299,6 @@ class Empleado implements Comparable<Empleado> {
 </div>
 </div>
 
----
 
 <div class="cols">
 <div>
@@ -371,7 +355,6 @@ final class IdentificadorNumerico
 </div>
 </div>
 
----
 
 ### Conceptos de diseño
 
@@ -385,7 +368,6 @@ final class IdentificadorNumerico
 
 - __Reutilización y flexibilidad__: Permitir la reutilización del componente de identificación en otros sistemas y facilitar la adaptación a futuros cambios.
 
----
 
 ### Implementación en los lenguajes
 
@@ -401,7 +383,6 @@ __Método de la interfaz__:
 
 El tipo `T` garantiza seguridad de tipos: un `Comparable<Empleado>` solo se compara con `Empleado`, evitando casts y errores en tiempo de ejecución.
 
----
 
 __Invariantes:__ las debe asegurar cualquier implementación de `compareTo`
 
@@ -418,7 +399,6 @@ __Consistencia con `equals`__: recomendable pero no exigible
 > [!NOTE]
 > En Java no se puede definir un método `default` en una `interface` que sea override‑equivalent a un método público de Object (como equals, hashCode, toString). Puedes declararlo de forma abstracta en la interfaz, pero no darle implementación default.
 
----
 
 #### C++: Comparación de identificadores
 
@@ -433,7 +413,6 @@ Cómo implementar la interfaz de comparación de un Handler en C++
 
 Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__
 
----
 
 __Sobrecarga de operadores en C++__:
 
@@ -459,8 +438,6 @@ int main() {
 }
 ```
 
----
-
 
 <div class="cols">
 <div>
@@ -480,12 +457,10 @@ int main() {
 </div>
 </div>
 
----
 
+## CASO PRÁCTICO 2
 
-## CASO PRÁCTICO 2 <br> Pruebas unitarias
-
----
+### Pruebas unitarias
 
 
 ### jUnit: Framework de pruebas unitarias
@@ -496,8 +471,6 @@ int main() {
 
 
 ¿Por qué? ¿Cómo funciona?
-
----
 
 
 ### ¿Cómo se probaba `Saludo.java` sin bibliotecas de pruebas unitarias?
@@ -545,7 +518,6 @@ Incluir un método `main` que pruebe la funcionalidad de la clase:
 </div>
 </div>
 
----
 
 #### Pegas
 
@@ -557,7 +529,6 @@ Incluir un método `main` que pruebe la funcionalidad de la clase:
 
 - Difícil de automatizar las pruebas, incluso pasando argumentos a `main`
 
----
 
 ### Ejemplo: software _cliente_ del framework jUnit
 
@@ -580,7 +551,6 @@ public class SaludoTest {
 }
 ```
 
----
 
 #### Ejecución de los tests:
 
@@ -602,7 +572,6 @@ public class MyTestRunner {
 
 ¿De qué están hechas las anotaciones como `@Test`?
 
----
 
 <div class="cols">
 <div>
@@ -693,7 +662,6 @@ TestDecorator --|> Assert
 </div>
 </div>
 
----
 
 ### Ejemplo: aplicación de comercio electrónico
 
@@ -711,7 +679,6 @@ Diseño de pruebas unitarias de `ShoppingCart` para:
 - Probar manejo de varias monedas
 - Etc.
 
----
 
 <div class="cols">
 <div>
@@ -774,7 +741,6 @@ public class ShoppingCart {
 </div>
 </div>
 
----
 
 #### ShoppingCartTestCase con jUnit 3
 
@@ -847,7 +813,6 @@ public class ShoppingCartTest extends TestCase {
 </div>
 </div>
 
----
 
 Podemos agrupar varios casos de prueba en una misma _suite_:
 
@@ -877,7 +842,6 @@ public class MyTestRunner {
 }
 ```
 
----
 
 #### ShoppingCartTestCase con jUnit 4
 
@@ -943,7 +907,6 @@ public class ShoppingCartTest {
 </div>
 </div>
 
----
 
 #### EcommerceTestSuite con jUnit 3
 
@@ -970,14 +933,11 @@ public class ShoppingCartTest {
   }
 ```
 
----
-
 
 #### Pregunta
 
 ¿Qué hemos conseguido con las anotaciones `@Test` del JDK $\geq$ 1.5?
 
----
 
 ¿Qué hemos conseguido con las anotaciones `@Test`?
 
@@ -990,7 +950,6 @@ public class ShoppingCartTest {
 
 Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit versión 4.
 
----
 
 ### Arquitectura del framework jUnit
 
@@ -1074,8 +1033,6 @@ En la arquitectura del framework se observan diversos patrones:
 </div>
 </div>
 
----
-
 
 ## Bibliotecas y frameworks
 
@@ -1083,14 +1040,10 @@ En la arquitectura del framework se observan diversos patrones:
 
 ![](./img/biblioteca.png)
 
----
-
 
 #### Flujo de control en un framework
 
 ![](./img/framework.png)
-
----
 
 
 ### Frameworks
@@ -1104,7 +1057,6 @@ En la arquitectura del framework se observan diversos patrones:
 - El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
 - El framework se debe personalizar definiendo subclases y combinando instancias, o bien configurando valores que definen el comportamiento por defecto
 
----
 
 ### Principios de diseño de un framework OO
 
@@ -1118,7 +1070,6 @@ En la arquitectura del framework se observan diversos patrones:
 - __Patrones__: elementos reutilizables de diseño
 - __Frameworks__: colecciones de patrones abstractos a aplicar
 
----
 
 ### Framework vs. biblioteca
 
@@ -1126,7 +1077,6 @@ En la arquitectura del framework se observan diversos patrones:
 - Flujo de control invertido
 - Programador _cliente_ (código específico) vs. programador de _API_ (código reutilizable)
 
----
 
 ### Principios y técnicas de un framework
 
@@ -1140,27 +1090,20 @@ En la arquitectura del framework se observan diversos patrones:
   - Minimizar dependencias: Una clase A presenta una dependencia con otra clase B (A $\rightarrow$ B) si la primera usa una instancia de la segunda.
   - Cuando no se pueden eliminar las dependencias, mantener las abstractas e __inyectar__ las concretas.
 
----
 
 > Coupling is the enemy of change, because it links together things that must change in parallel
 >
 > D. Thomas & A. Hunt, [The Pragmatic Programmer](https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/), 20th Anniversary Edition, 2019
 
----
 
 - **Inyección de dependencias**: una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
-
----
 
 
 # CASO PRÁCTICO 3: <br> Caballeros de la mesa redonda
 
----
-
 
 ## Ejemplo: tomado de [Spring in Action](bibliografia.html#spring)
 
----
 
 Añadir pruebas unitarias al programa siguiente:
 
@@ -1180,7 +1123,6 @@ public class KnightOfTheRoundTable {
 }
 ```
 
----
 
 ```java
 public class HolyGrailQuest {
@@ -1195,7 +1137,6 @@ public class HolyGrailQuest {
 }
 ```
 
----
 
 ### Diseño de pruebas con jUnit 3
 
@@ -1216,7 +1157,6 @@ public class KnightOfTheRoundTableTest extends TestCase {
 }
 ```
 
----
 
 ### Diagrama de clases
 
@@ -1270,7 +1210,6 @@ package "roundTable::test" {
 
 </details>
 
----
 
 ### Acoplamiento
 
@@ -1324,7 +1263,6 @@ package "roundTable::test" {
 
 </details>
 
----
 
 #### Pegas:
 
@@ -1334,7 +1272,6 @@ package "roundTable::test" {
 
 - No se puede pedir a `HolyGrailQuest` que se comporte de otra forma (v.g. devolver null o elevar una excepción)
 
----
 
 Ocultar la implementación detrás de una interfaz:
 
@@ -1357,7 +1294,6 @@ public class KnightOfTheRoundTable implements Knight {
 }
 ```
 
----
 
 ```java
 public interface Quest {
@@ -1374,7 +1310,6 @@ public class HolyGrailQuest implements Quest {
 }
 ```
 
----
 
 #### Dependencias
 
@@ -1433,7 +1368,6 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 
 </details>
 
----
 
 #### Pegas:
 
@@ -1442,7 +1376,6 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 
 ¿Debe ser el caballero responsable de obtener un desafío?
 
----
 
 ```java
 public class KnightOfTheRoundTable implements Knight {
@@ -1461,7 +1394,6 @@ public class KnightOfTheRoundTable implements Knight {
 }
 ```
 
----
 
 - El caballero sólo sabe del desafío a través de su interfaz `Quest`.
 
@@ -1500,8 +1432,6 @@ injector2 -> ":Knight" : setQuest(killDragonQuest)
 ![](./img/di-knight.png)
 -->
 
----
-
 
 - Parece que no hay dependencia entre `KnightOfTheRoundTable` y `HolyGrail` porque `embark()` se ha definido como que devuelve un `Object`
 
@@ -1511,15 +1441,11 @@ Ejercicio: Discutir el tipo de retorno `Object` de `embarkOnQuest`:
 - Solución propuesta: rediseñar la interfaz `Quest`
 
 <!--
----
-
-
 ## Inyección de dependencias
 
 ![](./img/dep-injection.png)
 -->
 
----
 
 ### Inversión de control
 
@@ -1531,7 +1457,6 @@ Es la base de la inyección de dependencias
 
 [1] http://martinfowler.com/articles/injection.html
 
----
 
 #### IoC–Inversion of Control / DI–Dependency Injection
 
@@ -1542,15 +1467,12 @@ Es la base de la inyección de dependencias
 - Entonces la dependencia puede cambiarse por una implementación distinta (incluso en **tiempo de ejecución**)
 - _Hollywood Principle: Don't call us, we'll call you"._
 
----
 
 ### Factorías
 
 Una factoría proporciona un mecanismo de inyección de dependencias, visto desde el lado opuesto (los clientes adquieren las dependencias, no se les inyecta)
 
 Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
-
----
 
 
 ## Discusión sobre la reutilización
@@ -1561,13 +1483,11 @@ Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 
 [2] http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html
 
----
 
 ### Factorizar una función
 
 ![](./img/misuse-reuse-1.png)
 
----
 
 ![](./img/misuse-reuse-2.png)
 
@@ -1575,13 +1495,11 @@ Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 
 __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightarrow$ ahorro = $c \times (s-1)$
 
----
 
 ### Amenazas (reales) a la reutilización:
 
 ![](./img/misuse-reuse-3.png)
 
----
 
 - Realmente el ahorro depende de la __complejidad__. Y muchas veces, la complejidad de la función está exponencialmente relacionada con el número de sistemas.
 - Con un único punto de fallo, si `Function 1` falla, todos los sistemas pueden fallar a la vez.
@@ -1590,7 +1508,6 @@ __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightar
  - Se incrementan los costes de llevar los sistemas a la nube.
 -->
 
----
 
 ### Conclusión sobre la reutilización
 
@@ -1598,13 +1515,11 @@ __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightar
 
 - Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
 
----
 
 <!--
 
 # CASO PRÁCTICO 4: <br> Guitarras Paco
 
----
 
 ## Guitarras Paco
 
@@ -1620,21 +1535,17 @@ Problemas de la aplicación heredada:
 
 - ¿Problemas?
 
----
 
 ### Una aplicación heredada
 
 ![](./img/guitar_m1b.png)
 
----
 
 ![](./img/uml_guitar_m1.png)
 
----
 
 ![](./img/uml_inventory_m1.png)
 
----
 
 ### Implementación: Guitarra
 
@@ -1668,7 +1579,6 @@ Problemas de la aplicación heredada:
   }
 ```
 
----
 
 ### Implementación: Inventario
 
@@ -1694,7 +1604,6 @@ public class Inventory {
   }
 ```
 
----
 ```java
   public Guitar search(Guitar searchGuitar) {
     for (Iterator i = guitars.iterator(); i.hasNext(); ) {
@@ -1726,7 +1635,6 @@ public class Inventory {
 }
 ```
 
----
 
 ## Algunos problemas
 
@@ -1741,7 +1649,6 @@ public class Inventory {
 
 Preguntar a Paco...
 
----
 
 ### Preguntar al cliente
 
@@ -1756,7 +1663,6 @@ de datos:
 
 - ¿Necesitarás informes de inventario y de ventas?
 
----
 
 ### Respuestas del cliente
 
@@ -1770,20 +1676,15 @@ Paco dice que:
 
 - Sí, necesito informes y demás, pero ¡la prioridad nº 1 es encontrar las guitarras!
 
----
-
 
 ## Ejercicio
 
 Hacer refactoring de la aplicación heredada de Guitarras Paco
 
----
 -->
 
 
 # CASO PRÁCTICO 4: <br> Figuras geométricas
-
----
 
 
 ## Principios SOLID
@@ -1805,8 +1706,6 @@ El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
 
 En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
 
----
-
 
 ## Principio de responsabilidad única
 
@@ -1820,7 +1719,6 @@ En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/wa
 
 SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html#demarco)
 
----
 
 <!--
 **Notes**
@@ -1838,7 +1736,6 @@ SRP es aplicación directa de la [ley de Conway](http://www.melconway.com/Home/C
 
 - Tiene que ver con la __variabilidad__ de los requisitos
 
----
 
 ### Ejemplo: Shapes versión 1 en Java
 
@@ -1869,7 +1766,6 @@ abstract class RectParallelogram extends Polygon {
 }
 ```
 
----
 
 ```java
 class Square extends RectParallelogram {...}
@@ -1898,8 +1794,6 @@ class Ellipse extends ClosedCurve {
 }
 ```
 
----
-
 
 #### Preguntas
 
@@ -1907,7 +1801,6 @@ class Ellipse extends ClosedCurve {
 - ¿Cuáles son estas responsabilidades?
 - ¿Qué parte no cumple SRP en el ejemplo?
 
----
 
 #### Respuestas
 
@@ -1917,8 +1810,6 @@ class Ellipse extends ClosedCurve {
 #### Solución
 
 Patrón de diseño __Visitor__
-
----
 
 
 ### Ejercicio
@@ -1945,7 +1836,6 @@ El objetivo principal del patrón DAO es proporcionar una interfaz unificada par
 Desde una perspectiva del principio de responsabilidad única (SRP), el patrón DAO cumple con este principio. Esto se debe a que la clase DAO tiene una única responsabilidad, que es la de encapsular la lógica de acceso a datos y proporcionar una interfaz unificada para acceder a los datos. La lógica de negocio se encuentra en otra clase o conjunto de clases, lo que permite separar las responsabilidades y facilita la reutilización del código.
 -->
 
----
 
 ### Example: Circle class
 
@@ -1975,8 +1865,6 @@ class Circle
 }
 ```
 
----
-
 
 ## Principio de Abierto-Cerrado
 
@@ -1992,13 +1880,11 @@ Para que un sistema software sea fácil de cambiar, debe diseñarse para que per
 - Es difícil averiguar todos los puntos que requieren cambios
 - Código cerrado para modificaciones, pero abierto para extensión mediante delegación en vertical (subclases) u horizontal (composición)
 
----
 
 ### Ejemplo: Shapes versión 2 en C++
 
 ¿Qué parte no cumple OCP en el ejemplo?
 
----
 
 #### Versión imperativa (sin objetos):
 
@@ -2025,7 +1911,6 @@ struct Square
 };
 ```
 
----
 
 ```cpp
 void DrawSquare(struct Square*);
@@ -2050,7 +1935,6 @@ void DrawAllShapes(ShapePointer list[], int n)
   }
 }
 ```
----
 
 #### Problema:
 
@@ -2061,7 +1945,6 @@ void DrawAllShapes(ShapePointer list[], int n)
 - __Abstracción__ (ocultación de la implementación): clase abstracta y métodos polimórficos.
 - __Patrones de diseño__: _template method_ y/o _strategy_
 
----
 
 Aplicando el OCP...
 
@@ -2088,7 +1971,6 @@ public class Circle: Shape
 }
 ```
 
----
 
 ```csharp
 public void DrawAllShapes(IList shapes)
@@ -2101,7 +1983,6 @@ public void DrawAllShapes(IList shapes)
 - Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
 - Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
 
----
 
 ### Ejercicio: Shapes and Circles
 
@@ -2128,7 +2009,6 @@ class Shape
     ShapeType type;
 };
 ```
----
 ```cpp
 class Circle: public Shape
 {
@@ -2152,7 +2032,6 @@ void translate ( Circle&, Vector3D const& );
 void rotate ( Circle&, Quaternion const& ) ;
 void draw ( Circle const& );
 ```
----
 ```cpp
 class Square: public Shape
 {
@@ -2176,7 +2055,6 @@ void translate ( Square&, Vector3D const& );
 void rotate ( Square&, Quaternion const& ) ;
 void draw ( Square const& );
 ```
----
 ```cpp
 void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
 {
@@ -2209,7 +2087,6 @@ int main()
   draw ( shapes );
 }
 ```
----
 
 
 ### Open-Closed Principle
@@ -2224,7 +2101,6 @@ int main()
 
 OCP es un principio más arquitectónico que de diseño de clases y módulos.
 
----
 
 ### Solución al ejercicio: Shapes and Circles
 
@@ -2243,7 +2119,6 @@ class Shape
 };
 ```
 
----
 
 ```cpp
 class Circle : public Shape
@@ -2269,7 +2144,6 @@ class Circle : public Shape
 }
 ```
 
----
 
 ```cpp
 class Square : public Shape
@@ -2295,7 +2169,6 @@ class Square : public Shape
 }
 ```
 
----
 
 ```cpp
 void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
@@ -2320,7 +2193,6 @@ int main()
 }
 ```
 
----
 
 ## OCP versus SRP
 
@@ -2339,8 +2211,6 @@ class Shape
 };
 ```
 
----
-
 
 ## Principo de segregación de interfaces
 
@@ -2354,7 +2224,6 @@ class Shape
 - Evitar interfaces __gruesas__ con muchos métodos (descohesionadas)
 - Los cambios en los métodos ignorados pueden provocar cambios en un cliente que no los usa
 
----
 
 - La interfaz de una clase puede dividirse en __bloques__ de métodos relacionados. Unos clientes usan un bloque y otros clientes usan otro bloque. Si un cliente necesita conocer una interfaz no cohesionada, debe hacerlo combinando una o más clases (o mejor, sus interfaces)
 - ISP es a las interfaces lo que SRP es a clases y métodos
@@ -2369,15 +2238,12 @@ En cambio, en los lenguajes de tipos dinámicos, las interfaces pueden ser defin
 -->
 
 <!--
----
-
 ### Ejemplo: acoplamiento contexto-strategy
 
 - ¿Cómo se comunican _Strategy_ y _Context_ (acoplado/desacoplado)?
 - _Context_ Puede definir una interfaz que le permita a _Strategy_ acceder a sus datos
 -->
 
----
 
 ### Ejemplo: puertas de seguridad
 
@@ -2419,7 +2285,6 @@ Timer .r.> TimerClient
 
 </details>
 
----
 
 - `TimedDoor` se comunica con `Timer` para registrar un temporizador
 - Cuando salta el temporizador, avisa a un `TimerClient`
@@ -2442,7 +2307,6 @@ destroy TimedDoor
 
 </details>
 
----
 
 #### Implementación inicial
 
@@ -2462,7 +2326,6 @@ public interface TimerClient {
 - Cuando el primer temporizador $t_0$ expira, se produce la llamada a `timeout()` de `TimedDoor` y no debería.
 - Así que cambiamos la implementación:
 
----
 
 #### Implementación mejorada
 
@@ -2496,14 +2359,12 @@ Timer --> TimedDoor : timeout(id)
 
 </details>
 
----
 
 - El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)
 - El problema es que `Door` depende de `TimerClient` y no todas las variedades de puerta son de seguridad (con temporizador)
 - Si hacen falta más variedades de puerta, todas ellas deberán implementar implementaciones degeneradas de `timeout()`
 - Las interfaces empiezan a engrosarse. Esto puede acabar violando también el LSP
 
----
 
 #### Rediseño: puertas de seguridad
 
@@ -2513,13 +2374,11 @@ __Delegación__ a través del patrón adapter (de objetos o de clases)
 
    ![](./img/isp-timer-door-class-adapter.png)
 
----
 
 - Versión adaptador de objetos (por composición):
 
   ![](./img/isp-timer-door-object-adapter.png)
 
----
 
 ### Example: Shapes and Circles (1 de 2)
 
@@ -2548,7 +2407,6 @@ class Shape
 };
 ```
 
----
 
 ### Example: Shapes and Circles (2 de 2)
 
@@ -2583,7 +2441,6 @@ class Square: public Shape
 }
 ```
 
----
 
 ## Aplicación de OCP y SRP
 
@@ -2615,7 +2472,6 @@ abstract class RectParallelogram extends Polygon {
 }
 ```
 
----
 
 ```java
 class Square extends RectParallelogram {...}
@@ -2644,12 +2500,9 @@ class Ellipse extends ClosedCurve {
 }
 ```
 
----
 
 - Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP.
 - Saquémoslas fuera utilizando **aspectos**...
-
----
 
 
 ### Orientación a aspectos
@@ -2658,7 +2511,6 @@ La __orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es in
 
 ![terminología sobre AOP](./img/aspectj-terminology.png)
 
----
 
 #### Terminología:
 
@@ -2667,7 +2519,6 @@ La __orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es in
 - __advice__ = acción a tomar por la especificación de un aspecto dado en un determinado _joinpoint_
 - __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
 
----
 
 ### Ejemplo: Shapes versión 2 (misma versión que en OCP), pero con aspectos
 
@@ -2697,7 +2548,6 @@ interface Drawable {
 }
 ```
 
----
 
 ```aspectj
 // Ficheros Drawable<X>.aj
@@ -2725,8 +2575,6 @@ aspect DrawableEllipse extends DrawableShape {
   String Ellipse.makeDetails (String indent){...} }
 ```
 
----
-
 
 ## Principio de sustitución de Liskov
 
@@ -2743,7 +2591,6 @@ Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$,
     P2, los objetos D pueden no ser sustituibles por objetos B
 -->
 
----
 
 ### Ejemplo: Shapes versión 3
 
@@ -2763,7 +2610,6 @@ public class Shape {
 }
 ```
 
----
 
 ```csharp
 public class Circle: Shape {
@@ -2782,7 +2628,6 @@ public class Square: Shape {
 }
 ```
 
----
 
 #### Problemas:
 
@@ -2791,7 +2636,6 @@ public class Square: Shape {
 - Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
 - A continuación, una violación más sutil del LSP...
 
----
 
 ### Ejemplo: Rectángulos versión 1
 
@@ -2815,7 +2659,6 @@ public class Rectangle {
 }
 ```
 
----
 
 Un día hace falta manejar cuadrados además de rectángulos.
 
@@ -2827,7 +2670,6 @@ public class Square: Rectangle {
 }
 ```
 
----
 
 #### Problema: cuadrados como rectángulos
 
@@ -2837,7 +2679,6 @@ public class Square: Rectangle {
 - `Square` heredará los métodos accesores de `Rectangle`.
 - Así que hacemos lo siguiente...
 
----
 
 ### Ejemplo: rectángulos versión 2
 
@@ -2862,7 +2703,6 @@ public class Square: Rectangle {
 
 Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
 
----
 
 - El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
 
@@ -2883,7 +2723,6 @@ Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-
 
 - Podría argumentarse que el error era que los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`.
 
----
 
 ### Ejemplo: rectángulos versión 3
 
@@ -2908,7 +2747,6 @@ public class Rectangle
 
 Nota: [Métodos redefinibles con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
 
----
 
 ```csharp
 public class Square: Rectangle
@@ -2930,7 +2768,6 @@ public class Square: Rectangle
 }
 ```
 
----
 
 #### Extensión y ocultación de métodos
 
@@ -2940,8 +2777,6 @@ Sin embargo, cuando la creación de una clase derivada provoca cambios en la cla
 
 El LSP pone en evidencia que la relación **es-un** tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
 
-
----
 
 Ahora parece que funcionan `Square` y `Rectangle`, que matemáticamente quedan bien definidos.
 
@@ -2957,7 +2792,6 @@ void g(Rectangle r)
 }
 ```
 
----
 
 ¿Qué pasa si llamamos a `g(new Square(3))`?
 
@@ -2965,7 +2799,6 @@ El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el a
 
 __Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
 
----
 
 ¿Quién tiene la culpa?
 
@@ -2975,14 +2808,11 @@ __Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`)
 
 Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución por sí sola, sino en términos de los _supuestos razonables_ que hagan los usuarios del diseño.
 
----
 
 ### Ejercicios de LSP
 
 - Robert C. Martin & Micah Martin: [Agile Principles, Patterns and Practices in C#](#unclebob), Prentice Hall, 2006
 - Ejemplo de violación de LSP en [frameworks de videojuegos](https://medium.com/ingeniouslysimple/entities-components-and-systems-89c31464240d): Las interfaces HasPhysics, Collidable, Controllable incluyen una dependencia (por herencia) hacia Renderable, que no siempre es cierta (por ejemplo, para un objeto invisible). Solución: arquitectura Entity-Component-System.
-
----
 
 
 ### Diseño por Contrato
@@ -2998,7 +2828,6 @@ Meyer*:
   - las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas
   - las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas
 
----
 
 #### Ejemplo: rectángulos
 
@@ -3011,8 +2840,6 @@ Meyer*:
     `assert(Width==w);`
 
 - La postcondición de `Square::SetWidth(double w)` viola el  contrato de la clase base porque es más débil que la de `Rectangle`
-
----
 
 
 ## Principio de Inversión de Dependencias
@@ -3028,7 +2855,6 @@ Ambos deben depender de abstracciones.
 >
 > –– Robert C. Martin
 
----
 
 ### Ejemplo: estructura en capas
 
@@ -3039,20 +2865,17 @@ __Diseño inicial__:
 - Las dependencias son transitivas
 - _Policy_ depende de todo lo que depende _Mechanism_.
 
----
 
 __Diseño invertido__:
 
 ![](./img/dip-2.png)
 
----
 
 - Cada nivel declara una interfaz para lo que necesita de otros niveles inferiores
 - Los niveles inferiores dependen de interfaces definidas en los superiores
 - El cliente puede definir la abstracción que necesita (ISP)
 - Cada nivel es intercambiable por un sustituto
 
----
 
 ### Heurística _ingenua_
 
@@ -3067,8 +2890,6 @@ Gracias a la __introspección__ o la carga dinámica de clases, los lenguajes de
 Hay clases concretas que no cambian, como `String`, así que no hace ningún daño depender de ellas.
 
 <!--
----
-
 # Para profundizar sobre patrones
 
 - Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
@@ -3083,9 +2904,6 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
     - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
 - Lewis y Fowler – [Microservicios](https://martinfowler.com/articles/microservices.html)
 -->
-
----
-
 <!-- Source: patrones.md -->
 # DISEÑO DE SISTEMAS SOFTWARE
 
@@ -3096,7 +2914,6 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 2. **Patrones de diseño**
 3. Arquitectura de software
 
----
 
 # PATRONES DE DISEÑO
 
@@ -3104,12 +2921,8 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 2. Patrones del GoF
 3. Otros patrones específicos
 
----
-
 
 ## Introducción
-
----
 
 
 ### Origen de los patrones de diseño
@@ -3126,7 +2939,6 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 - El libro recomienda que las decisiones sobre la construcción de edificios se tomen de acuerdo al entorno preciso de cada proyecto.
 -->
 
----
 ### Diseño de software con patrones
 
 ![Background image](./img/patronesGOF.jpg)
@@ -3135,7 +2947,6 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 
 - Un grupo de expertos (_Gang of Four_) se basó en el trabajo de Alexander y lo aplicó al diseño de software, presentando el libro *Design Patterns* con un total de 23 patrones.
 
----
 ### Patrones de diseño
 
 - Patrón de diseño: Una **solución general** a un **problema general** que puede adaptarse a un problema concreto
@@ -3150,13 +2961,11 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 
 - Han surgido nuevos patrones **específicos** de dominio: patrones de interfaces de usuario, patrones para la integración de aplicaciones empresariales, patrones de flujos de trabajo BPMN, patrones de concurrencia, etc.
 
----
 
 ## Patrones del Gang of Four
 
 ![](./img/patronesGOF.jpg)
 
----
 
 ### Patrones creacionales
 
@@ -3171,7 +2980,6 @@ Pero hay más...
 - *Builder*
 - *Singleton*
 
----
 
 ### Patrones estructurales
 
@@ -3188,7 +2996,6 @@ Pero hay más...
 - *Flyweight*
 - *Proxy*
 
----
 
 ### Patrones de comportamiento
 
@@ -3204,14 +3011,10 @@ Pero hay más...
 - *Template method*, *Chain of Responsibility*, *Interpreter*
 - *Iterator*, *Mediator*, *Memento*, *State*
 
----
-
 
 ### [Factory Method](https://refactoring.guru/es/design-patterns/factory-method)
 
 ![Factory Method, center](./img/guru/factory-method-mini-2x.png)
-
----
 
 
 #### Ejemplo: Juego de laberinto
@@ -3286,7 +3089,6 @@ show Puerta members
 
 </details>
 
----
 
 ```java
 public interface Direccion {   // Cuando no existía "enumerate" en Java
@@ -3302,7 +3104,6 @@ public class Laberinto {
     Sala getSalaNum(int numSala) { ... };
 }
 ```
----
 
 ```java
 public abstract class Sitio {  // Podría ser una interfaz
@@ -3321,7 +3122,6 @@ public class Sala extends Sitio {
 }
 ```
 
----
 
 ```java
 public class Pared extends Sitio {
@@ -3340,7 +3140,6 @@ public class Puerta extends Sitio {
 }
 ```
 
----
 
 ```java
 Laberinto crearLaberinto () {
@@ -3362,14 +3161,12 @@ Laberinto crearLaberinto () {
 }
 ```
 
----
 
 #### Críticas
 
 - Creación poco flexible: instancias concretas cableadas.
 - Supongamos $\exists$ SalaHechizada, PuertaHechizada. ¿Cómo cambiamos `crearLaberinto`?
 
----
 
 #### Método de factoría
 
@@ -3377,13 +3174,11 @@ Laberinto crearLaberinto () {
 
 - Permite que una clase delegue en sus subclases las instanciaciones.
 
----
 
 #### Factory method: Estructura
 
 ![](./img/guru/factory-method-structure-2x.png)
 
----
 
 1. El **Producto** declara la interfaz, que es común a todos los objetos que puede producir la clase creadora y sus subclases.
 
@@ -3392,8 +3187,6 @@ Laberinto crearLaberinto () {
 3. La clase **Creadora** declara el método fábrica que devuelve nuevos objetos de producto. Es importante que el tipo de retorno de este método coincida con la interfaz de producto.
 
 4. Los **Creadores Concretos** sobrescriben el Factory Method base, de modo que devuelva un tipo diferente de producto.
-
----
 
 
 <!--
@@ -3457,8 +3250,6 @@ n2 . Product
 ```
 
 </details>
-
----
 -->
 
 #### Factory method: Ventajas
@@ -3467,7 +3258,6 @@ n2 . Product
 - SRP: Se puede mover el código de creación de producto a un lugar del programa, haciendo que el código sea más fácil de mantener.
 - OCP: Se pueden incorporar nuevos tipos de productos en el programa sin descomponer el código cliente existente.
 
----
 
 #### Implementación de `JuegoLaberinto`
 
@@ -3485,7 +3275,6 @@ public class JuegoLaberinto {
 }
 ```
 
----
 
 ```java
 Laberinto crearLaberinto () {
@@ -3507,7 +3296,6 @@ Laberinto crearLaberinto () {
 }
 ```
 
----
 
 ```java
 public class JuegoLaberintoMinado extends JuegoLaberinto {
@@ -3530,20 +3318,16 @@ public class JuegoLaberintoHechizado extends JuegoLaberinto {
 }
 ```
 
----
-
 
 ### [Strategy](https://refactoring.guru/es/design-patterns/strategy)
 
 ![Strategy, center](./img/guru/strategy-mini-2x.png)
 
----
 
 #### Strategy: Estructura
 
 ![](./img/guru/strategy-structure-2x.png)
 
----
 
 #### Strategy
 
@@ -3559,8 +3343,6 @@ public class JuegoLaberintoHechizado extends JuegoLaberinto {
 **Desventajas:**
 
 - Sobrecarga de la comunicación _Context_-_Strategy_
-
----
 
 
 ### [Command](https://refactoring.guru/es/design-patterns/command)
@@ -3646,13 +3428,11 @@ end note
 </details>
 -->
 
----
 
 #### Command: Estructura
 
 ![](./img/guru/command-structure-2x.png)
 
----
 
 #### Command: Comportamiento
 
@@ -3695,7 +3475,6 @@ deactivate cmdDraw
 
 </details>
 
----
 
 #### Versión cliente/servidor
 
@@ -3753,9 +3532,6 @@ activate aReceiver
 </details>
 
 
----
-
-
 ### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
 
 ![Adapter, center](./img/guru/adapter-mini-2x.png)
@@ -3804,19 +3580,16 @@ end note
 </details>
 -->
 
----
 
 #### Adaptador de objetos: Estructura
 
 ![](./img/guru/object-adapter-structure-2x.png)
 
----
 
 #### Adaptador de clases: Estructura
 
 ![](./img/guru/class-adapter-structure-2x.png)
 
----
 
 #### Adaptador de clases vs. objetos
 
@@ -3829,8 +3602,6 @@ end note
 
 - Un adapter puede funcionar con varios objetos _Service_ o _Adaptee_
 - Es más complicado heredar el comportamiento del objeto adaptado
-
----
 
 
 ### [Composite](https://refactoring.guru/es/design-patterns/composite)
@@ -3932,13 +3703,11 @@ end note
 </details>
 -->
 
----
 
 #### Composite: Estructura
 
 ![](./img/guru/composite-structure-2x.png)
 
----
 
 #### Composite
 
@@ -3953,8 +3722,6 @@ end note
 **Desventajas:**
 
 - Si se desea restringir el tipo de objetos que pueden formar parte de otros $\Rightarrow$ Necesidad de comprobaciones dinámicas
-
----
 
 
 ### [Decorator](https://refactoring.guru/es/design-patterns/decorator)
@@ -4052,13 +3819,11 @@ end note
 </details>
 -->
 
----
 
 #### Decorator: Estructura
 
 ![](./img/guru/decorator-structure-2x.png)
 
----
 
 #### Ejemplo: `EnhancedWriter` original
 
@@ -4103,7 +3868,6 @@ show methods
 
 </details>
 
----
 
 #### Ejemplo: `EnhancedWriter` ampliado – herencia fuera de control
 
@@ -4156,7 +3920,6 @@ show methods
 
 </details>
 
----
 
 #### Ejemplo: `EnhancedWriter` ampliado –  herencia fuera de control
 
@@ -4218,7 +3981,6 @@ show methods
 
 </details>
 
----
 
 #### Decorator
 
@@ -4232,26 +3994,19 @@ show methods
 - Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
 - Provoca la creación de muchos objetos pequeños y complica la depuración
 
----
-
 
 #### ¿Diferencia entre Strategy y Decorator?
-
----
 
 
 #### Diferencia entre Strategy y Decorator
 
 El _decorator_ cambia la piel, el _strategy_ cambia las tripas
 
----
-
 
 ### [Observer](https://refactoring.guru/es/design-patterns/observer)
 
 ![Observer, center](./img/guru/observer-mini-2x.png)
 
----
 
 <!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNVEGO2zAMvOsVPHaBbh6QBsEWPfVa9AOyTceCbdEr0XGDtn8vJUty4rRAbzYpDmeGlN48a8fzOKh60N7Dl8Gg5fTz1V6pR5dTNI7aNnA6GcvoWl3j-Zxy37BGc707amuHjKlEqYQER_DIKfrhRWXII-APrGfGh9hsG5JAxpaIrtmQjYceGuwA9rkEpFZx8Hre-G6hPefS9vT6lMtyYtkaKu78Ohye9VtihAFbBmqzx987TJ9gPDj0E1lvqgGhJTHSoWZjL6D3aBAQxcaYNbyZf1Ao2dAqNayImcbQsugNTYuy3tLioaMFmNQkIyU3AsuJhVwPFrHBJqRq7dwNaOaYdPg-o-cDfLY3iPOWAzbMBrQXuv9BZ-9PtGKnssHWWAyAlbFN0FohL4jSyaZFUNGNrSEEnDybUfexOtGFSsjqYRAgVXYlWBk17ZsHxUbKDUfZ1U2lWiCLQIJODhMLL7EI8k_hefD5Pt3T7GhovNJQb8MFzcrTiDCR3DQxtfcBX-UjTJHfTQVq9wILybAV24UYkTtqnlgxTessHhe4QZmpC9ZZKBc9rCQIeKbpZfqFj2yviWqCl47mS_dIAFYCH9XSmbpb9QTaaQtFTt69ULaa-sTWmUvHf9md43ETGnxNf6lnIhb9y6-Hf1FpYIVCWXVo56E1ojP4nYz9pNQ0V4Op4UqmuZP1UxWEQ3mZfquN-Zt8ydP6ByLe5Hg)
@@ -4336,13 +4091,11 @@ end note
 
 - Define una dependencia 1:N entre objetos de modo que cuando el estado de un objeto cambia, se les notifica el cambio a todos los que de él dependen y estos se actualizan de forma automática.
 
----
 
 #### Observer: Estructura
 
 ![](./img/guru/observer-structure-2x.png)
 
----
 
 #### Observer: roles
 
@@ -4357,7 +4110,6 @@ Con `Subject` separado:
   - `ConcreteSubscriber` $\dashrightarrow$ `Observable`
   - `ConcreteSubscriber` $\dashrightarrow$ `Subject`
 
----
 
 #### Observer: Detalles de implementación
 
@@ -4365,8 +4117,6 @@ Con `Subject` separado:
     - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
     - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
 
-
----
 
 #### Oberver: Comportamiento (síncrono) – disparo externo
 
@@ -4412,7 +4162,6 @@ deactivate anotherObserver
 
 </details>
 
----
 
 #### Oberver: Comportamiento (síncrono) – autodisparo
 
@@ -4461,7 +4210,6 @@ deactivate anObservable
 
 </details>
 
----
 
 #### Observer: Detalles de implementación
 
@@ -4470,27 +4218,22 @@ deactivate anObservable
   - `update(this)` para que el suscriptor extraiga la información necesaria pidiéndosela al publicador
   - `ConcreteSubscriber.setPublisher()` para vincularlos permanentemente (opción menos flexible)
 
----
-
 
 ### [Visitor](https://refactoring.guru/es/design-patterns/visitor)
 
 ![Visitor, center](./img/guru/visitor-mini-2x.png)
 
----
 
 #### Visitor
 
 - Representa una **operación** que se lleva a cabo sobre los elementos de una **estructura** de objetos
 - Permite **definir nuevas** operaciones sin modificar las clases de los **elementos** sobre las que opera.
 
----
 
 #### Visitor: Estructura
 
 ![](./img/guru/visitor-structure-2x.png)
 
----
 
 #### Visitor: Comportamiento
 
@@ -4539,7 +4282,6 @@ deactivate anElementB
 
 </details>
 
----
 
 **Ventajas:**
 - Permite implementar el _double dispatch_: la operación que se ejecuta tras el `accept()` depende del tipo de `Visitor` y del tipo de `Element`
@@ -4550,20 +4292,16 @@ deactivate anElementB
 - Rompe la encapsulación (?)
 - Los tipos de `Element` visitados deben ser estables
 
----
-
 
 ### [State](https://refactoring.guru/design-patterns/state)
 
 ![State, center](./img/guru/state-mini-2x.png)
 
----
 
 #### State: Ejemplo
 
 ![](./img/guru/state-example.png)
 
----
 
 ```scala
 class Document {
@@ -4593,23 +4331,19 @@ class Document {
 }
 ```
 
----
 
 #### State: Estructura
 
 ![](./img/guru/state-structure.png)
 
----
 
 #### Diferencia con Strategy
 
 - Cada estado puede ser consciente de la existencia de otros estados e iniciar transiciones de estado
 - Cada estrategia desconoce a las otras
 
----
 ## Otros patrones específicos
 
----
 
 ### Data Acess Object (DAO)
 
@@ -4622,7 +4356,6 @@ class Document {
 ![](./img/dao_code.png)
 -->
 
----
 ### Data Transfer Object (DTO)
 
 - Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*).
@@ -4634,7 +4367,6 @@ class Document {
 ![](./img/dto_code.png)
 -->
 
----
 
 # Para profundizar sobre patrones
 - Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
@@ -4643,7 +4375,6 @@ class Document {
     - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
 - Peter Norvig – [Design Patterns in Dynamic Programming](http://www.norvig.com/design-patterns/design-patterns.pdf): Implementaciones más simples para los patrones de diseño del GoF en lenguajes dinámicos
 
----
 # Para profundizar sobre patrones
 
 - David Arno – [Are design patterns compatible with modern software techniques?](http://www.davidarno.org/2013/06/17/are-design-patterns-compatible-with-modern-software-techniques/)

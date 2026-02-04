@@ -140,7 +140,15 @@ III. Arquitectura de software
 
 <!-- paginate: false -->
 
-# PRINCIPIOS DE DISEÑO <br> Orientado a Objetos
+<style scoped>
+h2 {
+  text-align: center;
+}
+</style>
+
+# PRINCIPIOS DE DISEÑO
+
+## Orientado a objetos
 
 ---
 
@@ -181,12 +189,14 @@ li {
 <!-- paginate: false -->
 
 <style scoped>
-h2 {
+h2,h3 {
   text-align: center;
 }
 </style>
 
-## CASO PRÁCTICO 1 <br> Identificadores
+## CASO PRÁCTICO 1
+
+### Identificadores
 
 ---
 
@@ -568,12 +578,14 @@ h2 {
 <!-- paginate: false -->
 
 <style scoped>
-h2 {
+h2,h3 {
   text-align: center;
 }
 </style>
 
-## CASO PRÁCTICO 2 <br> Pruebas unitarias
+## CASO PRÁCTICO 2
+
+### Pruebas unitarias
 
 ---
 
