@@ -1,18 +1,22 @@
 ## Índice
 
+- [Fundamentos de Diseño](#fundamentos-de-diseño)
 - [Principios de Diseño](#principios-de-diseño)
 - [Patrones de Diseño](#patrones-de-diseño)
 
-<!-- Source: principios.md -->
+<!-- Source: fundamentos.md -->
 # DISEÑO DE SISTEMAS SOFTWARE
 
 
 ## INTRODUCCIÓN
 
 
+### Problemáticas
+
 ![Background image](./img/design-problems.png)
 
-### Problemáticas
+<div class="two-cols">
+<div class="left">
 
 - Variabilidad
 - Acoplamiento
@@ -21,34 +25,54 @@
 - Reutilización
 - Flexibilidad
 
+</div>
+<div class="right">
 
-![Background image](./img/design-principles.png)
+- Sobreingeniería
+- Deuda técnica
+- Carga cognitiva
+- Rendimiento
+- Resiliencia
+- Costes
 
-### Principios
-
-- Ocultación: OCP, ISP, LSP
-- Cohesión: SRP
-- Ortogonalidad: DIP
+</div>
+</div>
 
 
-![Background image](./img/design-techniques.png)
+<div class="cols">
+<div>
 
 ### Técnicas
 
 - Refactoring
-- Bibliotecas y frameworks
-- Contratos
 - Inyección de dependencias
+- Contratos
+- Aspectos
 - Patrones
+- Frameworks
+
+</div>
+<div>
+
+### Principios
+
+- SRP: Single Responsibility Principle
+- OCP: Open/Closed Principle
+- ISP: Interface Segregation Principle
+- LSP: Liskov Substitution Principle
+- DIP: Dependency Inversion Principle
+
+</div>
+</div>
 
 
 ### Paradigmas
 
 - Estructurado (E. W. Dijsktra)
-- Orientado a Objetos (O. J. Dahl & K. Nygaard)
+- Orientado a objetos (O. J. Dahl & K. Nygaard)
 - Funcional (J. McCarthy)
-- Orientado a Aspectos (G. Kiczales)
-- [Orientado a Datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
+- Orientado a aspectos (G. Kiczales)
+- [Orientado a datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
 
 
 #### Preguntas
@@ -72,14 +96,13 @@ _¿De qué fecha data cada paradigma?_
 
 ### Bloques
 
-I. Principios de diseño OO
-II. Patrones de diseño
-III. Arquitectura de software
+- I. Fundamentos de diseño
+- II. Principios de diseño OO
+- III. Patrones de diseño
+- IV. Arquitectura de software
 
 
-# PRINCIPIOS DE DISEÑO
-
-## Orientado a objetos
+# FUNDAMENTOS DE DISEÑO
 
 
 <div class="cols">
@@ -87,21 +110,25 @@ III. Arquitectura de software
 
 ## Casos prácticos
 
-Caso 1. Identificadores
-Caso 2. Framework de pruebas unitarias
-Caso 3. Caballeros de la mesa redonda
-Caso 4. Figuras geométricas
+<ul class="no-bullets">
+<li> Caso 1. Identificadores </li>
+<li> Caso 2. Framework de pruebas unitarias </li>
+<li> Caso 3. Caballeros de la mesa redonda </li>
+<li> Caso 4. Figuras geométricas </li>
+</ul>
 
 </div>
 <div>
 
-
 ## Conceptos teóricos
 
+- Cohesión y acoplamiento
 - Bibliotecas y frameworks
-- Inyección de dependencias
-- Reutilización
+- Inyección de dependencias / Inversión de control
+- Reutilización y flexibilidad
 - Principios SOLID
+- Orientación a aspectos
+- Diseño por contratos
 
 </div>
 </div>
@@ -598,10 +625,6 @@ public class SaludoTest extends TestCase {
 
 ### Diseño del framework jUnit
 
-<!--
- ![](./img/junit-design-1.png)
--->
-
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNUkGKwzAMvPsVPu5SnBcsJUtLP7BdyFU4KgRSu0gyPTT9-8Z2GndND71ZM9LMSLhlAZJwHpUanCCdwKI-Iou-Ka031gcnsdwBI398RoyCmx93pewIzPqbGSm332YxGexdbyCBRwqYZmriACO_ZrquexaP1j9hEMxxoO8jknMsRaIrLUsIgqU1R86PgkrcKy5YSq7N497Z-7UGo_xeHvNAe391tcQerScQT2-cdLU04WKm7XLcBOuvqWnWTBWUjqDKtbwx20RkyRKhaaaF-I-bJzfVouvnL_EHZsWsZA)
 
 <details>
@@ -681,10 +704,6 @@ Diseño de pruebas unitarias de `ShoppingCart` para:
 <div>
 
 #### Utilización del framework jUnit
-
-<!--
- ![](./img/junit-design-2.png)
--->
 
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9kE0OgkAMhfc9xQsrjeECLIyRG6gXmAwFR6BDZkpYKHd3RE2MJu6a7_007S6qCTr2HXVcK9QjuOasqFxgq84L0WBsaxpGdhnFaVHUwfQ8-dBmuBLgRDnUxjJOHHVBwMb6UfQBShM5rtZPGkZZxpnm394kCodnqe1MjNin7KPjsCi4phC-YZ5vl8U0A0THsx8GJ02ZjnpvR175SfLby_fHssWnSLRjqdJr7seiYek)
 
@@ -905,30 +924,42 @@ public class ShoppingCartTest {
 </div>
 
 
+<div class="cols">
+<div>
+
 #### EcommerceTestSuite con jUnit 3
 
 ```java
-  public class EcommerceTestSuite extends TestSuite {
-      //...
-      public static Test suite() {
-          TestSuite suite = new TestSuite();
-          suite.addTest(ShoppingCartTest.suite());
-          suite.addTest(CreditCardTest.suite());
-          // etc.
-          return suite;
-      }
+public class EcommerceTestSuite extends TestSuite {
+  //...
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(ShoppingCartTest.suite());
+    suite.addTest(CreditCardTest.suite());
+    // etc.
+    return suite;
   }
+}
 ```
+
+</div>
+<div>
 
 #### EcommerceTestSuite con jUnit 4
 
 ```java
-  @RunWith(Suite.class)
-  @SuiteClasses({ ShoppingCartTest.class, CreditCardTest.class })
-  public class EcommerceTestSuite {
-      //...
-  }
+@RunWith(Suite.class)
+@SuiteClasses({
+    ShoppingCartTest.class,
+    CreditCardTest.class
+})
+public class EcommerceTestSuite {
+    //...
+}
 ```
+
+</div>
+</div>
 
 
 #### Pregunta
@@ -1011,10 +1042,6 @@ TestCase -left-> TestResult
 
 </details>
 
-<!--
- ![](./img/junit-patterns.png)
--->
-
 </div>
 <div>
 
@@ -1070,7 +1097,7 @@ En la arquitectura del framework se observan diversos patrones:
 
 ### Framework vs. biblioteca
 
-- API orientado a objetos vs. API generalmente funcional
+- API orientado a objetos vs. API basado en funciones (en general)
 - Flujo de control invertido
 - Programador _cliente_ (código específico) vs. programador de _API_ (código reutilizable)
 
@@ -1088,9 +1115,17 @@ En la arquitectura del framework se observan diversos patrones:
   - Cuando no se pueden eliminar las dependencias, mantener las abstractas e __inyectar__ las concretas.
 
 
+#### Dependencias
+
 > Coupling is the enemy of change, because it links together things that must change in parallel
 >
 > D. Thomas & A. Hunt, [The Pragmatic Programmer](https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/), 20th Anniversary Edition, 2019
+
+- La reducción de dependencias debe ser estratégica, es decir, centrada en los puntos del sistema que cambian con distinta frecuencia.
+
+- Si A y B cambian al mismo tiempo, no hay demasiado problema porque A $\rightarrow$ B
+
+- Si cambian con distinta frecuencia...
 
 
 #### Inyección de dependencias
@@ -1103,10 +1138,10 @@ Una clase o módulo no debería configurar sus dependencias estáticamente, sino
 ### Caballeros de la mesa redonda
 
 
-## Ejemplo: tomado de [Spring in Action](bibliografia.html#spring)
-
-
 Añadir pruebas unitarias al programa siguiente:
+
+<div class="cols">
+<div>
 
 ```java
 public class KnightOfTheRoundTable {
@@ -1124,12 +1159,17 @@ public class KnightOfTheRoundTable {
 }
 ```
 
+ </div>
+<div>
 
 ```java
 public class HolyGrailQuest {
-  public HolyGrailQuest() { /*...*/ }
+  public HolyGrailQuest() {
+    /*...*/
+  }
 
-  public HolyGrail embark() throws GrailNotFoundException {
+  public HolyGrail embark()
+          throws GrailNotFoundException {
     HolyGrail grail = null;
     // Look for grail ...
     return grail;
@@ -1137,6 +1177,9 @@ public class HolyGrailQuest {
 
 }
 ```
+
+</div>
+</div>
 
 
 ### Diseño de pruebas con jUnit 3
@@ -1276,12 +1319,17 @@ package "roundTable::test" {
 
 Ocultar la implementación detrás de una interfaz:
 
+<div class="cols">
+<div>
+
 ```java
 public interface Knight {
-  Object embarkOnQuest() throws QuestFailedException;
+  Object embarkOnQuest()
+          throws QuestFailedException;
 }
 
-public class KnightOfTheRoundTable implements Knight {
+public class KnightOfTheRoundTable
+             implements Knight {
   private String name;
   private Quest quest;
 
@@ -1289,12 +1337,15 @@ public class KnightOfTheRoundTable implements Knight {
     this.name = name;
     quest = new HolyGrailQuest();
   }
-  public Object embarkOnQuest() throws QuestFailedException {
+  public Object embarkOnQuest()
+          throws QuestFailedException {
     return quest.embark();
   }
 }
 ```
 
+</div>
+<div>
 
 ```java
 public interface Quest {
@@ -1304,13 +1355,21 @@ public interface Quest {
 
 public class HolyGrailQuest implements Quest {
   public HolyGrailQuest() { /*...*/ }
-  public Object embark() throws QuestFailedException {
-    // Do whatever it means to embark on a quest
+  public Object embark()
+          throws QuestFailedException {
+    // Do whatever it means
+    // to embark on a quest
     return new HolyGrail();
   }
 }
 ```
 
+</div>
+</div>
+
+
+<div class="cols">
+<div>
 
 #### Dependencias
 
@@ -1369,6 +1428,8 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 
 </details>
 
+</div>
+<div>
 
 #### Pegas:
 
@@ -1377,16 +1438,24 @@ KnightOfTheRoundTableTest ..> HolyGrail #red
 
 ¿Debe ser el caballero responsable de obtener un desafío?
 
+</div>
+</div>
+
+
+<div class="cols">
+<div>
 
 ```java
-public class KnightOfTheRoundTable implements Knight {
+public class KnightOfTheRoundTable
+               implements Knight {
   private String name;
   private Quest quest;
 
   public KnightOfTheRoundTable(String name) {
     this.name = name;
   }
-  public Object embarkOnQuest() throws QuestFailedException {
+  public Object embarkOnQuest()
+          throws QuestFailedException {
     return quest.embark();
   }
   public void setQuest(Quest quest) {
@@ -1395,14 +1464,10 @@ public class KnightOfTheRoundTable implements Knight {
 }
 ```
 
+</div>
+<div>
 
-- El caballero sólo sabe del desafío a través de su interfaz `Quest`.
-
-- Puede asignársele cualquier implementación de `Quest`
- (`HolyGrailQuest`, `KillDragonQuest`, etc.)
-
-
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNp1kLEKwjAURfd8xaOTDkIadckgHQQHJz8htKGNxpeSvCL-vVECMUG3B_eew-V1gZSn5W4Zm-NhejMrJDB41T0534Lzg_bQ8iKenH2evDL2suhAqSP4T4VI8baMb8bao1ejw2_Hriw18oxmnKhJ8Z4DY3nb5lAvkYD6UVWyRELQ9CmuSm6dEfFG6nGVVvzVVmD0dhqH-N4Xo7N8xg)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpzKC5JLCopzc3h4ioAMjKTMwsS80oUMvOyUpNL8osMFfKLUlKLFAwNUKQz8nMq3YsSM3MCS1OLS6BqjAywGmEElTZGlc7OzMlxKUpMz89DNsMEVZGSlXdeZnpGiRJU2tSAiwvhNF07dIdYKeSllqMpQZhhpVCcWgJWqIGqTxOhxQikBd1taMYa4TQWTSPQXIfUvBRg6AIATWx8pg)
 
 <details>
 <summary>PlantUML source</summary>
@@ -1429,9 +1494,13 @@ injector2 -> ":Knight" : setQuest(killDragonQuest)
 
 </details>
 
-<!--
-![](./img/di-knight.png)
--->
+</div>
+</div>
+
+- El caballero sólo sabe del desafío a través de su interfaz `Quest`.
+
+- Puede asignársele cualquier implementación de `Quest`
+ (`HolyGrailQuest`, `KillDragonQuest`, etc.)
 
 
 - Parece que no hay dependencia entre `KnightOfTheRoundTable` y `HolyGrail` porque `embark()` se ha definido como que devuelve un `Object`
@@ -1440,12 +1509,6 @@ Ejercicio: Discutir el tipo de retorno `Object` de `embarkOnQuest`:
 
 - Puede provocar `ClassCastException`
 - Solución propuesta: rediseñar la interfaz `Quest`
-
-<!--
-## Inyección de dependencias
-
-![](./img/dep-injection.png)
--->
 
 
 ### Inversión de control
@@ -1487,39 +1550,57 @@ Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 
 ### Factorizar una función
 
+<div class="cols">
+<div>
+
 ![](./img/misuse-reuse-1.png)
 
+</div>
+<div>
 
 ![](./img/misuse-reuse-2.png)
 
-### Ventajas (supuestas) de reutilizar:
+</div>
+</div>
+
+#### Ventajas (supuestas) de reutilizar
 
 __Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightarrow$ ahorro = $c \times (s-1)$
 
 
-### Amenazas (reales) a la reutilización:
+### Amenazas (reales) a la reutilización
+
+<div class="cols">
+<div>
 
 ![](./img/misuse-reuse-3.png)
 
+</div>
+<div>
 
-- Realmente el ahorro depende de la __complejidad__. Y muchas veces, la complejidad de la función está exponencialmente relacionada con el número de sistemas.
-- Con un único punto de fallo, si `Function 1` falla, todos los sistemas pueden fallar a la vez.
+- Realmente el ahorro depende de la __complejidad__ de la función, que suele estar relacionada exponencialmente con el número de sistemas.
+- Con un único punto de fallo, si $Function 1$ falla, todos los sistemas pueden fallar a la vez.
 - La seguridad es inversamente proporcional a la complejidad del sistema.
-<!--
- - Se incrementan los costes de llevar los sistemas a la nube.
--->
+
+</div>
+</div>
 
 
 ### Conclusión sobre la reutilización
 
+- Aplicar el principio __YAGNI__ (_You Ain't Gonna Need It_)
 - No crear funciones reutilizables en primer lugar
+- No hacer sobreingeniería
+- Cuidado con las abstracciones prematuras
+- Comprobar el acoplamiento semántico entre sistemas
+- No aplicar patrones de diseño antes de tiempo
+- Aplicar YAGNI es un pedir un _préstamo_ (asumir una deuda técnica conscientemente)
 
-- Aplicar el principio __YAGNI__: __You Ain't Gonna Need It__
+**Acoplamiento semántico**: A veces, dos componentes parecen idénticos, pero cambian por razones de negocio diferentes. Si los unificas para reutilizar, creas un acoplamiento semántico. En fases iniciales, es más barato duplicar que crear una mala abstracción, porque el código duplicado es fácil de borrar o cambiar independientemente, mientras que una abstracción incorrecta ata de manos a todo el sistema
+<!-- Source: principios.md -->
+# PRINCIPIOS DE DISEÑO
 
-
-## CASO PRÁCTICO 4
-
-### Figuras geométricas
+## ORIENTADO A OBJETOS
 
 
 ## Principios SOLID
@@ -1551,12 +1632,6 @@ En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/wa
 SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html#demarco)
 
 
-<!--
-**Notes**
-
- Los módulos enmarañados que nunca cambian no son problemáticos
--->
-
 SRP es aplicación directa de la [ley de Conway](http://www.melconway.com/Home/Conways_Law.html):
 > Any organization that designs a system (...) will produce a design whose structure is a copy of the organization's communication structure.
 > –– M. Conway, _Datamation_, April 1968
@@ -1566,6 +1641,14 @@ SRP es aplicación directa de la [ley de Conway](http://www.melconway.com/Home/C
 - Es necesario tener conocimiento del __dominio__ para poder dividir bien las responsabilidades
 
 - Tiene que ver con la __variabilidad__ de los requisitos
+
+>[!NOTE]
+> Los módulos enmarañados que nunca cambian no son problemáticos
+
+
+## CASO PRÁCTICO 4
+
+### Figuras geométricas
 
 
 ### Ejemplo: Shapes versión 1 en Java
@@ -1648,16 +1731,15 @@ Patrón de diseño __Visitor__
 - Buscar información de los patrones _ActiveRecord_ y _Data Access Object (DAO)_.
 - Discutir si cumplen o violan el SRP.
 
-<!--
-**Notes**
-
+<details>
+<summary>ActiveRecord y SRP</summary>
 En general, ActiveRecord tiene la responsabilidad de modelar los datos en la base de datos, proporcionar una interfaz para acceder y manipular esos datos, y también puede incluir la lógica de negocio necesaria para trabajar con los datos.
 
 Desde una perspectiva del principio de responsabilidad única (SRP), ActiveRecord no cumple completamente con este principio porque tiene varias responsabilidades. Específicamente, ActiveRecord tiene la responsabilidad de:
+- Representar y manipular datos en la base de datos
+- Proporcionar una interfaz para acceder y manipular esos datos
+- Incluir la lógica de negocio necesaria para trabajar con los datos
 
-Representar y manipular datos en la base de datos
-Proporcionar una interfaz para acceder y manipular esos datos
-Incluir la lógica de negocio necesaria para trabajar con los datos
 Sin embargo, a menudo se considera que ActiveRecord sigue una variante del principio de responsabilidad única, llamada "Principio de responsabilidad única de dominio" (Single Responsibility Principle of Domain, en inglés), que establece que una clase debe tener una única responsabilidad dentro del dominio de la aplicación. En este sentido, ActiveRecord tiene la responsabilidad de modelar los datos dentro del dominio de la aplicación.
 
 El patrón Data Access Object (DAO) es un patrón de diseño de software que se utiliza comúnmente en el desarrollo de aplicaciones para separar la lógica de negocio de la lógica de acceso a datos.
@@ -1665,7 +1747,7 @@ El patrón Data Access Object (DAO) es un patrón de diseño de software que se 
 El objetivo principal del patrón DAO es proporcionar una interfaz unificada para acceder a los datos desde una variedad de fuentes de datos, como una base de datos, un archivo o un servicio web, entre otros. La clase DAO encapsula la lógica de acceso a datos y proporciona métodos para realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) en la fuente de datos correspondiente.
 
 Desde una perspectiva del principio de responsabilidad única (SRP), el patrón DAO cumple con este principio. Esto se debe a que la clase DAO tiene una única responsabilidad, que es la de encapsular la lógica de acceso a datos y proporcionar una interfaz unificada para acceder a los datos. La lógica de negocio se encuentra en otra clase o conjunto de clases, lo que permite separar las responsabilidades y facilita la reutilización del código.
--->
+</details>
 
 
 ### Example: Circle class
@@ -2060,20 +2142,10 @@ class Shape
 - ISP es a las interfaces lo que SRP es a clases y métodos
 - Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos (Ruby, Scala) ayudan algo más a no violar el ISP (v.g. con los _mixins_)
 
-<!--
-**Notes**
-
-En los lenguajes de tipos estáticos, los tipos deben ser declarados y especificados en tiempo de compilación. Esto significa que las interfaces deben ser definidas de antemano, antes de que se implementen las clases que las utilizan. En algunas ocasiones, esto puede llevar a la definición de interfaces grandes y complejas que contienen muchos métodos que no son necesarios para todos los clientes que utilizan la interfaz.
+>[!NOTE]
+>En los lenguajes de tipos estáticos, los tipos deben ser declarados y especificados en tiempo de compilación. Esto significa que las interfaces deben ser definidas de antemano, antes de que se implementen las clases que las utilizan. En algunas ocasiones, esto puede llevar a la definición de interfaces grandes y complejas que contienen muchos métodos que no son necesarios para todos los clientes que utilizan la interfaz.
 
 En cambio, en los lenguajes de tipos dinámicos, las interfaces pueden ser definidas en tiempo de ejecución. Esto permite que las interfaces sean más pequeñas y específicas para cada cliente, ya que solo contienen los métodos necesarios para cada caso de uso particular.
--->
-
-<!--
-### Ejemplo: acoplamiento contexto-strategy
-
-- ¿Cómo se comunican _Strategy_ y _Context_ (acoplado/desacoplado)?
-- _Context_ Puede definir una interfaz que le permita a _Strategy_ acceder a sus datos
--->
 
 
 ### Ejemplo: puertas de seguridad
@@ -2081,10 +2153,6 @@ En cambio, en los lenguajes de tipos dinámicos, las interfaces pueden ser defin
 Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
 
 #### Diseño:
-
-<!--
-![](./img/isp-timer-door.png)
--->
 
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNpVj0EOAiEMRfc9RZdj4nAEM4kewQsQphoSBkwpK_XuU6gLZ1f-e_0NSxXP0rYEIfla8R43YnwDItMzViGeYhYUjUuTs_FriqRhSPEEXwAViB8-0IH2jt_aNDQ7cCvF-suLsgLUmlLJlAFdc5_LfxVAf6wDzm1W2EdLVWd3tBfKq35oB3KIR_g)
 
@@ -2417,11 +2485,6 @@ aspect DrawableEllipse extends DrawableShape {
 
 Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$, las instancias de $D$ no deben alterar el comportamiento definido por $B$ de modo que $f$ deje de funcionar
 
-<!--
--   Posibilidad de sustitución depende del contexto: En otro programa
-    P2, los objetos D pueden no ser sustituibles por objetos B
--->
-
 
 ### Ejemplo: Shapes versión 3
 
@@ -2719,33 +2782,7 @@ Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las i
 Gracias a la __introspección__ o la carga dinámica de clases, los lenguajes de programación pueden indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración).
 
 Hay clases concretas que no cambian, como `String`, así que no hace ningún daño depender de ellas.
-
-<!--
-# Para profundizar sobre patrones
-
-- Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
-    - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
-    - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
-    - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
-- Peter Norvig – [Design Patterns in Dynamic Programming](http://www.norvig.com/design-patterns/design-patterns.pdf): Implementaciones más simples para los patrones de diseño del GoF en lenguajes dinámicos
-- David Arno – [Are design patterns compatible with modern software techniques?](http://www.davidarno.org/2013/06/17/are-design-patterns-compatible-with-modern-software-techniques/)
-- Implementaciones de los patrones de diseño del GoF en diversos lenguajes de programación:
-    - Kamran Ahmed – [Design Patterns for Humans!](https://github.com/kamranahmedse/design-patterns-for-humans/blob/master/README.md): Explicación de los patrones de diseño del GoF implementados en PHP
-    - Márk Török – [Design Patterns in TypeScript](https://github.com/torokmark/design_patterns_in_typescript)
-    - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
-- Lewis y Fowler – [Microservicios](https://martinfowler.com/articles/microservices.html)
--->
 <!-- Source: patrones.md -->
-# DISEÑO DE SISTEMAS SOFTWARE
-
-
-## Bloques
-
-1. Principios de diseño OO
-2. **Patrones de diseño**
-3. Arquitectura de software
-
-
 # PATRONES DE DISEÑO
 
 1. Introducción
@@ -2760,7 +2797,6 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 
 ![](./img/pattern_language.png)
 
-<!--
 - Los patrones de diseño surgen a partir del libro *A Pattern Language: Towns, Buildings, Construction* de Cristopher Alexander.
 
 - La inspiración del libro fueron las ciudades medievales, atractivas y armoniosas, que fueron construidas según regulaciones locales que requerían ciertas características, pero que permitían al arquitecto adaptarlas a situaciones particulares.
@@ -2768,7 +2804,7 @@ Hay clases concretas que no cambian, como `String`, así que no hace ningún da�
 - En el libro se suministran reglas e imágenes y  se describen métodos exactos para construir diseños prácticos, seguros y atractivos a cualquier escala. También recopila modelos anteriores (con ventajas/desventajas) con el fin de usarlos en un futuro.
 
 - El libro recomienda que las decisiones sobre la construcción de edificios se tomen de acuerdo al entorno preciso de cada proyecto.
--->
+
 
 ### Diseño de software con patrones
 
@@ -3020,7 +3056,6 @@ Laberinto crearLaberinto () {
 4. Los **Creadores Concretos** sobrescriben el Factory Method base, de modo que devuelva un tipo diferente de producto.
 
 
-<!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9lL2O2zAMx3c9BccWSIO7G1qguOGKTh0O7dDRi2wzkVCbMkQaboAOeYeu7cvlSUrJH5ezg24ixY8f_5T9xGKj9G1jJHQgAcogElqofcRKfCDDlW0QPtzdweBrcZP9Xm2H_ujEmKqxzPAthrqvZLI-R7QS4mwFqiIKrmIm7xxrpgN8hIOt9HB6RnGhfvP26sbS1w6jTWjJ_7rEjcwl9fHX5fy7DgO92zSesG6FzMQrGx63VYzzNUKLbYmRDbswqJEo2BgKgpAUDodFmu8O5zN4BgujKuKsQBVIrCc2okG-7RpsUT1pajhovG2aVEpvzdQj7a615Lu-sdqrGzl5Z_BnhZ3krFRs0mdC2xukGhLdxBjTSteUtmSJmrcRV7GHhJtw5lG4L_MgyKbtWV7o_9NrpWRWZuVbynCeekWyUw5fOdUxKzYON0qpgb3yncwoCfKizQbocv5zo3VaTkTuArEv9emrkkUK0G3QEQIhaEwbIqat5cSXDvBFCvIZWSOb0_WOnR39PygMDdZHjTgUlJ6NrjLXx3TPV-Uu57-gWXS_eY_7_bV3Jh-9y3CfdE1zLXi9nIISCttWnxsJRtVXzTCS6pVOPC51ErrnDLeU03tLKtMBY8LPz3ausytICbJvUShXW-Z5MPQA-81Hl52zYZ50W_qj-gevjrUL)
 
 <details>
@@ -3081,7 +3116,7 @@ n2 . Product
 ```
 
 </details>
--->
+
 
 #### Factory method: Ventajas
 
@@ -3180,7 +3215,6 @@ public class JuegoLaberintoHechizado extends JuegoLaberinto {
 
 ![Command, center](./img/guru/command-mini-2x.png)
 
-<!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNVEGO2zAMvOsVPHaBbh6QBsEWPfVa9AOyTceCbdEr0XGDtn8vJUty4rRAbzYpDmeGlN48a8fzOKh60N7Dl8Gg5fTz1V6pR5dTNI7aNnA6GcvoWl3j-Zxy37BGc707amuHjKlEqYQER_DIKfrhRWXII-APrGfGh9hsG5JAxpaIrtmQjYceGuwA9rkEpFZx8Hre-G6hPefS9vT6lMtyYtkaKu78Ohye9VtihAFbBmqzx987TJ9gPDj0E1lvqgGhJTHSoWZjL6D3aBAQxcaYNbyZf1Ao2dAqNayImcbQsugNTYuy3tLioaMFmNQkIyU3AsuJhVwPFrHBJqRq7dwNaOaYdPg-o-cDfLY3iPOWAzbMBrQXuv9BZ-9PtGKnssHWWAyAlbFN0FohL4jSyaZFUNGNrSEEnDybUfexOtGFSsjqYRAgVXYlWBk17ZsHxUbKDUfZ1U2lWiCLQIJODhMLL7EI8k_hefD5Pt3T7GhovNJQb8MFzcrTiDCR3DQxtfcBX-UjTJHfTQVq9wILybAV24UYkTtqnlgxTessHhe4QZmpC9ZZKBc9rCQIeKbpZfqFj2yviWqCl47mS_dIAFYCH9XSmbpb9QTaaQtFTt69ULaa-sTWmUvHf9md43ETGnxNf6lnIhb9y6-Hf1FpYIVCWXVo56E1ojP4nYz9pNQ0V4Op4UqmuZP1U0GBOJSn6bfaqL_Jl7ytfwD_TeSY)
 
 <details>
@@ -3257,7 +3291,6 @@ end note
 ```
 
 </details>
--->
 
 
 #### Command: Estructura
@@ -3367,7 +3400,6 @@ activate aReceiver
 
 ![Adapter, center](./img/guru/adapter-mini-2x.png)
 
-<!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNptUTtuwzAM3XUKju0QA1kDw0jQGxQeuygSnQjVxzUZBAE65CDt5XKS0rXkpEY3kXx8H2pLrAc-Ba-M10Tw4h1GzkWrhwMy1LWLjEOnDTZNHu2s7qX3p0KVFzYw4McJiZ-eVQb-00PpUY_Gdc68zjM1OYBVk-ULaf1ZVbNsYRVU0Y6JEVIE7-L7PHcEJoU-EVp1dnwEPmIhqRRGC-Oampb3iTkFSF25QitgM9khRBJ2fxkZiqX5LEum2_WrvQuBC73HIDT0FkcDy_Xqdv0GTRDXhVmiShHX8JB5abIE33lfbkswHsyix4NmtMDp125GPgTeyks-_QeIqbFT)
 
 <details>
@@ -3409,7 +3441,6 @@ end note
 ```
 
 </details>
--->
 
 
 #### Adaptador de objetos: Estructura
@@ -3439,7 +3470,6 @@ end note
 
 ![Composite, center](./img/guru/composite-mini-2x.png)
 
-<!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVVcFu2zAMvesrdEyGNNiuRTF06GnAsFOBnRWbjrTKoiHK3QrskH_YacD2c_mSkbItO0lbbKeYIqn3yPeE3FIyMfWtV5U3RPrOOwhpCrDtMMzxJzDNMkUugVKlSl9r7CCa5DCs1ifnpq5XJT5NRWjxEV7K7iHdWefrlZOMEgZnMKpQeQ5_PH8Of0y9gD9mz_CH9eir94vdzHRvfhwPP4ctnR_O-5ozx8Pvt9vtm-Phj77hGpSDdxItlhuQaSTsNDaTNvcWxk_dE5BOdnkp84TYmEq6VGuC63pv5A7uwt1XqBJxTW6qRhhe11ZBqLWAnUGWKTNqQamhcYGxTVAzYINRG-8XMEpQFzDXeofJnoAD31Fndl60DVgD_S-b1jxp13YeWomMYnam90nvwJpHx6wyM7bAejPJvd6oIu06U3DMuNjnkgITT9gKi6zvh_yjrSEuUpXcE-FyjR6aVHo-51GsSXnc3G88IW_QQhT4FpLFmrR3DzDyVRPfzHGmvNHfrKusqlHgdIAKiEx0_om3Id3aoyArgkCjNPOGt_oLl0RQe3Rhz-sVkXhGUz1IkKxj9Yh6-Mc1THaQuU6WLkrDoMtku6UftvojewmBVIbcLWTMvMSzRZJspvltUt91GNNrSs3v6H7Zejz8Ih3RA88o4w7sVSHOnYWn-IuUJJjPJPNgWdSUMMJwqubqC0LR7W16hc_ogmlyKva4YvXl8dYnxpxtRCIaa8z1rLG8AvGC6D_Kjkx1xtkowkEE7q0MydNT8L2CTm7Wbaa5Y1NAEDSoF5Pc8hf_S_wFVPsy7Q)
 
 <details>
@@ -3532,7 +3562,6 @@ end note
 ```
 
 </details>
--->
 
 
 #### Composite: Estructura
@@ -3559,7 +3588,6 @@ end note
 
 ![Decorator, center](./img/guru/decorator-mini-2x.png)
 
-<!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqlVctunEAQvM9X9NGWrLXkYxJFXhIfcohycH6ggWYZG2bQTHsJUg75h_xhviQ9wPJaWMfKbemu6a6pKpZ7z-j4pSyUf9amQoclJLasrCHDj9wUBNK8Uyop0Hv4dGoNzyZxxLSsf6bEOmTrFrihvt9qREoNw-AdlMS5TfdX1yvVaFG9vQXLObmvbddLV53xW4zc6kYb3ZUVA_PZ6PNqtKheYDuqJLhxfe2wqij9Fj9Rwuvg87uttKOttqE6ohyP2rotyL-wjt7COoC7Xlj_yMi0Drpwtejy1aIt3ieKH37--fV7JctLxJjq0cj52Um-X4VEE4gAPsI0aMM7qIxlAqcPOYM1UGjzrB4wyUcEJGgglvfUUxogmr2ytbkBmduLD3EDCOn4Ug7TyaQQNqhuT2yZbQk2W1Hje06hOi9qDyIr2M7BmgAdwcFqc1BsIW0MljrBopD9aRocVnGfMJC-5h18YaAfLDz8qPdum9eKBx50WRVUBi2EjPJYEmjD5DJMKMiAsWeHyenfCTvSo4Ly1KiBeWDWa0W71xVaM9S3pnT36jiFYIdTs8X_M7zXsw--f69yW9OR3E1bHVQOBjVV54GSM10Y0vaegceLENPWiC2ZdZ1YmSgHLX3tOeC6FUqbOfu3aLM_xWdehly8QCOjRSAjZh3RaYzlq5OFhMgRzkOWNA-OeLjidtTEvMmbFBLvryfU7uWXfML-ApQXe0A)
 
 <details>
@@ -3648,7 +3676,6 @@ end note
 ```
 
 </details>
--->
 
 
 #### Decorator: Estructura
@@ -3839,7 +3866,6 @@ El _decorator_ cambia la piel, el _strategy_ cambia las tripas
 ![Observer, center](./img/guru/observer-mini-2x.png)
 
 
-<!--
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNVEGO2zAMvOsVPHaBbh6QBsEWPfVa9AOyTceCbdEr0XGDtn8vJUty4rRAbzYpDmeGlN48a8fzOKh60N7Dl8Gg5fTz1V6pR5dTNI7aNnA6GcvoWl3j-Zxy37BGc707amuHjKlEqYQER_DIKfrhRWXII-APrGfGh9hsG5JAxpaIrtmQjYceGuwA9rkEpFZx8Hre-G6hPefS9vT6lMtyYtkaKu78Ohye9VtihAFbBmqzx987TJ9gPDj0E1lvqgGhJTHSoWZjL6D3aBAQxcaYNbyZf1Ao2dAqNayImcbQsugNTYuy3tLioaMFmNQkIyU3AsuJhVwPFrHBJqRq7dwNaOaYdPg-o-cDfLY3iPOWAzbMBrQXuv9BZ-9PtGKnssHWWAyAlbFN0FohL4jSyaZFUNGNrSEEnDybUfexOtGFSsjqYRAgVXYlWBk17ZsHxUbKDUfZ1U2lWiCLQIJODhMLL7EI8k_hefD5Pt3T7GhovNJQb8MFzcrTiDCR3DQxtfcBX-UjTJHfTQVq9wILybAV24UYkTtqnlgxTessHhe4QZmpC9ZZKBc9rCQIeKbpZfqFj2yviWqCl47mS_dIAFYCH9XSmbpb9QTaaQtFTt69ULaa-sTWmUvHf9md43ETGnxNf6lnIhb9y6-Hf1FpYIVCWXVo56E1ojP4nYz9pNQ0V4Op4UqmuZP1UxWEQ3mZfquN-Zt8ydP6ByLe5Hg)
 
 <details>
@@ -3916,7 +3942,7 @@ end note
 ```
 
 </details>
--->
+
 
 #### Observer
 
@@ -4182,10 +4208,9 @@ class Document {
 
 ![](./img/dao_uml.webp)
 
-<!--
 -
 ![](./img/dao_code.png)
--->
+
 
 ### Data Transfer Object (DTO)
 
@@ -4193,10 +4218,8 @@ class Document {
 
 ![](./img/dto_uml.png)
 
-<!--
 -
 ![](./img/dto_code.png)
--->
 
 
 # Para profundizar sobre patrones

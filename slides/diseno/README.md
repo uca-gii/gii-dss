@@ -2,8 +2,9 @@
 
 ## Slides
 
-- [Principios](principios.md)
-- [Patrones](patrones.md)
+- [Fundamentos de diseño](fundamentos.md)
+- [Principios de diseño](principios.md) orientado a objetos
+- [Patrones de diseño](patrones.md)
 
 Para generar las slides hay que instalar [marp-cli](https://github.com/marp-team/marp-cli).
 

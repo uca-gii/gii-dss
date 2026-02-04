@@ -8,50 +8,45 @@ title: Patrones de Diseño
 description: Apuntes de Diseño de Sistemas Software - Patrones de diseño
 ---
 
-
 <!-- size: 16:9 -->
 <!-- theme: default -->
-
-<!-- paginate: false -->
 
 <style>
 h1 {
   text-align: center;
+  color: #005877;
 }
 h2 {
-  color: darkblue;
-  text-align: center;
+  color: #E87B00;
 }
-</style>
-
-<style>
+h3 {
+  color: #005877;
+}
 img[alt~="center"] {
   display: block;
   margin: 0 auto;
 }
-
 emph {
   color: #E87B00;
 }
-</style>
-
-# DISEÑO DE SISTEMAS SOFTWARE
-
-<style scoped>
-h2 {
-  text-align: left;
+.cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.cols > div {
+  align-self: start;
 }
 </style>
 
-## Bloques
+<style scoped>
+h2 {
+  color: #005877;
+  text-align: center;
+}
+</style>
 
-1. Principios de diseño OO
-2. <emph>Patrones de diseño</emph>
-3. Arquitectura de software
-
----
-
-# PATRONES DE DISEÑO 
+# PATRONES DE DISEÑO
 
 1. Introducción
 2. Patrones del GoF

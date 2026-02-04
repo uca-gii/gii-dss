@@ -398,9 +398,9 @@ def _process_html_comments_outside_code(text: str) -> str:
             return ""
 
         if not _looks_like_markdown(content):
-            content = f"**Notes**\n\n{content}"
+            content = f">[!NOTE]\n>{content}"
 
-        return "<!--\n" + content.rstrip("\n") + "\n-->"
+        return content.rstrip("\n") + "\n"
 
     return comment_pat.sub(repl, text)
 
