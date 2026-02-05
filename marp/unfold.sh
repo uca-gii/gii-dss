@@ -501,8 +501,13 @@ out_chunks.append("\n")
 
 for idx, path in enumerate(ordered):
     rel = os.path.relpath(path, INPUT_DIR)
-    out_chunks.append(f"<!-- Source: {rel} -->\n")
-    out_chunks.append(_process_one_file(path))
+    out_chunks.append(f"\n<!-- Source: {rel} -->\n")
+    content = _process_one_file(path)
+    # Remove leading blank lines in the processed content
+    content = re.sub(r"^\n+", "", content)
+    # Normalize trailing blank lines to a single newline
+    content = re.sub(r"\n+$", "", content)
+    out_chunks.append(content)
 
 tmp = OUT_FILE + ".tmp"
 with open(tmp, "w", encoding="utf-8", newline="\n") as f:

@@ -15,13 +15,13 @@ description: Apuntes de Diseño de Sistemas Software - Principios de diseño
 h1 {
   text-align: center;
   color: #005877;
-}
+};
 h2 {
   color: #E87B00;
-}
+};
 h3 {
   color: #005877;
-}
+};
 img[alt~="center"] {
   display: block;
   margin: 0 auto;
@@ -117,7 +117,17 @@ h2,h3 {
 
 ---
 
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+</style>
+
 ### Ejemplo: Shapes versión 1 en Java
+
+<div class="cols">
+<div>
 
 ```java
 package shapes;
@@ -146,7 +156,8 @@ abstract class RectParallelogram extends Polygon {
 }
 ```
 
----
+</div>
+<div>
 
 ```java
 class Square extends RectParallelogram {...}
@@ -174,6 +185,9 @@ class Ellipse extends ClosedCurve {
   String toString() {...}
 }
 ```
+
+</div>
+</div>
 
 ---
 
@@ -236,15 +250,13 @@ Desde una perspectiva del principio de responsabilidad única (SRP), el patrón 
 
 ---
 
-### Example: Circle class
+### Ejemplo en C++: Circle (version original)
 
 ```cpp
 class Circle
 {
   public:
-    explicit Circle (double rad )
-      : radius { rad }
-      , //... remaining data members
+    explicit Circle (double rad ) : radius { rad }, //... remaining data members
     {}
 
     double getRadius() const noexcept;
@@ -267,6 +279,104 @@ class Circle
 ---
 
 <style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 45% 55%;
+}
+</style>
+
+### Ejemplo en C++: Circle (refactor SRP 1)
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) :
+         radius { rad },
+         //... remaining data members
+    {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+```
+
+</div>
+<div>
+
+```cpp
+class CircleRenderer
+{
+  public:
+    virtual ~CircleRenderer() = default;
+    virtual void draw ( Circle const&, Screen& s,
+                        /*...*/ ) = 0;
+    virtual void draw ( Circle const&, Printer& p,
+                        /*...*/ ) = 0;
+};
+
+class CircleSerializer
+{
+  public:
+    void serialize ( Circle const&, ByteStream& bs, 
+                     /*...*/ ) const;
+};
+```
+
+</div>
+</div>
+
+<!-- El refactor 1 separa responsabilidades en clases (estrategias/servicios),
+lo que facilita sustituir implementaciones y testear.
+Pero no es una implementación típica en C++.
+El código parece hecho por un programador de Java. -->
+
+---
+
+### Ejemplo en C++: Circle (refactor SRP 2)
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) : radius { rad }, /* ...*/ {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+
+// Same namespace as Circle
+void draw ( Circle const&, Screen& s, /*...*/ );
+void draw ( Circle const&, Printer& p, /*...*/ );
+void serialize ( Circle const&, ByteStream& bs, /*...*/ );
+//...
+```
+
+<!--
+El refactor 2 usa funciones libres en el mismo namespace: reduce acoplamiento sin inflar la interfaz de la clase, pero requiere coordinar puntos de extension fuera de
+la clase.
+-->
+
+---
+
+<style scoped>
 h3 {
   color: blue;
 }
@@ -284,17 +394,37 @@ Para que un sistema software sea fácil de cambiar, debe diseñarse para que per
 
 - Si un cambio en un sitio origina una cascada de cambios en otros puntos del sistema, el resultado es un sistema frágil y rígido
 - Es difícil averiguar todos los puntos que requieren cambios
-- Código cerrado para modificaciones, pero abierto para extensión mediante delegación en vertical (subclases) u horizontal (composición)
+- OCP mediante delegación en vertical (subclases) u horizontal (composición)
 
 ---
+
+<style scoped>
+h3 {
+  text-align: center;
+}
+p {
+  color: red;
+  text-align: center;
+}
+</style>
 
 ### Ejemplo: Shapes versión 2 en C++
 
-¿Qué parte no cumple OCP en el ejemplo? 
+¿Qué parte no cumple OCP en el ejemplo?
 
 ---
 
-#### Versión imperativa (sin objetos):
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 43% 57%;
+}
+</style>
+
+#### Versión sin objetos
+
+<div class="cols">
+<div>
 
 ```cpp
 enum ShapeType {circle, square};
@@ -319,7 +449,8 @@ struct Square
 };
 ```
 
----
+</div>
+<div>
 
 ```cpp
 void DrawSquare(struct Square*);
@@ -344,6 +475,10 @@ void DrawAllShapes(ShapePointer list[], int n)
   }
 }
 ```
+
+</div>
+</div>
+
 ---
 
 #### Problema:
@@ -357,7 +492,10 @@ void DrawAllShapes(ShapePointer list[], int n)
 
 ---
 
-Aplicando el OCP...
+__Aplicando el OCP...__
+
+<div class="cols">
+<div>
 
 ```csharp
 public interface Shape
@@ -382,7 +520,8 @@ public class Circle: Shape
 }
 ```
 
----
+</div>
+<div>
 
 ```csharp
 public void DrawAllShapes(IList shapes)
@@ -395,11 +534,20 @@ public void DrawAllShapes(IList shapes)
 - Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
 - Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
 
+</div>
+</div>
+
 ---
 
 ### Ejercicio: Shapes and Circles
 
+<div class="cols">
+<div>
+
 Arreglar para que cumpla OCP
+
+</div>
+<div>
 
 ```cpp
 enum ShapeType
@@ -422,7 +570,15 @@ class Shape
     ShapeType type;
 };
 ```
+
+</div>
+</div>
+
 ---
+
+<div class="cols">
+<div>
+
 ```cpp
 class Circle: public Shape
 {
@@ -446,7 +602,10 @@ void translate ( Circle&, Vector3D const& );
 void rotate ( Circle&, Quaternion const& ) ;
 void draw ( Circle const& );
 ```
----
+
+</div>
+<div>
+
 ```cpp
 class Square: public Shape
 {
@@ -470,7 +629,12 @@ void translate ( Square&, Vector3D const& );
 void rotate ( Square&, Quaternion const& ) ;
 void draw ( Square const& );
 ```
+
+</div>
+</div>
+
 ---
+
 ```cpp
 void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
 {
@@ -490,7 +654,11 @@ void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
     }
   }
 }
+```
 
+---
+
+```cpp
 int main()
 {
   using Shapes = std::vector<std::unique_ptr<Shape>>;
@@ -503,7 +671,9 @@ int main()
   draw ( shapes );
 }
 ```
+
 ---
+
 <style scoped>
 h3 {
   color: blue;
@@ -526,22 +696,10 @@ OCP es un principio más arquitectónico que de diseño de clases y módulos.
 
 ### Solución al ejercicio: Shapes and Circles
 
-Versión en C++ que cumple el OCP 
+Versión en C++ que cumple el OCP y SRP
 
-```cpp
-class Shape
-{
-  public:
-    Shape() = default;
-    virtual ~Shape() = default;
-
-    virtual void translate ( Vector3D const& ) = 0;
-    virtual void rotate ( Quaternion const& ) = 0;
-    virtual void draw() const = 0; // check!
-};
-```
-
----
+<div class="cols">
+<div>
 
 ```cpp
 class Circle : public Shape
@@ -567,7 +725,8 @@ class Circle : public Shape
 }
 ```
 
----
+</div>
+<div>
 
 ```cpp
 class Square : public Shape
@@ -593,36 +752,10 @@ class Square : public Shape
 }
 ```
 
----
-
-```cpp
-void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
-{
-  for ( auto const& s : shapes )
-  {
-      s->draw();
-  }
-}
-
-int main()
-{
-  using Shapes = std::vector<std::unique_ptr<Shape>>;
-
-  // Creating some shapes
-  Shapes shapes;
-  shapes.push_back (std::make:unique<Circle>( 2.0 ));
-  shapes.push_back (std::make:unique<Square>( 1.5 ));
-  shapes.push_back (std::make:unique<Circle>( 4.2 ));
-  // Drawing all shapes
-  draw ( shapes );
-}
-```
+</div>
+</div>
 
 ---
-
-## OCP versus SRP
-
-Cumple el OCP, pero ¿y el SRP?
 
 ```cpp
 class Shape
@@ -633,8 +766,18 @@ class Shape
 
     virtual void translate ( Vector3D const& ) = 0;
     virtual void rotate ( Quaternion const& ) = 0;
-    virtual void draw() const = 0; // drawing is again inside the Shapes
+    virtual void draw() const = 0; // check!
 };
+```
+
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+      s->draw();
+  }
+}
 ```
 
 ---
@@ -672,7 +815,13 @@ En cambio, en los lenguajes de tipos dinámicos, las interfaces pueden ser defin
 
 ### Ejemplo: puertas de seguridad
 
-Una implementación de puertas de seguridad con temporizador (`TimedDoor`) que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
+<div class="cols">
+<div>
+
+Una implementación de puertas de seguridad con temporizador `TimedDoor` que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
+
+</div>
+<div>
 
 #### Diseño:
 
@@ -697,11 +846,20 @@ TimedDoor -u-|> Door
 Timer .r.> TimerClient
 @enduml
 
+</div>
+</div>
+
 ---
+
+<div class="cols">
+<div>
 
 - `TimedDoor` se comunica con `Timer` para registrar un temporizador
 - Cuando salta el temporizador, avisa a un `TimerClient`
 - Con la solución diseñada, un `TimerClient` puede registrarse a sí mismo en un `Timer` y recibir de éste un mensaje mediante `timeout()`.
+
+</div>
+<div>
 
 @startuml
 --> TimedDoor : open()
@@ -710,6 +868,9 @@ TimedDoor --> Timer : register(t0, this)
 Timer --> TimedDoor : timeout()
 destroy TimedDoor
 @enduml
+
+</div>
+</div>
 
 ---
 
@@ -849,6 +1010,9 @@ class Square: public Shape
 
 ### Ejemplo: Shapes versión 1 en Java (misma versión que en SRP)
 
+<div class="cols">
+<div>
+
 ```java
 interface Shape {
   double area();
@@ -875,11 +1039,11 @@ abstract class RectParallelogram extends Polygon {
 }
 ```
 
----
+</div>
+<div>
 
 ```java
 class Square extends RectParallelogram {...}
-
 class Rectangle extends RectParallelogram {...}
 
 abstract class ClosedCurve implements Shape {...}
@@ -903,6 +1067,9 @@ class Ellipse extends ClosedCurve {
   String toString() {...}
 }
 ```
+
+</div>
+</div>
 
 ---
 
@@ -1305,7 +1472,7 @@ Ambos deben depender de abstracciones.
 
 __Diseño inicial__:
 
-![estructura en capas, width:600px](./img/dip-1.png)
+![estructura en capas, width:550px](./img/dip-1.png)
 
 - Las dependencias son transitivas
 - _Policy_ depende de todo lo que depende _Mechanism_. 
@@ -1314,7 +1481,7 @@ __Diseño inicial__:
 
 __Diseño invertido__:
 
-![capas invertidas, width:600px](./img/dip-2.png)
+![capas invertidas, width:550px](./img/dip-2.png)
 
 ---
 
@@ -1334,5 +1501,3 @@ __Diseño invertido__:
 Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas.
 
 Gracias a la __introspección__ o la carga dinámica de clases, los lenguajes de programación pueden indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración).
-
-Hay clases concretas que no cambian, como `String`, así que no hace ningún daño depender de ellas.
