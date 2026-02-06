@@ -261,7 +261,8 @@ def _convert_plantuml_fenced_block(block: str) -> str:
     if not m:
         return block
 
-    lang = (m.group("lang") or "").strip().lower().split()[0] if m.group("lang") is not None else ""
+    lang_str = (m.group("lang") or "").strip().lower()
+    lang = lang_str.split()[0] if lang_str else ""
     body = m.group("body").rstrip("\n")
 
     if lang in {"plantuml", "puml"}:
