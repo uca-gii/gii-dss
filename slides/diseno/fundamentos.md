@@ -563,8 +563,12 @@ __Consistencia con `equals`__: recomendable pero no exigible
 
 `(x.compareTo(y)=0)` $\Leftrightarrow$ `(x.equals(y))`
 
+<!--
+
 > [!NOTE]
 > En Java no se puede definir un método `default` en una `interface` que sea override‑equivalent a un método público de Object (como equals, hashCode, toString). Puedes declararlo de forma abstracta en la interfaz, pero no darle implementación default.
+
+-->
 
 ---
 
