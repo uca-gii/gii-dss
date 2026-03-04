@@ -15,13 +15,13 @@ description: Apuntes de Diseño de Sistemas Software - Principios de diseño
 h1 {
   text-align: center;
   color: #005877;
-};
+}
 h2 {
   color: #E87B00;
-};
+}
 h3 {
   color: #005877;
-};
+}
 img[alt~="center"] {
   display: block;
   margin: 0 auto;
@@ -70,15 +70,29 @@ El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
 En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
 
 ---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## SRP: *Single Responsibility Principle*
+
+---
+
+<!-- paginate: true -->
+
 <style scoped>
 h3 {
   color: blue;
 }
 </style>
 
-## Principio de responsabilidad única
-
-### SRP: *Single responsibility Principle*
+### Principio de responsabilidad única
 
 > A class should have only one reason to change
 > –– Bob Martin
@@ -116,6 +130,8 @@ h2,h3 {
 ### Figuras geométricas
 
 ---
+
+<!-- paginate: true -->
 
 <style scoped>
 .cols {
@@ -376,15 +392,28 @@ la clase.
 
 ---
 
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## OCP: *Open-Closed Principle*
+
+---
+
+<!-- paginate: true -->
+
 <style scoped>
 h3 {
   color: blue;
 }
 </style>
 
-## Principio de Abierto-Cerrado
-
-### OCP: *Open-Closed Principle*
+### Principio de Abierto-Cerrado
 
 > Toda clase, módulo, aspecto o función debe quedar abierto para extensiones pero cerrado para modificaciones
 > 
@@ -680,7 +709,7 @@ h3 {
 }
 </style>
 
-### Open-Closed Principle
+### Cierre estratégico
 
 > In general, no matter how _closed_ a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
 > 
@@ -781,15 +810,29 @@ void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
 ```
 
 ---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## ISP: *Interface Segregation Principle*
+
+---
+
+<!-- paginate: true -->
+
 <style scoped>
 h3 {
   color: blue;
 }
 </style>
 
-## Principo de segregación de interfaces
-
-### ISP: *Interface Segregation Principle*
+### Principo de segregación de interfaces
 
 > Los clientes no deben depender de métodos que no usan. 
 >
@@ -1157,15 +1200,29 @@ aspect DrawableEllipse extends DrawableShape {
 ```
 
 ---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## <emph>LSP</emph>: *Liskov Substitution Principle*
+
+---
+
+<!-- paginate: true -->
+
 <style scoped>
 h3 {
   color: blue;
 }
 </style>
 
-## Principio de sustitución de Liskov
-
-### LSP: *Liskov Substitution Principle*
+### Principio de sustitución de Liskov
 
 > Un subtipo debe poder ser sustituible por sus tipos base
 > 
@@ -1214,7 +1271,7 @@ public class Square: Shape {
 
 ---
 
-#### Problemas: 
+#### Problemas:
 
 - `DrawShape` viola claramente el OCP
 - Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
@@ -1447,15 +1504,29 @@ Meyer*:
 - La postcondición de `Square::SetWidth(double w)` viola el  contrato de la clase base porque es más débil que la de `Rectangle`
 
 ---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2{
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## DIP: *Dependency Inversion Principle*
+
+---
+
+<!-- paginate: true -->
+
 <style scoped>
 h3 {
   color: blue;
 }
 </style>
 
-## Principio de Inversión de Dependencias
-
-### DIP: *Dependency Inversion Principle*
+### Principio de Inversión de Dependencias
 
 - Los módulos de alto nivel no deben depender de módulos de bajo nivel.
 Ambos deben depender de abstracciones.
@@ -1468,20 +1539,27 @@ Ambos deben depender de abstracciones.
 
 ---
 
-### Ejemplo: estructura en capas 
+### Ejemplo: estructura en capas
+
+<div class="cols">
+<div>
 
 __Diseño inicial__:
 
-![estructura en capas, width:550px](./img/dip-1.png)
+![estructura en capas](./img/dip-1.png)
 
 - Las dependencias son transitivas
 - _Policy_ depende de todo lo que depende _Mechanism_. 
 
----
+</div>
+<div>
 
 __Diseño invertido__:
 
-![capas invertidas, width:550px](./img/dip-2.png)
+![capas invertidas](./img/dip-2.png)
+
+</div>
+</div>
 
 ---
 
@@ -1492,12 +1570,12 @@ __Diseño invertido__:
 
 ---
 
-### Heurística _ingenua_
+### Heurística para construcción
 
 - Ninguna variable debería guardar una referencia a una clase concreta
 - Ninguna clase debería ser derivada de una clase concreta
 - Ningún método debería redefinir un método ya implementado de ninguna de sus clases base
 
-Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas.
+Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas (__inyección de dependencias__).
 
-Gracias a la __introspección__ o la carga dinámica de clases, los lenguajes de programación pueden indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración).
+Gracias a la __introspección__ o la carga dinámica de clases, en algunos lenguajes de programación se puede indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración XML o JSON).
