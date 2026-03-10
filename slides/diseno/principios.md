@@ -971,17 +971,24 @@ Timer --> TimedDoor : timeout(id)
 
 #### Rediseño: puertas de seguridad
 
-__Delegación__ a través del patrón adapter (de objetos o de clases)
+__Delegación__ a través del patrón adapter
 
-- Versión adaptador de clases (por herencia):
+<div class="cols">
+<div>
+
+- Adaptador de clases (herencia):
 
    ![Puertas de seguridad - adaptador de clases, width:700px](./img/isp-timer-door-class-adapter.png)
 
----
+</div>
+<div>
 
-- Versión adaptador de objetos (por composición):
+- Adaptador de objetos (composición):
 
   ![Puertas de seguridad - adaptador de objetos, width:700px](./img/isp-timer-door-object-adapter.png)  
+
+</div>
+</div>
 
 ---
 
@@ -1234,6 +1241,9 @@ Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$,
 
 ### Ejemplo: Shapes versión 3
 
+<div class="cols">
+<div>
+
 ```csharp
 struct Point {double x, y;}
 public enum ShapeType {square, circle};
@@ -1250,7 +1260,8 @@ public class Shape {
 }
 ```
 
----
+</div>
+<div>
 
 ```csharp
 public class Circle: Shape {
@@ -1269,6 +1280,9 @@ public class Square: Shape {
 }
 ```
 
+</div>
+</div>
+
 ---
 
 #### Problemas:
@@ -1276,7 +1290,8 @@ public class Square: Shape {
 - `DrawShape` viola claramente el OCP
 - Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
 - Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
-- A continuación, una violación más sutil del LSP...
+
+A continuación, una violación más sutil del LSP...
 
 ---
 
