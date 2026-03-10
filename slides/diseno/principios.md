@@ -1299,6 +1299,9 @@ A continuación, una violación más sutil del LSP...
 
 De momento solo necesitamos rectángulos y escribimos esta versión:
 
+<div class="cols">
+<div>
+
 ```csharp
 public class Rectangle {
   private Point topLeft;
@@ -1316,6 +1319,31 @@ public class Rectangle {
   }
 }
 ```
+
+</div>
+<div>
+
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class RectangleClient {
+  +f(r: Rectangle)
+}
+
+RectangleClient .right.> Rectangle : usa
+
+note bottom of RectangleClient
+  Supuesto del cliente:
+  al cambiar Width,
+  Height permanece igual.
+end note
+@enduml
+
+</div>
+</div>
 
 ---
 
@@ -1343,6 +1371,9 @@ public class Square: Rectangle {
 
 ### Ejemplo: rectángulos versión 2
 
+<div class="cols">
+<div>
+
 ```csharp
 public class Square: Rectangle {
   public new double Width
@@ -1362,8 +1393,44 @@ public class Square: Rectangle {
 }
 ```
 
-Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
- 
+Ver [`new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
+
+</div>
+<div>
+
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Square {
+  +Width : double <<new>>
+  +Height : double <<new>>
+}
+
+class RectangleClient {
+  +f(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+RectangleClient .right.> Rectangle : f(r)
+
+note right of Square
+  Square obliga a que
+  Width == Height
+end note
+
+note top of RectangleClient
+  f invoca el contrato de Rectangle.
+  La ocultación con new introduce
+  comportamiento inesperado.
+end note
+@enduml
+
+</div>
+</div>
+
 ---
 
 - El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
@@ -1389,6 +1456,9 @@ Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-
 
 ### Ejemplo: rectángulos versión 3
 
+<div class="cols">
+<div>
+
 ```csharp
 public class Rectangle
 {
@@ -1408,9 +1478,10 @@ public class Rectangle
 }
 ```
 
-Nota: [Métodos redefinibles con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
+Ver [redefinción con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
 
----
+</div>
+<div>
 
 ```csharp
 public class Square: Rectangle
@@ -1431,6 +1502,43 @@ public class Square: Rectangle
   }
 }
 ```
+
+</div>
+</div>
+
+---
+
+#### Incumplimiento del contrato
+
+@startuml
+class Rectangle {
+  +Width : double <<virtual>>
+  +Height : double <<virtual>>
+}
+
+class Square {
+  +Width : double <<override>>
+  +Height : double <<override>>
+}
+
+class RectangleClient {
+  +g(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+RectangleClient .right.> Rectangle : g(new Rectangle(5,4))
+
+note right of Rectangle
+  Contrato esperado por clientes:
+  Width y Height son
+  independientes.
+end note
+
+note right of Square
+  Post-condición propia:
+  Width == Height
+end note
+@enduml
 
 ---
 
@@ -1466,6 +1574,31 @@ void g(Rectangle r)
 El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el alto. Si pasamos un cuadrado esto no es así 
 
 __Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
+
+---
+
+#### Secuencia del fallo
+
+@startuml
+actor Cliente
+participant "RectangleClient" as G
+participant "Square" as S
+
+Cliente -> G : g(S)
+G -> S : Width = 5
+note right of S
+Square ajusta:
+Width = 5, Height = 5
+end note
+G -> S : Height = 4
+note right of S
+Square ajusta:
+Width = 4, Height = 4
+end note
+G -> S : Area()
+S --> G : 16
+G --> Cliente : Exception("Bad area!")
+@enduml
 
 ---
 
