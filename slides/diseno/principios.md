@@ -1308,6 +1308,12 @@ public class Rectangle {
   private double width;
   private double height;
 
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
+
   public double Width {
     get { return width; }
     set { width = value; }
@@ -1329,33 +1335,29 @@ class Rectangle {
   +Height : double
 }
 
-class RectangleClient {
+class Client {
   +f(r: Rectangle)
 }
 
-RectangleClient .right.> Rectangle : usa
+Client .right.> Rectangle : usa
 
-note bottom of RectangleClient
-  Supuesto del cliente:
+note left of Client
+  El cliente supone que
   al cambiar Width,
   Height permanece igual.
 end note
 @enduml
 
-</div>
-</div>
-
----
-
-Un día hace falta manejar cuadrados además de rectángulos.
-
-Geométricamente, un cuadrado es un rectángulo, así que hacemos uso de la herencia (relación **es-un**):
+Pero un día hace falta manejar cuadrados además de rectángulos. Geométricamente, un cuadrado es un rectángulo, así que utilizamos una relación __es-un__:
 
 ```java
 public class Square: Rectangle {
    ...
 }
 ```
+
+</div>
+</div>
 
 ---
 
@@ -1409,20 +1411,20 @@ class Square {
   +Height : double <<new>>
 }
 
-class RectangleClient {
+class Client {
   +f(r: Rectangle)
 }
 
 Square -up-|> Rectangle
-RectangleClient .right.> Rectangle : f(r)
+Client .right.> Rectangle : f(r)
 
 note right of Square
   Square obliga a que
   Width == Height
 end note
 
-note top of RectangleClient
-  f invoca el contrato de Rectangle.
+note top of Client
+  f invoca según la interfaz de Rectangle.
   La ocultación con new introduce
   comportamiento inesperado.
 end note
@@ -1437,12 +1439,12 @@ end note
 
   ```csharp
   Square s = new Square();
-  s.SetWidth(1);   // fija ambos
-  s.SetHeight(2);  // fija ambos
+  s.Width = 1;   // fija ambos
+  s.Height = 2;  // fija ambos
 
   void f(Rectangle r)
   {
-    r.SetWidth(32); // calls Rectangle.SetWidth
+    r.Width = 3; // calls Rectangle.SetWidth
   }
   ```
 
@@ -1465,6 +1467,11 @@ public class Rectangle
   private Point topLeft;
   private double width;
   private double height;
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
   public virtual double Width
   {
     get { return width; }
@@ -1477,8 +1484,6 @@ public class Rectangle
   }
 }
 ```
-
-Ver [redefinción con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
 
 </div>
 <div>
@@ -1506,7 +1511,12 @@ public class Square: Rectangle
 </div>
 </div>
 
+Ver [redefinción con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
+
 ---
+
+<div class="cols">
+<div>
 
 #### Incumplimiento del contrato
 
@@ -1521,35 +1531,42 @@ class Square {
   +Height : double <<override>>
 }
 
-class RectangleClient {
+class Client {
   +g(r: Rectangle)
 }
 
 Square -up-|> Rectangle
-RectangleClient .right.> Rectangle : g(new Rectangle(5,4))
+Client .right.> Rectangle : g(new Rectangle(5,4))
 
-note right of Rectangle
-  Contrato esperado por clientes:
-  Width y Height son
+note top of Rectangle
+  El cliente espera que
+  Width y Height sean
   independientes.
 end note
 
-note right of Square
-  Post-condición propia:
+note left of Square
+  Pero la redefinición hace que
   Width == Height
 end note
 @enduml
 
----
+</div>
+<div>
 
 #### Extensión y ocultación de métodos
 
-- La [diferencia entre `new` y `override` en un método en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) es que `new` oculta la implementación de la clase base y `override` la extiende.
+- Diferencia entre `new` y `override`: `new` oculta la implementación de la clase base y `override` la redefine.
 
-Sin embargo, cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un __mal diseño__.
+- Cuando una clase derivada realiza cambios en la clase base, es síntoma de un __mal diseño__.
 
-El LSP pone en evidencia que la relación **es-un** tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
+El LSP evidencia que la relación __es-un__ tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
 
+</div>
+</div>
+
+<!--
+No sólo es arriesgada la extensión (es-como-un) de los métodos de una clase, también lo es su redefinición (es-un). En el ejemplo, `Square` redefine el comportamiento de `Rectangle` de forma que los clientes de `Rectangle` dejan de funcionar correctamente.
+-->
 
 ---
 
@@ -1569,36 +1586,49 @@ void g(Rectangle r)
 
 ---
 
-¿Qué pasa si llamamos a `g(new Square(3))`?
+<div class="cols">
+<div>
 
-El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el alto. Si pasamos un cuadrado esto no es así 
+Pero si llamamos a...
 
-__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
+```csharp
+g(new Square())
+```
 
----
+... el autor de `g` asume que cambiar el ancho de un rectángulo deja intacto el alto.
+
+Si pasamos un cuadrado esto no es así.
+
+__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`), de forma que `g` deja de funcionar correctamente.
+
+</div>
+<div>
 
 #### Secuencia del fallo
 
 @startuml
-actor Cliente
-participant "RectangleClient" as G
+participant Client
+participant "RectangleManipulator" as G
 participant "Square" as S
 
-Cliente -> G : g(S)
+Client -> G : g(new Square())
 G -> S : Width = 5
 note right of S
-Square ajusta:
-Width = 5, Height = 5
+  Square ajusta:
+  Width = 5, Height = 5
 end note
 G -> S : Height = 4
 note right of S
-Square ajusta:
-Width = 4, Height = 4
+  Square ajusta:
+  Width = 4, Height = 4
 end note
 G -> S : Area()
 S --> G : 16
-G --> Cliente : Exception("Bad area!")
+G --> Client : Exception("Bad area!")
 @enduml
+
+</div>
+</div>
 
 ---
 
