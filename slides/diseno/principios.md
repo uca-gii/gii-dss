@@ -1724,7 +1724,37 @@ Ambos deben depender de abstracciones.
 
 __Diseño inicial__:
 
-![estructura en capas](./img/dip-1.png)
+<!-- ![estructura en capas](./img/dip-1.png) -->
+
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+hide fields
+skinparam packageStyle rectangle
+
+' Ocultar los contenedores de los paquetes visualmente
+skinparam package {
+    FontColor transparent
+    BackgroundColor transparent
+}
+
+' Definición de las capas como rectángulos
+package "Policy Layer" as PL {
+    class "Policy" as P
+}
+
+package "Mechanism Layer" as ML {
+    class "Mechanism" as M
+}
+
+package "Utility Layer" as UL {
+    class "Utility" as U
+}
+
+P -right-.> M
+M -right-.> U
+
+@enduml
 
 - Las dependencias son transitivas
 - _Policy_ depende de todo lo que depende _Mechanism_. 
@@ -1734,7 +1764,38 @@ __Diseño inicial__:
 
 __Diseño invertido__:
 
-![capas invertidas](./img/dip-2.png)
+<!-- ![capas invertidas](./img/dip-2.png) -->
+
+@startuml
+skinparam shadowing false
+skinparam linetype ortho
+hide fields
+
+package "Policy Layer" {
+    class "Policy" as P
+    interface "Policy Service"  as PS
+}
+
+package "Mechanism Layer" {
+    class "Mechanism" as M
+    interface "Mechanism Service" as MS
+}
+
+package "Utility Layer" {
+    class "Utility" as U
+}
+
+' Relaciones de la capa Policy
+P -right-> PS
+
+' Relaciones de la capa Mechanism
+M -up-.|> PS
+M -right-> MS
+
+' Relaciones de la capa Utility
+U -up-.|> MS
+
+@enduml
 
 </div>
 </div>
