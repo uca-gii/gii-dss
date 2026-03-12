@@ -1,3 +1,5 @@
+# DISEÑO DE SISTEMAS SOFTWARE
+
 ## Índice
 
 - [Fundamentos de Diseño](#fundamentos-de-diseño)
@@ -6,7 +8,6 @@
 
 
 <!-- Source: fundamentos.md -->
-# DISEÑO DE SISTEMAS SOFTWARE
 
 
 ## INTRODUCCIÓN
@@ -1620,9 +1621,10 @@ El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
 En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
 
 
-## Principio de responsabilidad única
+## SRP: *Single Responsibility Principle*
 
-### SRP: *Single responsibility Principle*
+
+### Principio de responsabilidad única
 
 > A class should have only one reason to change
 > –– Bob Martin
@@ -1839,7 +1841,9 @@ class CircleSerializer
 
 >[!NOTE]
 > El refactor 1 separa responsabilidades en clases (estrategias/servicios),
-lo que facilita sustituir implementaciones y testear. Pero no es una implementación típica en C++. El código parece hecho por un programador de Java.
+lo que facilita sustituir implementaciones y testear.
+Pero no es una implementación típica en C++.
+El código parece hecho por un programador de Java.
 
 
 ### Ejemplo en C++: Circle (refactor SRP 2)
@@ -1873,9 +1877,10 @@ void serialize ( Circle const&, ByteStream& bs, /*...*/ );
 la clase.
 
 
-## Principio de Abierto-Cerrado
+## OCP: *Open-Closed Principle*
 
-### OCP: *Open-Closed Principle*
+
+### Principio de Abierto-Cerrado
 
 > Toda clase, módulo, aspecto o función debe quedar abierto para extensiones pero cerrado para modificaciones
 >
@@ -2139,7 +2144,7 @@ int main()
 ```
 
 
-### Open-Closed Principle
+### Cierre estratégico
 
 > In general, no matter how _closed_ a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
 >
@@ -2238,9 +2243,10 @@ void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
 ```
 
 
-## Principo de segregación de interfaces
+## ISP: *Interface Segregation Principle*
 
-### ISP: *Interface Segregation Principle*
+
+### Principo de segregación de interfaces
 
 > Los clientes no deben depender de métodos que no usan.
 >
@@ -2273,7 +2279,7 @@ Una implementación de puertas de seguridad con temporizador `TimedDoor` que hac
 
 #### Diseño:
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNpVj0EOAiEMRfc9RZdj4nAEM4kewQsQphoSBkwpK_XuU6gLZ1f-e_0NSxXP0rYEIfla8R43YnwDItMzViGeYhYUjUuTs_FriqRhSPEEXwAViB8-0IH2jt_aNDQ7cCvF-suLsgLUmlLJlAFdc5_LfxVAf6wDzm1W2EdLVWd3tBfKq35oB3KIR_g)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpVjzEOwjAMRXefwmORaI6AKsERuECUGmQpTZDjTMDd6yQMdLP--36yl6JetG4RQvSl4J03EnwDotCTi5JMnBTV4lz1PPg1MlkYIp_gC8ZJHj7QATbFb2tqraG_5Tzs-UXJcjRJLtQbnbnqPpd_EbR57Wyus7E2wjjTiTt2F0qr_bIDg3FHxg)
 
 <details>
 <summary>PlantUML source</summary>
@@ -2283,20 +2289,15 @@ Una implementación de puertas de seguridad con temporizador `TimedDoor` que hac
 class Timer {
   register(int timeout, TimerClient cli)
 }
-
 interface TimerClient {
   timeout()
 }
-
 class Door {
   open()
   close()
 }
-
 Door .u.|> TimerClient
-
 TimedDoor -u-|> Door
-
 Timer .r.> TimerClient
 @enduml
 ```
@@ -2398,16 +2399,24 @@ Timer --> TimedDoor : timeout(id)
 
 #### Rediseño: puertas de seguridad
 
-__Delegación__ a través del patrón adapter (de objetos o de clases)
+__Delegación__ a través del patrón adapter
 
-- Versión adaptador de clases (por herencia):
+<div class="cols">
+<div>
+
+- Adaptador de clases (herencia):
 
    ![](./img/isp-timer-door-class-adapter.png)
 
+</div>
+<div>
 
-- Versión adaptador de objetos (por composición):
+- Adaptador de objetos (composición):
 
   ![](./img/isp-timer-door-object-adapter.png)
+
+</div>
+</div>
 
 
 ### Example: Shapes and Circles (1 de 2)
@@ -2613,9 +2622,10 @@ aspect DrawableEllipse extends DrawableShape {
 ```
 
 
-## Principio de sustitución de Liskov
+## **LSP**: *Liskov Substitution Principle*
 
-### LSP: *Liskov Substitution Principle*
+
+### Principio de sustitución de Liskov
 
 > Un subtipo debe poder ser sustituible por sus tipos base
 >
@@ -2625,6 +2635,9 @@ Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$,
 
 
 ### Ejemplo: Shapes versión 3
+
+<div class="cols">
+<div>
 
 ```csharp
 struct Point {double x, y;}
@@ -2642,6 +2655,8 @@ public class Shape {
 }
 ```
 
+</div>
+<div>
 
 ```csharp
 public class Circle: Shape {
@@ -2660,24 +2675,37 @@ public class Square: Shape {
 }
 ```
 
+</div>
+</div>
+
 
 #### Problemas:
 
 - `DrawShape` viola claramente el OCP
 - Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
 - Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
-- A continuación, una violación más sutil del LSP...
+
+A continuación, una violación más sutil del LSP...
 
 
 ### Ejemplo: Rectángulos versión 1
 
 De momento solo necesitamos rectángulos y escribimos esta versión:
 
+<div class="cols">
+<div>
+
 ```csharp
 public class Rectangle {
   private Point topLeft;
   private double width;
   private double height;
+
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
 
   public double Width {
     get { return width; }
@@ -2691,16 +2719,47 @@ public class Rectangle {
 }
 ```
 
+</div>
+<div>
 
-Un día hace falta manejar cuadrados además de rectángulos.
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpNj7EOwjAMRHd_hUcQqB_QAVVCSMwszG7qtpHcpCTOhPh3khKpbKez7_ncRaWgaREwQjHig42Sm4TxDYinpx10xhYHn3rh4tzZTrPu1gdq8iqWnf5i4yG0O-pYluq4CSXeXP4OtZgiATivjMKjoh8rLKNugmbTjDGt3jG-UulB2aeltxRw63jOXq22cljIsWG0UyJpgN2AhQ5dVvnVLwOLUDQ)
 
-Geométricamente, un cuadrado es un rectángulo, así que hacemos uso de la herencia (relación **es-un**):
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Client {
+  +f(r: Rectangle)
+}
+
+Client .right.> Rectangle : usa
+
+note left of Client
+  El cliente supone que
+  al cambiar Width,
+  Height permanece igual.
+end note
+@enduml
+```
+
+</details>
+
+Pero un día hace falta manejar cuadrados además de rectángulos. Geométricamente, un cuadrado es un rectángulo, así que utilizamos una relación __es-un__:
 
 ```java
 public class Square: Rectangle {
    ...
 }
 ```
+
+</div>
+</div>
 
 
 #### Problema: cuadrados como rectángulos
@@ -2713,6 +2772,9 @@ public class Square: Rectangle {
 
 
 ### Ejemplo: rectángulos versión 2
+
+<div class="cols">
+<div>
 
 ```csharp
 public class Square: Rectangle {
@@ -2733,19 +2795,64 @@ public class Square: Rectangle {
 }
 ```
 
-Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
+Ver [`new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
+
+</div>
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptkT1uAyEQhXtOMWWsyHsAy15ZSpMilVOkHsPsGoll1jAkUn5OlS6tLxbIIpPCHXpv5nsP2EfBIGlySjuMEQ6kBf3oCD4UwP2LNXKCDRhOR0dFeSQ7nqRJX6puPp8ThptrsN16euv7G-tX64p5cJa8LJjhLmxao1UZqinrNK8_--aputaFgu_-OTkqY1ZKeRaCPxt4qG1zSAXy0dkRAeGcirpcYLeDpa8ib6AAKkZ4LpAlNI8PYP0ra4RI4-XHg8MsCIUB38FQK9Pl2ScE1skJanv59qDZQ36CMh_YJF3SNU8zB8Gp4DlbFGcKaLhrRfb5lL_tFzIBlUg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Square {
+  +Width : double <<new>>
+  +Height : double <<new>>
+}
+
+class Client {
+  +f(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+Client .right.> Rectangle : f(r)
+
+note right of Square
+  Square obliga a que
+  Width == Height
+end note
+
+note top of Client
+  f invoca según la interfaz de Rectangle.
+  La ocultación con new introduce
+  comportamiento inesperado.
+end note
+@enduml
+```
+
+</details>
+
+</div>
+</div>
 
 
 - El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
 
   ```csharp
   Square s = new Square();
-  s.SetWidth(1);   // fija ambos
-  s.SetHeight(2);  // fija ambos
+  s.Width = 1;   // fija ambos
+  s.Height = 2;  // fija ambos
 
   void f(Rectangle r)
   {
-    r.SetWidth(32); // calls Rectangle.SetWidth
+    r.Width = 3; // calls Rectangle.SetWidth
   }
   ```
 
@@ -2758,12 +2865,20 @@ Nota: [Diferencia entre `new` y `override` en C#](https://docs.microsoft.com/en-
 
 ### Ejemplo: rectángulos versión 3
 
+<div class="cols">
+<div>
+
 ```csharp
 public class Rectangle
 {
   private Point topLeft;
   private double width;
   private double height;
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
   public virtual double Width
   {
     get { return width; }
@@ -2777,8 +2892,8 @@ public class Rectangle
 }
 ```
 
-Nota: [Métodos redefinibles con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
-
+</div>
+<div>
 
 ```csharp
 public class Square: Rectangle
@@ -2800,14 +2915,72 @@ public class Square: Rectangle
 }
 ```
 
+</div>
+</div>
+
+Ver [redefinción con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
+
+
+<div class="cols">
+<div>
+
+#### Incumplimiento del contrato
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp1kU1OwzAQhfc-xSwTQbMqm6qNKiEklhUsWBv7JbFk7NQ_RQg4FUfgYtiNRYJEd6P3Zr43o9n7wF2IL5oJzb2nB4jATa9B74zo6knJMNCGpI3PSdtuTyp1c9222b2H6ofwv_3JCvHxGLm7hLMnOKckLvEW_i_wViuYMAH7ym3mnevcVPJWcVx9tLPHyljjckazcFJeXxm8zkp1c72ua8aMDaBgR7LdAkR0p0mcaSD4EY7TMWZ9Ou-Nyh0e3CRVGYkRRp4HfMNSSZlc-BpdyAHT3qn_AGdJc3KQ6JRRQn1_GRq4wJ-Y3a7kzMB9qtIrfwBCUJqR)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Rectangle {
+  +Width : double <<virtual>>
+  +Height : double <<virtual>>
+}
+
+class Square {
+  +Width : double <<override>>
+  +Height : double <<override>>
+}
+
+class Client {
+  +g(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+Client .right.> Rectangle : g(new Rectangle(5,4))
+
+note top of Rectangle
+  El cliente espera que
+  Width y Height sean
+  independientes.
+end note
+
+note left of Square
+  Pero la redefinición hace que
+  Width == Height
+end note
+@enduml
+```
+
+</details>
+
+</div>
+<div>
 
 #### Extensión y ocultación de métodos
 
-- La [diferencia entre `new` y `override` en un método en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords) es que `new` oculta la implementación de la clase base y `override` la extiende.
+- Diferencia entre `new` y `override`: `new` oculta la implementación de la clase base y `override` la redefine.
 
-Sin embargo, cuando la creación de una clase derivada provoca cambios en la clase base, es síntoma de un __mal diseño__.
+- Cuando una clase derivada realiza cambios en la clase base, es síntoma de un __mal diseño__.
 
-El LSP pone en evidencia que la relación **es-un** tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
+El LSP evidencia que la relación __es-un__ tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
+
+</div>
+</div>
+
+>[!NOTE]
+>No sólo es arriesgada la extensión (es-como-un) de los métodos de una clase, también lo es su redefinición (es-un). En el ejemplo, `Square` redefine el comportamiento de `Rectangle` de forma que los clientes de `Rectangle` dejan de funcionar correctamente.
 
 
 Ahora parece que funcionan `Square` y `Rectangle`, que matemáticamente quedan bien definidos.
@@ -2825,11 +2998,58 @@ void g(Rectangle r)
 ```
 
 
-¿Qué pasa si llamamos a `g(new Square(3))`?
+<div class="cols">
+<div>
 
-El autor de `g` asumió que cambiar el ancho de un rectángulo deja intacto el alto. Si pasamos un cuadrado esto no es así
+Pero si llamamos a...
 
-__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`) de forma que `g` deja de funcionar.
+```csharp
+g(new Square())
+```
+
+... el autor de `g` asume que cambiar el ancho de un rectángulo deja intacto el alto.
+
+Si pasamos un cuadrado esto no es así.
+
+__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`), de forma que `g` deja de funcionar correctamente.
+
+</div>
+<div>
+
+#### Secuencia del fallo
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkLuuwkAMRPv9irmpEgkKJKCIxBUPodDQkILaSkxYFDZhcQSfjwMRD1FRWfbMHK93ehby0hxLU2u1ma3JCRalZScfo2DDmZArSl6Ts3VTklQ-AJ2RfPrSU0Oe70pqzIOE_j8SxChCxxc8HGEUmaQVUhW2Npc9JhgZVwnD22IvqHZKQGcHHRp9a6yDp7mHFd-dbZBdjjb8gj7F4S_UYe89-E2deaYwMin63VGDcStq090aY3nNuBZbuTCYUw7dQ39BZKYK05--AYSKcSI)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+participant Client
+participant "RectangleManipulator" as G
+participant "Square" as S
+
+Client -> G : g(new Square())
+G -> S : Width = 5
+note right of S
+  Square ajusta:
+  Width = 5, Height = 5
+end note
+G -> S : Height = 4
+note right of S
+  Square ajusta:
+  Width = 4, Height = 4
+end note
+G -> S : Area()
+S --> G : 16
+G --> Client : Exception("Bad area!")
+@enduml
+```
+
+</details>
+
+</div>
+</div>
 
 
 ¿Quién tiene la culpa?
@@ -2874,9 +3094,10 @@ Meyer*:
 - La postcondición de `Square::SetWidth(double w)` viola el  contrato de la clase base porque es más débil que la de `Rectangle`
 
 
-## Principio de Inversión de Dependencias
+## DIP: *Dependency Inversion Principle*
 
-### DIP: *Dependency Inversion Principle*
+
+### Principio de Inversión de Dependencias
 
 - Los módulos de alto nivel no deben depender de módulos de bajo nivel.
 Ambos deben depender de abstracciones.
@@ -2890,17 +3111,106 @@ Ambos deben depender de abstracciones.
 
 ### Ejemplo: estructura en capas
 
+<div class="cols">
+<div>
+
 __Diseño inicial__:
 
-![](./img/dip-1.png)
+ ![estructura en capas](./img/dip-1.png)
+
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNplkUFOwzAQRfc-xagbVuUIqALEqhGRUA4wcibOqM442A4oQhyGM3CEXoxJ0lah9cLS-L8__0vepYwxD5036cDSY8QOPAvlsScIMbdhJaQW6_DJ4qBBn8i0XBM0TL5OK6pHe0BHb3n0BJFsRnGejLmDVzt4jQMfEtggmYTqECmBrpneenwfKOv8wWlA35Eit4vhy4CeF13wFHyIkCNKUkTxWXlUzsUwSH2rf089nqlhYcvHX5mjUetgP92hC3Pl44-4QSuZc-amDJ7tCHscKW5A2XJ_KmLVn87AIk0xF2dBtkXh1K3MxZX5wizqP3-V2XNeR1dX7hOxaJO3hG1k1-bt_YMuK1ZTZcyOpNYP_wOfi6xg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+hide fields
+skinparam packageStyle rectangle
+
+' Ocultar los contenedores de los paquetes visualmente
+skinparam package {
+    FontColor transparent
+    BackgroundColor transparent
+}
+
+' Definición de las capas como rectángulos
+package "Policy Layer" as PL {
+    class "Policy" as P
+}
+
+package "Mechanism Layer" as ML {
+    class "Mechanism" as M
+}
+
+package "Utility Layer" as UL {
+    class "Utility" as U
+}
+
+P -right-.> M
+M -right-.> U
+
+@enduml
+```
+
+</details>
 
 - Las dependencias son transitivas
 - _Policy_ depende de todo lo que depende _Mechanism_.
 
+</div>
+<div>
 
 __Diseño invertido__:
 
-![](./img/dip-2.png)
+ ![capas invertidas](./img/dip-2.png)
+
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9kUFuwyAQRfecYuRNV-4RqhygSFYiH2CEx2YUDIghiay0d69NUzuN0rLk__fnD-wkY8qn0Sk5so-YcASx2IUL-wF6dEJ3imNPeYoEIWUblOWOoGdynSgV0RxxIKia4NhM8I4TpQquCuZjHIr8SBWgQFPu2WdKPZoNO1A6s6EKiumgPu-SNRmLnmV8Gr6qJV8_5m_wOmKx_Z7QZnacn5e_aQVrF-oF9uTQcPAkML-EQzAYEb43UQ3UiQeb67dljz_day-loT7F-vWj-PVG63_oWynVruzi3pHv5j_9Aiy8mXw)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+skinparam shadowing false
+skinparam linetype ortho
+hide fields
+
+package "Policy Layer" {
+    class "Policy" as P
+    interface "Policy Service"  as PS
+}
+
+package "Mechanism Layer" {
+    class "Mechanism" as M
+    interface "Mechanism Service" as MS
+}
+
+package "Utility Layer" {
+    class "Utility" as U
+}
+
+' Relaciones de la capa Policy
+P -right-> PS
+
+' Relaciones de la capa Mechanism
+M -up-.|> PS
+M -right-> MS
+
+' Relaciones de la capa Utility
+U -up-.|> MS
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
 
 
 - Cada nivel declara una interfaz para lo que necesita de otros niveles inferiores
@@ -2909,15 +3219,15 @@ __Diseño invertido__:
 - Cada nivel es intercambiable por un sustituto
 
 
-### Heurística _ingenua_
+### Heurística para construcción
 
 - Ninguna variable debería guardar una referencia a una clase concreta
 - Ninguna clase debería ser derivada de una clase concreta
 - Ningún método debería redefinir un método ya implementado de ninguna de sus clases base
 
-Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas.
+Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas (__inyección de dependencias__).
 
-Gracias a la __introspección__ o la carga dinámica de clases, los lenguajes de programación pueden indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración).
+Gracias a la __introspección__ o la carga dinámica de clases, en algunos lenguajes de programación se puede indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración XML o JSON).
 <!-- Source: patrones.md -->
 # PATRONES DE DISEÑO
 
