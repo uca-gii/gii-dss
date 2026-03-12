@@ -872,20 +872,15 @@ Una implementación de puertas de seguridad con temporizador `TimedDoor` que hac
 class Timer {
   register(int timeout, TimerClient cli)
 }
-
 interface TimerClient {
   timeout()
 }
-
 class Door {
   open()
   close()
 }
-
 Door .u.|> TimerClient
-
 TimedDoor -u-|> Door
-
 Timer .r.> TimerClient
 @enduml
 
