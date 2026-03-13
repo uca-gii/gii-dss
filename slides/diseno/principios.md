@@ -1651,8 +1651,7 @@ h3 {
 
 ### Diseño por Contrato
 
-Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand
-Meyer*:
+Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand Meyer*:
 
 > A routine redeclaration [in a derivative] may only replace the original precondition by one equal or weaker, and the original post-condition by one equal or stronger
 > 
