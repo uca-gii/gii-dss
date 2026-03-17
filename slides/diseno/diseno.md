@@ -9,7 +9,6 @@
 
 <!-- Source: fundamentos.md -->
 
-
 ## INTRODUCCIÓN
 
 
@@ -3069,8 +3068,7 @@ Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución
 
 ### Diseño por Contrato
 
-Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand
-Meyer*:
+Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand Meyer*:
 
 > A routine redeclaration [in a derivative] may only replace the original precondition by one equal or weaker, and the original post-condition by one equal or stronger
 >
@@ -3256,9 +3254,10 @@ Gracias a la __introspección__ o la carga dinámica de clases, en algunos lengu
 
 ![Background image](./img/patronesGOF.jpg)
 
-- Conocer un lenguaje OO no te hace un buen diseñador. ¿Qué diferencia hay entre los diseñadores expertos y los novatos? Que los primeros usan recetas exitosas para los problemas habituales y no reinventan la rueda continuamente.
+- Conocer un lenguaje OO no te hace un buen diseñador. ¿Qué diferencia hay entre los diseñadores expertos y los novatos? Los primeros usan recetas exitosas para los problemas habituales y no reinventan la rueda continuamente.
 
 - Un grupo de expertos (_Gang of Four_) se basó en el trabajo de Alexander y lo aplicó al diseño de software, presentando el libro *Design Patterns* con un total de 23 patrones.
+
 
 ### Patrones de diseño
 
@@ -3332,7 +3331,7 @@ Pero hay más...
 
 #### Ejemplo: Juego de laberinto
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNqFU8FO4zAQvfsrRj21iFRdtHBYraoiwYEVAkThA5x4SCxiu7Inqljg3xnbUZN0peUSy89v3nszdjaBpKfOtILcDshB6YicAaU9VqSdFaGSLcKP1dlP2GtFTQ9cnK-gQV03JMKrtjvppYFWW6S3HYLz1LjRQdXKEC6JvC47wpvK2a3-i7ASAm1n4Cq6VewG7wLg7v7x6ZrX7fMjf6-3aXOf1k8hkhT86bB2t7JEry2njmXvBtlUfYKR2s4XY6TyKP2BzWesI8tAXlaUs8FWc7cTGbR87jO558hWJsqLxpYZHD1C46Ia6VYqNz90tPiVpcekcEw6zZzF_-0fOvQ0CYB8e5eljvC41JF30eAKg8J5jPidsvSovmn-ML4JT9Yea-mjx79GPIyI3XVmzoVJ6-jelsrt7XI9iAsRK2DWcvwwg5Oi2xXrfoLpC78_ihZfqMihB9DHt1j0QxrgaFCkmxOD7SzwPsnnqnUmiEYrBIOGeUGExu0ht9Jvhmc64aTEEySHOGBig1bxP_YFgSoriA)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqFU11L7DAQfc-vGPapK1ZWufogsijogyJ6cfUHpM3YBptkSaYsXvW_30la-rGCviTNyZlzTibpZSDpqTWNILcFclA4ImdAaY8laWdFKGWDcLw6-QM7rajugbPTFdSoq5pEeNN2K7000GiL9L5FcJ5qN9koGxnCFZHXRUt4Wzq70f8QVkKgbQ1cR7eS3eBDADw8Pj3f8Lx5eeLxZpMWj_38YZCl1Rdoq3SJ2fKcv0h8CZE84K7Fyt3LAj3DLukNJUZqmy2nSOlR-oHNe6wji0BeltSFho3mNsxk0PK-78g9RzYyUV41NszgM0VoWlQh3UvlsuGoHDxJT0lhn3TYcZY_2_9t0dMsAPK1XhU6whM0cKbjvfXJVNqRdzHANQaFWTzCb87So_qlOUN7ZzxZeaykjx7fjbhZEXtoTcaFSWvvXo-U29mj9SguRKyARcPxwwIO8nabr_sOpxEuPvMGXynvQo-gj48475s4wtEgTzcrRttFbFmS76rWHUHUWiEYNMwLItRuB91R-sX4vmeclHiGdCEGTFyiVfxz_gepPj4-)
 
 <details>
 <summary>PlantUML source</summary>
@@ -3350,6 +3349,7 @@ enum Direccion {
   SUR
   ESTE
   OESTE
+  {method} indice(): int
 }
 
 class JuegoLaberinto {
@@ -3370,6 +3370,8 @@ class Sala{
 
 class Puerta{
   {field} estaAbierta
+  {field} sala1
+  {field} sala2
   {method} otroLadoDesde(Sala)
   {method} entrar()
 }
@@ -3403,43 +3405,75 @@ show Puerta members
 </details>
 
 
-```java
-public interface Direccion {   // Cuando no existía "enumerate" en Java
-    int NORTE = 0;             // se implementaban así :-)
-    int ESTE = 1;
-    int SUR = 2;
-    int OESTE = 3;
-}
+<div class="cols">
+<div>
 
+```java
+public enum Direccion {
+
+  NORTE(0), ESTE(1), SUR(2), OESTE(3);
+
+  private final int indice;
+
+  Direccion(int indice) {
+    this.indice = indice;
+  }
+
+  int indice() {
+    return indice;
+  }
+
+}
+```
+
+</div>
+<div>
+
+```java
 public class Laberinto {
     Laberinto() {};
-    void agregarSala(Sala sala) {};
+    void agregarSala(Sala sala) { ... };
     Sala getSalaNum(int numSala) { ... };
 }
 ```
 
 ```java
-public abstract class Sitio {  // Podría ser una interfaz
-    boolean entrar() {};
+public abstract class Sitio {
+    boolean entrar() { ... };
 }
+```
 
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+```java
 public class Sala extends Sitio {
     private Sitio lados[];
     int numSala;
 
     Sala() {};
     Sala(int numSala) {};
-    Sitio getLado(int dir) { return lados[dir]; };
-    void setLado(int dir, Sitio sitio) {};
-    boolean entrar() {};
+    Sitio getLado(Direccion dir) {
+      return lados[dir.indice()];
+    };
+    void setLado(Direccion dir, Sitio sitio) {
+      lados[dir.indice()] = sitio;
+    };
+    boolean entrar() { ... };
 }
 ```
 
+</div>
+<div>
 
 ```java
 public class Pared extends Sitio {
     Pared() {};
-    boolean entrar() {};
+    boolean entrar() { ... };
 }
 
 public class Puerta extends Sitio {
@@ -3448,10 +3482,16 @@ public class Puerta extends Sitio {
     boolean estaAbierta;
 
     Puerta(Sala sala1, Sala sala2) { ... };
-    boolean entrar() {};
+    boolean entrar() { ... };
     Sala otroLadoDesde(Sala unaSala) { ... };
 }
 ```
+
+</div>
+</div>
+
+
+##### ¿Cómo se crean los laberintos?
 
 
 ```java
@@ -3478,7 +3518,7 @@ Laberinto crearLaberinto () {
 #### Críticas
 
 - Creación poco flexible: instancias concretas cableadas.
-- Supongamos $\exists$ SalaHechizada, PuertaHechizada. ¿Cómo cambiamos `crearLaberinto`?
+- Supongamos $\exists$ `SalaHechizada`, `PuertaHechizada`. ¿Cómo cambiamos `crearLaberinto`?
 
 
 #### Método de factoría
@@ -3636,9 +3676,18 @@ public class JuegoLaberintoHechizado extends JuegoLaberinto {
 ![Strategy, center](./img/guru/strategy-mini-2x.png)
 
 
+<div class="cols">
+<div>
+
 #### Strategy: Estructura
 
+</div>
+<div>
+
 ![](./img/guru/strategy-structure-2x.png)
+
+</div>
+</div>
 
 
 #### Strategy
@@ -3786,7 +3835,13 @@ deactivate cmdDraw
 </details>
 
 
+<div class="cols">
+<div>
+
 #### Versión cliente/servidor
+
+</div>
+<div>
 
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9UkFuwyAQvPOKVU7OwVJOrWRFVaT0kmv7gi2sYhQbLLxx8vxCbTAoVk-IYXZ2ZpfTyOj43ndilNgRvB8O8NCK2-X-5u8t6WvLQgyeqaUe0DDITpPhAkJzMZO9kRPixz5h901uIrcrOWfb92hUCc7MEvsiSTqgZBR4PSFQsp6QKfaeD6g_kmoDhh5wtkY6YlrAar9WpvaKXrFcMEZpAJWq_iiBk0ultJnW4kykx9LdlfgTGTcdZTXHuk44QAP29q_fY72a8ezRD6yKpP3L1HKldWFZ9HkZXgilpIG3pOLCtpJH38HVTGuAniTvTBW3etzOHquCgbj54IC1NcW40rcQJ5_T_9tf89X2iA)
 
@@ -3840,6 +3895,9 @@ activate aReceiver
 ```
 
 </details>
+
+</div>
+</div>
 
 
 ### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
@@ -4010,9 +4068,18 @@ end note
 </details>
 
 
+<div class="cols">
+<div>
+
 #### Composite: Estructura
 
+</div>
+<div>
+
 ![](./img/guru/composite-structure-2x.png)
+
+</div>
+</div>
 
 
 #### Composite
@@ -4124,9 +4191,18 @@ end note
 </details>
 
 
+<div class="cols">
+<div>
+
 #### Decorator: Estructura
 
+</div>
+<div>
+
 ![](./img/guru/decorator-structure-2x.png)
+
+</div>
+</div>
 
 
 #### Ejemplo: `EnhancedWriter` original
@@ -4227,7 +4303,7 @@ show methods
 
 #### Ejemplo: `EnhancedWriter` ampliado –  herencia fuera de control
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNq9lD1PwzAQhvf7FTfC0CogYOpQVDEgIRaQmB37VFuN7ci-KIK2_51EYYDEtZKF9XyP3w_J3kYWgRtbAfsa2WPpmb1FZQJJNt5BlKIivClu77A1ivXP4OG-QE1mrxniwbhaBGGxMo74syb0gbX_dSArEeMjczBlw_QsvXszX4QFgCgjByF5WMEnp4WTpD6CYQp4BMSjpe4ydca2n710Ele9zjWcAQbotbElBeP2i6h3Y6lLb-ul4E6TPMTG2vngKNbmtFqNXSd3Eh6TewlLAONa_qpOEUjcsjmt11km4XDifGwk4axTyRJJa6Pg82SyBGSiZvqblpDu5VKXCf6_ioVcH5crXpB4Lg-gjSK01K9EiNq3ODypCLAlp7pf6hsU3rsQ)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNq9lD1PwzAQhvf7FTfC0CogYOpQVDEgIRaQmB37VFuN7ci-KIK2_51EYYDEtZKF9XyP3w_J3kYWgRtbAfsa2WPpmb1FZQJJNt5BlKIivClu77A1ivXP4OG-QE1mrxniwbhaBGGxMo74syb0gbX_dSArEeMjczBlw_QsvXszX4QFgCgjByF5WMEnp4WTpD6CYQp4BMSjpe4ydca2n710Ele9zjWcAQbotbElBeP2i6h3Y6lLb-ul4E6TPMTG2vngKNbmtFqNXSd3Eh6TewlLAONa_qpOEUjcsjmt11km4XDifGwk4axTyRJJa6Pg82SyBGSiZvqblpDu5VKXCf6_ioVcH5crXpB4Lg_aKEJL_UaEqH2Lw4uKAFtyqvukvgFkyLsG)
 
 <details>
 <summary>PlantUML source</summary>
@@ -4276,7 +4352,6 @@ NumberingWriter <|.. TimestampingNumberingWriter
 ChecksummingNumberingWriter <|-- ChecksummingNumberingTimestampingWriter
 TimestampingWriter <|.. ChecksummingNumberingTimestampingWriter
 
-
 hide members
 show methods
 
@@ -4292,9 +4367,11 @@ show methods
 - Los decoradores ofrecen una **alternativa** más flexible que la herencia para extender funcionalidades.
 
 **Ventajas:**
+
 - Permite añadir o quitar responsabilidades a los objetos sin afectar a otros objetos
 
 **Desventajas:**
+
 - Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
 - Provoca la creación de muchos objetos pequeños y complica la depuración
 
@@ -4417,11 +4494,11 @@ Con `Subject` separado:
 #### Observer: Detalles de implementación
 
 - ¿Quién dispara la actualización?
-    - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
-    - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
+  - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
+  - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
 
 
-#### Oberver: Comportamiento (síncrono) – disparo externo
+#### Observer: Comportamiento (síncrono) – disparo externo
 
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkkGOwjAMRfc-hcUKFlRdDJsIMdwAJE6QtIZYKp0qcUFz-8kgEHVokVgm8ft-trKNYoP05wZiZRvCr1WJV67F38-rskRPfPIC0KVKrrizreDMtjsXKVysa8jgvncNR09hhjbi8G2comDw0LtYBXYZRCFHfiQFv-HUO8AzCJcb5YIG4wOei-e4AFsJX6zQsH1NY7eQNfosXDuqDpl-URQA31m4wVTGx9_5iPFty6BUBnQSNdh3dSLejKzo9VLTJ5KD_POL6dXkzfWqpg308K8aec6US7bELbV1-tR_J4wHwA)
 
@@ -4466,7 +4543,7 @@ deactivate anotherObserver
 </details>
 
 
-#### Oberver: Comportamiento (síncrono) – autodisparo
+#### Observer: Comportamiento (síncrono) – autodisparo
 
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVk0FuAjEMRfc-hcWKLhjNAjZRRbkBlThBMuMSS8N0lHiouD0BtQKnSaUuE_v9__Ol7KLYIPNpgNjZgXC9afGLe_Hf503boic-egGY0iZ3PNlRcGHHvYsUztYNZPB9dgNHT2GBNuLzrExRMHiYXewCuwyikCOfkoT_4NQc4CGEq63KggbjD7wUz_EFbCd8tkLP9j2VbiEz-p-4zqgcsvhN0wC8FcRJDpKIZSH0vWi1n_EGkw1_XBJc3UtPMjhP_c2jXo6iX1eaPj4yVkvMzXWp9QS6pt8xcp1alqzuQs57m7CjsU__4gqXLx9X)
 
@@ -4533,12 +4610,21 @@ deactivate anObservable
 - Permite **definir nuevas** operaciones sin modificar las clases de los **elementos** sobre las que opera.
 
 
-#### Visitor: Estructura
+<div class="cols">
+<div>
+
+#### Visitor: **Estructura**
+
+</div>
+<div>
 
 ![](./img/guru/visitor-structure-2x.png)
 
+</div>
+</div>
 
-#### Visitor: Comportamiento
+
+#### Visitor: **Comportamiento**
 
 ![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNk0FPwzAMhe_-FdZO2WFSkbZLhWAz2pkDEveQWjSoS6vEHX-fDkjWsqzslsT-nv2elG0Q7aU_NBCMbhjXmwI_bSX1731TFFizfa8FoBs6rbGddoLaPb99sJEX8b2R3vOkutBu3_CBnexKjKcF6oDnwhWAEkBTgP4ArzZYaf1diU-tM56F48sPF28Aj6uHy32xxLZjr8W2Ti1BG7FHLZwxBpfst2A0MihpY7gTlWZO9JLhEXISiM0DfzwdY1FJbcMSKs5qpLezv5Hu_WqimxzuVH6l8ZAkmJ_8Twx0YwwEI2QmBpqJgeZjoKsxkMqvdHMMBLBlVw3_5QtHUSOE)
 
@@ -4587,11 +4673,13 @@ deactivate anElementB
 
 
 **Ventajas:**
+
 - Permite implementar el _double dispatch_: la operación que se ejecuta tras el `accept()` depende del tipo de `Visitor` y del tipo de `Element`
 - Separa los datos y las operaciones de los elementos visitados, facilitando la inclusión de nuevas operaciones sin tener que cambiar las clases
 - Permite acumular el estado de una operación global sobre una estructura
 
 **Desventajas:**
+
 - Rompe la encapsulación (?)
 - Los tipos de `Element` visitados deben ser estables
 
@@ -4603,8 +4691,13 @@ deactivate anElementB
 
 #### State: Ejemplo
 
+<div class="cols">
+<div>
+
 ![](./img/guru/state-example.png)
 
+</div>
+<div>
 
 ```scala
 class Document {
@@ -4634,23 +4727,42 @@ class Document {
 }
 ```
 
+</div>
+</div>
+
+
+<div class="cols">
+<div>
 
 #### State: Estructura
 
+</div>
+<div>
+
 ![](./img/guru/state-structure.png)
 
+</div>
+</div>
 
-#### Diferencia con Strategy
+
+#### Diferencia de State con Strategy
 
 - Cada estado puede ser consciente de la existencia de otros estados e iniciar transiciones de estado
 - Cada estrategia desconoce a las otras
+
 
 ## Otros patrones específicos
 
 
 ### Data Acess Object (DAO)
 
-- Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
+<div class="cols">
+<div>
+
+Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
+
+</div>
+<div>
 
 ![](./img/dao_uml.webp)
 
@@ -4658,9 +4770,19 @@ class Document {
 ![](./img/dao_code.png)
 
 
+</div>
+</div>
+
+
 ### Data Transfer Object (DTO)
 
-- Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*).
+<div class="cols">
+<div>
+
+Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*).
+
+</div>
+<div>
 
 ![](./img/dto_uml.png)
 
@@ -4668,7 +4790,12 @@ class Document {
 ![](./img/dto_code.png)
 
 
+</div>
+</div>
+
+
 # Para profundizar sobre patrones
+
 - Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
     - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
     - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
