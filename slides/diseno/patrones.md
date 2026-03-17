@@ -200,6 +200,7 @@ enum Direccion {
   SUR
   ESTE
   OESTE
+  {method} indice(): int
 }
 
 class JuegoLaberinto {
@@ -220,6 +221,8 @@ class Sala{
 
 class Puerta{
   {field} estaAbierta
+  {field} sala1
+  {field} sala2
   {method} otroLadoDesde(Sala)
   {method} entrar()
 }
@@ -251,45 +254,76 @@ show Puerta members
 
 ---
 
-```java
-public interface Direccion {   // Cuando no existía "enumerate" en Java
-    int NORTE = 0;             // se implementaban así :-)
-    int ESTE = 1;
-    int SUR = 2;
-    int OESTE = 3;
-}
+<div class="cols">
+<div>
 
+```java
+public enum Direccion {
+
+  NORTE(0), ESTE(1), SUR(2), OESTE(3);
+
+  private final int indice;
+
+  Direccion(int indice) {
+    this.indice = indice;
+  }
+
+  int indice() {
+    return indice;
+  }
+
+}
+```
+
+</div>
+<div>
+
+```java
 public class Laberinto {
     Laberinto() {};
-    void agregarSala(Sala sala) {};
+    void agregarSala(Sala sala) { ... };
     Sala getSalaNum(int numSala) { ... };
 }
 ```
----
 
 ```java
-public abstract class Sitio {  // Podría ser una interfaz
-    boolean entrar() {};
+public abstract class Sitio {
+    boolean entrar() { ... };
 }
+```
 
+</div>
+</div>
+
+---
+
+<div class="cols">
+<div>
+
+```java
 public class Sala extends Sitio {
     private Sitio lados[];
     int numSala;
 
     Sala() {};
     Sala(int numSala) {};
-    Sitio getLado(int dir) { return lados[dir]; };
-    void setLado(int dir, Sitio sitio) {};
-    boolean entrar() {};
+    Sitio getLado(Direccion dir) {
+      return lados[dir.indice()];
+    };
+    void setLado(Direccion dir, Sitio sitio) {
+      lados[dir.indice()] = sitio;
+    };
+    boolean entrar() { ... };
 }
 ```
 
----
+</div>
+<div>
 
 ```java
 public class Pared extends Sitio {
     Pared() {};
-    boolean entrar() {};
+    boolean entrar() { ... };
 }
 
 public class Puerta extends Sitio {
@@ -298,10 +332,23 @@ public class Puerta extends Sitio {
     boolean estaAbierta;
 
     Puerta(Sala sala1, Sala sala2) { ... };
-    boolean entrar() {};
+    boolean entrar() { ... };
     Sala otroLadoDesde(Sala unaSala) { ... };
 }
 ```
+
+</div>
+</div>
+
+---
+<style scoped>
+h5 {
+  text-align: center;
+  color: red;
+}
+</style>
+
+##### ¿Cómo se crean los laberintos?
 
 ---
 
@@ -330,7 +377,7 @@ Laberinto crearLaberinto () {
 #### Críticas
 
 - Creación poco flexible: instancias concretas cableadas.
-- Supongamos $\exists$ SalaHechizada, PuertaHechizada. ¿Cómo cambiamos `crearLaberinto`?
+- Supongamos $\exists$ `SalaHechizada`, `PuertaHechizada`. ¿Cómo cambiamos `crearLaberinto`?
 
 ---
 
