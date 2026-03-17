@@ -55,6 +55,12 @@ h2 {
 ---
 <!-- paginate: true -->
 
+<style scoped>
+h2 {
+  text-align: center;
+}
+</style>
+
 ## Introducción
 
 ---
@@ -80,15 +86,17 @@ section { text-align: center; }
 -->
 
 ---
+
 ### Diseño de software con patrones
 
-![bg 90% left:30% Libro GoF](./img/patronesGOF.jpg)
+![bg 90% right:30% Libro GoF](./img/patronesGOF.jpg)
 
-- Conocer un lenguaje OO no te hace un buen diseñador. ¿Qué diferencia hay entre los diseñadores expertos y los novatos? Que los primeros usan recetas exitosas para los problemas habituales y no reinventan la rueda continuamente.
+- Conocer un lenguaje OO no te hace un buen diseñador. ¿Qué diferencia hay entre los diseñadores expertos y los novatos? Los primeros usan recetas exitosas para los problemas habituales y no reinventan la rueda continuamente.
 
 - Un grupo de expertos (_Gang of Four_) se basó en el trabajo de Alexander y lo aplicó al diseño de software, presentando el libro *Design Patterns* con un total de 23 patrones.
 
 ---
+
 ### Patrones de diseño
 
 - Patrón de diseño: Una **solución general** a un **problema general** que puede adaptarse a un problema concreto
@@ -105,9 +113,13 @@ section { text-align: center; }
 
 ---
 
+<style scoped>
+section { text-align: center; }
+</style>
+
 ## Patrones del Gang of Four
 
-![w:250 center](./img/patronesGOF.jpg)
+![w:350 center](./img/patronesGOF.jpg)
 
 ---
 
@@ -158,11 +170,9 @@ Pero hay más...
 - *Iterator*, *Mediator*, *Memento*, *State*
 
 ---
+
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
 
 ### [Factory Method](https://refactoring.guru/es/design-patterns/factory-method)
@@ -483,10 +493,7 @@ public class JuegoLaberintoHechizado extends JuegoLaberinto {
 
 ---
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
 
 ### [Strategy](https://refactoring.guru/es/design-patterns/strategy)
@@ -494,10 +501,25 @@ h3 {
 ![Strategy, center](./img/guru/strategy-mini-2x.png)
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
+
+<div class="cols">
+<div>
 
 #### Strategy: Estructura
 
+</div>
+<div>
+
 ![h:500 center](./img/guru/strategy-structure-2x.png)
+
+</div>
+</div>
 
 ---
 
@@ -518,10 +540,7 @@ h3 {
 
 ---
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
 
 ### [Command](https://refactoring.guru/es/design-patterns/command)
@@ -640,8 +659,20 @@ deactivate cmdDraw
 @enduml
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
+
+<div class="cols">
+<div>
 
 #### Versión cliente/servidor
+
+</div>
+<div>
 
 @startuml
 scale 700 width
@@ -687,14 +718,12 @@ activate aReceiver
 
 @enduml
 
+</div>
+</div>
 
 ---
-
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
 
 ### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
@@ -764,10 +793,7 @@ end note
 
 ---
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
 
 ### [Composite](https://refactoring.guru/es/design-patterns/composite)
@@ -862,10 +888,25 @@ end note
 -->
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
+
+<div class="cols">
+<div>
 
 #### Composite: Estructura
 
+</div>
+<div>
+
 ![h:600 center](./img/guru/composite-structure-2x.png)
+
+</div>
+</div>
 
 ---
 
@@ -885,11 +926,9 @@ end note
 
 ---
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
+
 
 ### [Decorator](https://refactoring.guru/es/design-patterns/decorator)
 
@@ -978,10 +1017,25 @@ end note
 -->
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
+
+<div class="cols">
+<div>
 
 #### Decorator: Estructura
 
+</div>
+<div>
+
 ![h:600 center](./img/guru/decorator-structure-2x.png)
+
+</div>
+</div>
 
 ---
 
@@ -1110,7 +1164,6 @@ NumberingWriter <|.. TimestampingNumberingWriter
 ChecksummingNumberingWriter <|-- ChecksummingNumberingTimestampingWriter
 TimestampingWriter <|.. ChecksummingNumberingTimestampingWriter
 
-
 hide members
 show methods
 
@@ -1124,9 +1177,11 @@ show methods
 - Los decoradores ofrecen una **alternativa** más flexible que la herencia para extender funcionalidades.
 
 **Ventajas:**
+
 - Permite añadir o quitar responsabilidades a los objetos sin afectar a otros objetos
 
 **Desventajas:**
+
 - Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
 - Provoca la creación de muchos objetos pequeños y complica la depuración
 
@@ -1153,10 +1208,7 @@ El _decorator_ cambia la piel, el _strategy_ cambia las tripas
 
 ---
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
 
 ### [Observer](https://refactoring.guru/es/design-patterns/observer)
@@ -1265,13 +1317,12 @@ Con `Subject` separado:
 #### Observer: Detalles de implementación
 
 - ¿Quién dispara la actualización?
-    - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
-    - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
-
+  - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
+  - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
 
 ---
 
-#### Oberver: Comportamiento (síncrono) – disparo externo
+#### Observer: Comportamiento (síncrono) – disparo externo
 
 @startuml
 scale 450 width
@@ -1308,7 +1359,7 @@ deactivate anotherObserver
 
 ---
 
-#### Oberver: Comportamiento (síncrono) – autodisparo
+#### Observer: Comportamiento (síncrono) – autodisparo
 
 @startuml
 scale 450 width
@@ -1357,11 +1408,9 @@ deactivate anObservable
 
 ---
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
+
 
 ### [Visitor](https://refactoring.guru/es/design-patterns/visitor)
 
@@ -1375,14 +1424,29 @@ h3 {
 - Permite **definir nuevas** operaciones sin modificar las clases de los **elementos** sobre las que opera.
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
 
-#### Visitor: Estructura
+<div class="cols">
+<div>
+
+#### Visitor: <emph>Estructura</emph>
+
+</div>
+<div>
 
 ![h:600 center](./img/guru/visitor-structure-2x.png)
 
+</div>
+</div>
+
 ---
 
-#### Visitor: Comportamiento
+#### Visitor: <emph>Comportamiento</emph>
 
 @startuml
 scale 450 width
@@ -1423,34 +1487,43 @@ deactivate anElementB
 ---
 
 **Ventajas:**
+
 - Permite implementar el _double dispatch_: la operación que se ejecuta tras el `accept()` depende del tipo de `Visitor` y del tipo de `Element`
 - Separa los datos y las operaciones de los elementos visitados, facilitando la inclusión de nuevas operaciones sin tener que cambiar las clases
 - Permite acumular el estado de una operación global sobre una estructura
 
 **Desventajas:**
+
 - Rompe la encapsulación (?)
 - Los tipos de `Element` visitados deben ser estables
 
 ---
-
 <style scoped>
-h3 {
-  text-align: center;
-  color: blue;
-}
+section { text-align: center; }
 </style>
+
 
 ### [State](https://refactoring.guru/design-patterns/state)
 
 ![State, center](./img/guru/state-mini-2x.png)
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+</style>
 
 #### State: Ejemplo
 
-![h:600 center](./img/guru/state-example.png)
+<div class="cols">
+<div>
 
----
+![h:450 center](./img/guru/state-example.png)
+
+</div>
+<div>
 
 ```scala
 class Document {
@@ -1480,38 +1553,88 @@ class Document {
 }
 ```
 
+</div>
+</div>
+
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
+
+<div class="cols">
+<div>
 
 #### State: Estructura
 
-![h:600 center](./img/guru/state-structure.png)
+</div>
+<div>
+
+![h:550 center](./img/guru/state-structure.png)
+
+</div>
+</div>
 
 ---
 
-#### Diferencia con Strategy
+#### Diferencia de State con Strategy
 
 - Cada estado puede ser consciente de la existencia de otros estados e iniciar transiciones de estado
 - Cada estrategia desconoce a las otras
 
 ---
+<style scoped>
+section { text-align: center; }
+</style>
+
 ## Otros patrones específicos
 
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+</style>
 
 ### Data Acess Object (DAO)
 
-- Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
+<div class="cols">
+<div>
 
-![w:700 center](./img/dao_uml.webp)
+Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
+
+</div>
+<div>
+
+![w:650 center](./img/dao_uml.webp)
 
 <!---
 ![width:700px](./img/dao_code.png)
 -->
 
+</div>
+</div>
+
 ---
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+</style>
+
 ### Data Transfer Object (DTO)
 
-- Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*). 
+<div class="cols">
+<div>
+
+Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*).
+
+</div>
+<div>
 
 ![w:800 center](./img/dto_uml.png)
 
@@ -1519,9 +1642,13 @@ class Document {
 ![width:750px](./img/dto_code.png)
 -->
 
+</div>
+</div>
+
 ---
 
 # Para profundizar sobre patrones
+
 - Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
     - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
     - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
