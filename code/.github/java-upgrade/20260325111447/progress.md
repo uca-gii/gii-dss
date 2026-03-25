@@ -73,11 +73,125 @@
 
 ## Step Details
 
-<!--
-  For each step in plan.md, track progress using this bullet list format:
+- **Step 1: Setup Environment**
+  - **Status**: ✅ Completed (skipped — all tools already present)
+  - **Changes Made**: No changes needed; JDK 21.0.1 and Maven 3.9.12 already installed.
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All required tools available
+    - Necessity: ✅ N/A
+  - **Verification**:
+    - Command: `#appmod-list-jdks`, `#appmod-list-mavens`
+    - JDK: N/A
+    - Build tool: /opt/homebrew/Cellar/maven/3.9.12/bin/mvn
+    - Result: ✅ JDK 21.0.1 at `/Users/dodero/.sdkman/candidates/java/21.0.1-tem`; Maven 3.9.12 available
+  - **Deferred Work**: None
+  - **Commit**: d462838 - Step 1+2: Setup Environment + Baseline
 
-  - **Step N: <Step Title>**
-    - **Status**: <status emoji>
+---
+
+- **Step 2: Setup Baseline**
+  - **Status**: ✅ Completed
+  - **Changes Made**: No code changes; recorded baseline test results.
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All baseline results documented
+    - Necessity: ✅ N/A
+  - **Verification**:
+    - Command: `JAVA_HOME=<jdk11> mvn clean test` (demo, ecommerce), `JAVA_HOME=<jdk17> mvn clean test` (knights)
+    - JDK: JDK 11.0.19 (demo, ecommerce), JDK 17.0.18 (knightsoftheroundtable)
+    - Build tool: /opt/homebrew/Cellar/maven/3.9.12/bin/mvn
+    - Result: ✅ demo 1/1, ecommerce 6/6, knightsoftheroundtable 1/1 — all passing
+  - **Deferred Work**: None
+  - **Commit**: d462838 - Step 1+2: Setup Environment + Baseline
+
+---
+
+- **Step 3: Upgrade demo to Java 21**
+  - **Status**: ✅ Completed
+  - **Changes Made**:
+    - `maven.compiler.source/target`: 11 → 21
+    - Added explicit `maven-compiler-plugin` 3.11.0
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All required changes present
+    - Necessity: ✅ All changes necessary
+      - Functional Behavior: ✅ Preserved
+      - Security Controls: ✅ N/A (no security code)
+  - **Verification**:
+    - Command: `JAVA_HOME=<jdk21> mvn -f code/demo/pom.xml clean test`
+    - JDK: `/Users/dodero/.sdkman/candidates/java/21.0.1-tem`
+    - Build tool: /opt/homebrew/Cellar/maven/3.9.12/bin/mvn
+    - Result: ✅ Compilation SUCCESS | ✅ Tests: 1/1 passed
+  - **Deferred Work**: None
+  - **Commit**: a43c0c8 - Step 3: Upgrade demo to Java 21 - Compile: SUCCESS | Tests: 1/1 passed
+
+---
+
+- **Step 4: Upgrade ecommerce to Java 21**
+  - **Status**: ✅ Completed
+  - **Changes Made**:
+    - `maven.compiler.source/target` properties: 11 → 21
+    - Plugin `<source>/<target>`: 11 → 21
+    - `maven-compiler-plugin`: 3.8.1 → 3.11.0
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All required changes present
+    - Necessity: ✅ All changes necessary
+      - Functional Behavior: ✅ Preserved
+      - Security Controls: ✅ N/A (no security code)
+  - **Verification**:
+    - Command: `JAVA_HOME=<jdk21> mvn -f code/ecommerce/pom.xml clean test`
+    - JDK: `/Users/dodero/.sdkman/candidates/java/21.0.1-tem`
+    - Build tool: /opt/homebrew/Cellar/maven/3.9.12/bin/mvn
+    - Result: ✅ Compilation SUCCESS | ✅ Tests: 6/6 passed
+  - **Deferred Work**: None
+  - **Commit**: 8254dc2 - Step 4: Upgrade ecommerce to Java 21 - Compile: SUCCESS | Tests: 6/6 passed
+
+---
+
+- **Step 5: Upgrade knightsoftheroundtable to Java 21**
+  - **Status**: ✅ Completed
+  - **Changes Made**:
+    - `java.version` property: 17 → 21
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All required changes present
+    - Necessity: ✅ All changes necessary
+      - Functional Behavior: ✅ Preserved
+      - Security Controls: ✅ N/A (no security code)
+  - **Verification**:
+    - Command: `JAVA_HOME=<jdk21> mvn -f code/knights/knightsoftheroundtable/pom.xml clean test`
+    - JDK: `/Users/dodero/.sdkman/candidates/java/21.0.1-tem`
+    - Build tool: /opt/homebrew/Cellar/maven/3.9.12/bin/mvn
+    - Result: ✅ Compilation SUCCESS | ✅ Tests: 1/1 passed
+    - Notes: Cosmetic byte-buddy dynamic agent warning (Mockito/JDK21) — not an error
+  - **Deferred Work**: None
+  - **Commit**: 7b9b6b8 - Step 5: Upgrade knightsoftheroundtable to Java 21 - Compile: SUCCESS | Tests: 1/1 passed
+
+---
+
+- **Step 6: Final Validation**
+  - **Status**: ✅ Completed
+  - **Changes Made**:
+    - Verified all three modules target Java 21
+    - Ran full test suite on all modules with JDK 21
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All target versions confirmed at Java 21
+    - Necessity: ✅ All changes necessary
+      - Functional Behavior: ✅ Preserved — all tests pass identically to baseline
+      - Security Controls: ✅ N/A
+  - **Verification**:
+    - Command: `JAVA_HOME=<jdk21> mvn clean test` on all three modules
+    - JDK: `/Users/dodero/.sdkman/candidates/java/21.0.1-tem`
+    - Build tool: /opt/homebrew/Cellar/maven/3.9.12/bin/mvn
+    - Result: ✅ Compilation SUCCESS | ✅ Tests: demo 1/1, ecommerce 6/6, knightsoftheroundtable 1/1 (100% pass rate)
+  - **Deferred Work**: None
+  - **Commit**: (see below)
+
+---
+
+## Notes
+
+- Direct upgrade from Java 11→21 and 17→21 was straightforward for all three modules.
+- Spring Boot 3.1.0 runs cleanly on Java 21 with no code changes needed.
+- `dao-example` (untracked, stashed pre-upgrade) not included in this upgrade scope.
+
       - 🔘 Not Started - Step has not been started yet
       - ⏳ In Progress - Currently working on this step
       - ✅ Completed - Step completed successfully
