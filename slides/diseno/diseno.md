@@ -9,6 +9,7 @@
 
 <!-- Source: fundamentos.md -->
 
+
 ## INTRODUCCIÓN
 
 
@@ -4754,44 +4755,583 @@ class Document {
 ## Otros patrones específicos
 
 
-### Data Acess Object (DAO)
+### Patrón _Data Access Object_ (DAO)
 
 <div class="cols">
 <div>
 
-Se usa para abstraer y encapsular los accesos a las fuentes de datos, con independencia del soporte concreto de almacenamiento. Su alternativa es el patrón *Active Record*.
+El patrón **Data Access Object** se usa para abstraer y encapsular los accesos a las fuentes de datos, proporcionando una **capa de persistencia** con independencia del soporte concreto de almacenamiento (BD relacional, NoSQL, ficheros, etc.).
+
+**Problemas (sin DAO):**
+
+- Lógica de acceso a datos dispersa por la aplicación
+- Acoplamiento dependencias concretas (JDBC, Hibernate, etc.) en el código de negocio
+- Difícil cambiar la implementación de persistencia sin modificar todo el código
 
 </div>
 <div>
 
-![](./img/dao_uml.webp)
+#### DAO: Estructura
 
--
-![](./img/dao_code.png)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNrVkjtPw0AMx3d_Co9laNWJIaqqRpQBCalDP8HlzmkM94juHKpS-t05kj4CSOxsZ__8-tu3SqKidM6ChBYlYBVEgkPDkbRw8JC0soT38znu2UgD6ZV9q6JyaNmTHFrCEKUJI6CtSqkUiVx1Qk86-C2_E84B2AvFWmnCtRJVak0pbaqX3AqPgHh0lCuZE-pISmhCXlgOdwW-BTZjnrGZsMnksQ8Zs641f-YaspR5n_2T1exNae0ko2dOshiqL-EE0Is6t1uXm2Hemsl-jRu8H9ZV4MP1_Y8EfVPDpsB8qJHHB1dFKnCbT-p3I0BOsb36c9FfZ118zGa3rcFtf9PIu0amy4tgaNgQOnIVxQSpCXscRJyN86CXAFiRN_nffgK_BPW-)
 
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 600 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+interface DataAccessObject {
+  {method} create(entity): void
+  {method} read(id): Entity
+  {method} update(entity): void
+  {method} delete(id): void
+  {method} findAll(): List<Entity>
+}
+
+class EntityDAO {
+  {field} connection: Connection
+  {method} create(entity): void
+  {method} read(id): Entity
+  {method} update(entity): void
+  {method} delete(id): void
+  {method} findAll(): List<Entity>
+}
+
+class Entity {
+  {field} id: int
+  {field} nombre: String
+  {field} email: String
+}
+
+DataAccessObject <|.. EntityDAO
+EntityDAO -right-> Entity
+
+hide members
+show methods
+show Entity members
+
+@enduml
+```
+
+</details>
 
 </div>
 </div>
+
+
+#### Ejemplo: Usuario DAO (enfoque clásico)
+
+<div class="cols">
+<div>
+
+```java
+// Interfaz DAO - define el contrato
+public interface UsuarioDAO {
+  void create(Usuario usuario);
+  Usuario read(int id);
+  void update(Usuario usuario);
+  void delete(int id);
+  List<Usuario> findAll();
+}
+
+// Implementación JDBC
+public class UsuarioDAOImpl implements UsuarioDAO {
+  private Connection connection;
+
+  public UsuarioDAOImpl(Connection connection) {
+    this.connection = connection;
+  }
+
+  @Override
+  public void create(Usuario usuario) {
+    String sql =
+      "INSERT INTO usuarios (nombre, email) VALUES (?, ?)";
+    try (PreparedStatement stmt =
+            connection.prepareStatement(sql)) {
+      stmt.setString(1, usuario.getNombre());
+      stmt.setString(2, usuario.getEmail());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+  }
+  ...
+```
+
+</div>
+<div>
+
+```java
+  ...
+  @Override
+  public Usuario read(int id) {
+    String sql =
+      "SELECT * FROM usuarios WHERE id = ?";
+    try (PreparedStatement stmt =
+            connection.prepareStatement(sql)) {
+      stmt.setInt(1, id);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          return new Usuario(
+            rs.getInt("id"),
+            rs.getString("nombre"),
+            rs.getString("email")
+          );
+        }
+      }
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+    return null;
+  }
+
+  // ... otros métodos (update, delete, findAll)
+}
+```
+
+</div>
+</div>
+
+
+#### DAO: Ventajas y Desventajas
+
+<div class="cols">
+<div>
+
+**Ventajas:**
+
+- **Separación de responsabilidades**: lógica de negocio desacoplada del acceso a datos
+- **Cambios de persistencia**: cambiar BD sin modificar la lógica de negocio
+- **Testabilidad**: fácil crear mocks del DAO para pruebas unitarias
+- **Centralización**: código de SQL/queries concentrado en una única ubicación
+
+</div>
+<div>
+
+**Desventajas:**
+
+- **Boilerplate**: mucho código repetitivo (CRUD methods en cada DAO)
+- **Mantenimiento**: cambios en la entidad requieren actualizar el DAO
+- **Inflexibilidad**: las consultas complejas requieren nuevos métodos en la interfaz
+
+</div>
+</div>
+
+
+### Patrón _Repository_
+
+Evolución moderna del DAO que surge con la popularidad de frameworks como _Spring Data JPA_. Ofrece una abstracción de más alto nivel que el DAO tradicional, proporcionando operaciones CRUD genéricas sin necesidad de implementación manual.
+
+**Relación Repository $\leftrightarrow$ DAO:**
+
+- Repository = DAO de alto nivel + convenciones + derivación de consultas
+- Ambos abstraen la persistencia, pero Repository reduce boilerplate
+
+
+#### Repository vs DAO Conceptual
+
+<div class="cols">
+<div>
+
+**DAO (clásico)**
+
+- Interfaz + Implementación explícita
+- Métodos CRUD manuales
+- Control total sobre SQL
+- Verboso, bajo nivel
+
+</div>
+<div>
+
+**Repository (moderno)**
+
+- Hereda de interfaz genérica
+- Métodos CRUD automáticos
+- Queries derivadas del método
+- Conciso, alto nivel
+
+</div>
+</div>
+
+
+#### Repository: Estructura (Spring Data JPA)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNU01r3DAQvetXzK3OwbAthUIIS5w0hS2lhaY9lR5ka3Y9VNIYaZzgpvnvlexd4s26oRdjz7x5782HL6PoIL2zSrgDYahZhB0YCtgIsVex0Rbh9erNW7gnI-0-8G61ghZp14qKv8h3OmgHljzK0CFwkJZnicbqGCuRQHUvuGnY39JvhJVS5AXDVjcI16E3X7HjSMJhgAcF8OAw8ZhHiPoOixsvJMPZOUwv8_yWvLkaNqYgk_Jfuuxc24sJuH6OrKwtEmyTlHVtcQlm0KLMJO-YzGn-SXLMP87b-djpl7qpvPlg-9i-1NUksvFXWpo9kDAuuNmOTIs2vsdeB-J_WZkGd-M02QLzcz6-fe36tOAzuzrgNXvR5MnvCj8GUvEnivJUmKyMqz_YmMS3hDZRkUlw9rtZaKI5h9t0KUeJ0dtCvAmoBU0lmSod5vv09Y0cZuVnB3XxpyyPt7KIOBmYOh1hGfLhl-sDWKlXUPncadoZWD1wL1BEtgz5_iEXNnmm4Uwd30X5oyVj0P-cGP9PfblGqRRGcOhqDFHFlu9h2tr-47CDA0Jdojfp1_8LUhpvcg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 1024 width
+scale 700 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+interface CrudRepository {
+  {method} save(Entity): Entity
+  {method} findById(id): Optional<Entity>
+  {method} findAll(): Iterable<Entity>
+  {method} delete(Entity): void
+  {method} deleteById(id): void
+}
+
+interface JpaRepository {
+  {method} saveAndFlush(Entity): Entity
+  {method} deleteInBatch(Entities): void
+  {method} flush(): void
+}
+
+interface UsuarioRepository {
+  {method} findByEmail(email): Optional<Usuario>
+  {method} findByNombreContaining(nombre): List<Usuario>
+}
+
+class Usuario {
+  {field} id: Long
+  {field} nombre: String
+  {field} email: String
+  {field} createdAt: LocalDateTime
+}
+
+CrudRepository <|-- JpaRepository
+CrudRepository <|-- UsuarioRepository
+UsuarioRepository -right-> Usuario
+
+' Anclas de layout (solo para posicionar)
+JpaRepository -[hidden]right- UsuarioRepository
+UsuarioRepository -[hidden]right- Usuario
+
+hide members
+show methods
+show Usuario members
+
+@enduml
+```
+
+</details>
+
+
+#### Ejemplo: Usuario Repository (Spring Data JPA)
+
+<div class="cols">
+<div>
+
+```java
+// Interfaz Repository - hereda CRUD automático
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+  // Métodos derivados (queries generadas automáticamente)
+  Optional<Usuario> findByEmail(String email);
+  List<Usuario> findByNombreContainingIgnoreCase(String nombre);
+  List<Usuario> findByCreatedAtAfter(LocalDateTime fecha);
+  boolean existsByEmail(String email);
+}
+
+// Entity con JPA
+@Entity
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+public class Usuario {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false)
+  private String nombre;
+
+  @Column(unique = true, nullable = false)
+  private String email;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+}
+```
+
+</div>
+<div>
+
+```java
+// Usando el Repository en un Servicio
+@Service
+public class UsuarioService {
+  private final UsuarioRepository usuarioRepository;
+
+  @Autowired
+  public UsuarioService(UsuarioRepository usuarioRepository) {
+    this.usuarioRepository = usuarioRepository;
+  }
+
+  public Usuario crearUsuario(Usuario usuario) {
+    if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+      throw new EmailYaExisteException();
+    }
+    return usuarioRepository.save(usuario);
+  }
+
+  public Usuario obtenerPorId(Long id) {
+    return usuarioRepository.findById(id)
+      .orElseThrow(() -> new UsuarioNoEncontradoException());
+  }
+
+  public List<Usuario> buscarPorNombre(String nombre) {
+    return usuarioRepository.
+             findByNombreContainingIgnoreCase(nombre);
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### Repository: Ventajas respecto a DAO
+
+- **Menos boilerplate**: Métodos CRUD heredados automáticamente de `CrudRepository`
+- **Query derivadas**: Métodos generados a partir del nombre (método query method)
+- **Transacciones automáticas**: Spring maneja `@Transactional` por defecto
+- **Testabilidad**: Fácil crear mocks con Mockito o usar `@DataJpaTest`
+- **Integración Spring**: Inyección de dependencias, AOP, etc.
+- **Convenciones**: Desarrollo más rápido siguiendo estándares
 
 
 ### Data Transfer Object (DTO)
 
+Sirve para crear objetos planos o _Plain Old Java Objects_ (POJO) que se envían entre aplicaciones, capas, o servidores remotos. Un DTO **no tiene comportamiento** de negocio, solo almacena y entrega datos (*value object*).
+
+**Problema a resolver:**
+
+- Exponer entidades de BD directamente en APIs REST crea acoplamiento
+- Cambios en la BD obligan a cambios en clientes API
+- Puede exponerse información sensible (contraseñas, datos internos)
+- Diferentes vistas de datos requieren múltiples selecciones/proyecciones
+
+
+#### DTO: Estructura
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqtks9qwzAMxu9-Ch27Q0tPO-QwOthgg40duhdwYiURs60gq4Su9N3n_GlpoMcd9f2kT7LkXVIregjeeKwVlEGoaRUcCVZKHE2qrEd43G6hJ6etST8UOys2gKeIeuwQWLTlG1B5m9KzqlB5UHyvOO7pF2FrzEjgNSrpEU4G4FQTencGcgV8cGxupMihFCxgn30WAIMlf0fvsnfP4t5sau9giooSuYCS2aON5nyZ5-X765-GuVp-2q5DmVwD5vXkVOXcaIXj4x-KoeuSTmtZOeVMp2AwnK3Ww4HWT0NZAQ1GFHtF480ym4oKULEx1SzBGjMve7MZS41pySEEDCVKMqnlHqYJ5mBOXyQM-1kIc9-LZnYYXf5Df-nHy5o)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+left to right direction
+scale 600 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Entity {
+  {field} id: Long
+  {field} nombre: String
+  {field} email: String
+  {field} passwordHash: String
+  {field} interno: boolean
+}
+
+class DTO {
+  {field} id: Long
+  {field} nombre: String
+  {field} email: String
+}
+
+class Mapper {
+  {method} toDTO(entity): DTO
+  {method} toEntity(dto): Entity
+}
+
+Mapper -left-> DTO: genera
+Mapper -right-> Entity: transforma
+
+Entity ..> DTO
+
+hide members
+show methods
+show Entity members
+show DTO members
+show Mapper members
+
+@enduml
+```
+
+</details>
+
+
+#### Ejemplo: Usuario DTO (con ModelMapper)
+
 <div class="cols">
 <div>
 
-Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados desde servidores remotos en una única invocación. Un DTO no tiene más comportamiento que almacenar y entregar sus propios datos (métodos *getters* y *setters*).
+```java
+// Entity JPA (contiene datos + lógica de negocio)
+@Entity
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+public class Usuario {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false)
+  private String nombre;
+
+  @Column(unique = true, nullable = false)
+  private String email;
+
+  @JsonIgnore // No serializar en JSON
+  private String passwordHash;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  // Métodos de negocio
+  public boolean validarPassword(String rawPassword) {
+    return BCrypt.checkpw(rawPassword, this.passwordHash);
+  }
+}
+```
 
 </div>
 <div>
 
-![](./img/dto_uml.png)
+```java
+// DTO - solo datos públicos (sin contraseña)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UsuarioDTO {
+  private Long id;
+  private String nombre;
+  private String email;
+  private LocalDateTime createdAt;
+}
 
--
-![](./img/dto_code.png)
+// Mapper usando ModelMapper (spring-boot-starter-modelmapper)
+@Component
+public class UsuarioMapper {
+  private final ModelMapper modelMapper;
 
+  @Autowired
+  public UsuarioMapper(ModelMapper modelMapper) {
+    this.modelMapper = modelMapper;
+  }
+
+  public UsuarioDTO toDTO(Usuario usuario) {
+    return modelMapper.map(usuario, UsuarioDTO.class);
+  }
+
+  public Usuario toEntity(UsuarioDTO usuarioDTO) {
+    return modelMapper.map(usuarioDTO, Usuario.class);
+  }
+
+  public List<UsuarioDTO> toDTOList(List<Usuario> usuarios) {
+    return usuarios.stream()
+      .map(this::toDTO)
+      .collect(Collectors.toList());
+  }
+}
+```
+
+</div>
+<div>
+
+```java
+// Controlador REST usando DTO
+@RestController
+@RequestMapping("/api/usuarios")
+public class UsuarioController {
+  private final UsuarioService usuarioService;
+  private final UsuarioMapper usuarioMapper;
+
+  @GetMapping("/{id}")
+  public ResponseEntity<UsuarioDTO>
+            obtenerUsuario(@PathVariable Long id) {
+    Usuario usuario = usuarioService.obtenerPorId(id);
+    return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<UsuarioDTO>>
+            listarUsuarios() {
+    List<Usuario> usuarios = usuarioService.listarTodos();
+    return ResponseEntity.ok(usuarioMapper.toDTOList(usuarios));
+  }
+
+  @PostMapping
+  public ResponseEntity<UsuarioDTO>
+            crearUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
+    Usuario creado = usuarioService.crearUsuario(usuario);
+    return ResponseEntity.created(URI.create("/api/usuarios/" +
+                                  creado.getId()))
+      .body(usuarioMapper.toDTO(creado));
+  }
+}
+```
 
 </div>
 </div>
+
+
+#### DTO: Ventajas y desventajas
+
+**Ventajas:**
+
+- **Separación de responsabilidades**: Entidad y DTO pueden evolucionar independientemente
+- **Seguridad**: control sobre qué datos se exponen (ej: no exponer contraseñas)
+- **Versionado API**: diferentes versiones de DTO para diferentes clientes
+- **Performance**: seleccionar solo datos necesarios (proyecciones)
+- **Contrato de API**: DTOs actúan como contrato entre cliente-servidor
+
+**Desventajas:**
+
+- **Duplicación**: mantener Entity y DTO con mapeos entre ambos
+- **Boilerplate**: código repetitivo si hay muchos DTOs
+- **Overhead**: conversión Entity $\leftrightarrow$ DTO tiene coste de CPU/memoria
+
+
+#### Repository + DTO + Servicio integrados
+
+```java
+@Service
+public class UsuarioService {
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
+
+    @Autowired
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                         UsuarioMapper usuarioMapper) {
+        this.usuarioRepository = usuarioRepository;
+        this.usuarioMapper = usuarioMapper;
+    }
+
+    public UsuarioDTO obtenerPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new UsuarioNoEncontradoException());
+        return usuarioMapper.toDTO(usuario);  // Entity → DTO
+    }
+
+    public List<UsuarioDTO> buscarPorNombre(String nombre) {
+        List<Usuario> usuarios = usuarioRepository
+            .findByNombreContainingIgnoreCase(nombre);
+        return usuarioMapper.toDTOList(usuarios);  // List<Entity> → List<DTO>
+    }
+
+    public UsuarioDTO crearUsuario(UsuarioDTO usuarioDTO) {
+        Usuario usuario = usuarioMapper.toEntity(usuarioDTO);  // DTO → Entity
+        Usuario creado = usuarioRepository.save(usuario);
+        return usuarioMapper.toDTO(creado);  // Entity → DTO
+    }
+}
+```
 
 
 # Para profundizar sobre patrones
@@ -4811,3 +5351,5 @@ Se usa para crear objetos planos (POJO) que puedan ser enviados o recuperados de
     - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
 - Lewis y Fowler – [Microservicios](https://martinfowler.com/articles/microservices.html)
 - Chris Richardson - [Microservices patterns](https://microservices.io/)
+- Spring Data JPA – [Query Methods Documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
+- ModelMapper – [Documentation and Examples](http://modelmapper.org/)
