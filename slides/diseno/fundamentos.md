@@ -6,6 +6,7 @@ date: Enero 2026
 subject: Diseño de Sistemas Software, curso 2025/26
 title: Fundamentos de Diseño
 description: Apuntes de Diseño de Sistemas Software - Principios de diseño
+math: mathjax
 ---
 
 <!-- size: 16:9 -->
@@ -271,7 +272,7 @@ h2, h3 {
 }
 </style>
 
-¿Cómo diseñar la identificación de los empleados de una empresa? 
+¿Cómo diseñar la identificación de los empleados de una empresa?
 
 <style scoped>
 .cols {
@@ -529,7 +530,7 @@ final class IdentificadorNumerico
   
 - __Cohesión__ (alta): Agrupar métodos relacionados con la manipulación de IDs en un único componente.
 
-- __Encapsulamiento__: Ocultar los detalles algorítmicos de la construcción del identificador tras los métodos públicos. 
+- __Encapsulamiento__: Ocultar los detalles algorítmicos de la construcción del identificador tras los métodos públicos.
 
 - __Reutilización y flexibilidad__: Permitir la reutilización del componente de identificación en otros sistemas y facilitar la adaptación a futuros cambios.
 
@@ -1156,7 +1157,7 @@ p, h4 {
 }
 </style>
 
-#### Pregunta 
+#### Pregunta
 
 ¿Qué hemos conseguido con las anotaciones `@Test` del JDK $\geq$ 1.5?
 
@@ -1258,7 +1259,7 @@ h2 {
 }
 </style>
 
-## Bibliotecas y frameworks
+### Bibliotecas y frameworks
 
 #### Flujo de control en una biblioteca
 
@@ -1282,7 +1283,7 @@ h3 {
 #### Definición de *framework*
 
 > Colección de clases e interfaces que cooperan para formar un diseño reutilizable de un tipo específico de software
-> 
+>
 > –– [E. Gamma et al.](bibliografia.html#gamma)
 
 - El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
@@ -1760,7 +1761,7 @@ Es la base de la inyección de dependencias
 >
 > –– Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]
 
-[1] http://martinfowler.com/articles/injection.html  
+[1] <http://martinfowler.com/articles/injection.html>  
 
 ---
 
@@ -1795,7 +1796,7 @@ h2 {
 >
 > –– Roger Sessions, [The Misuse of Reuse](http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html) [2]
 
-[2] http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html
+[2] <http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html>
 
 ---
 <style scoped>
