@@ -6,6 +6,7 @@ date: Enero 2026
 subject: Diseño de Sistemas Software, curso 2025/26
 title: Patrones de Diseño
 description: Apuntes de Diseño de Sistemas Software - Patrones de diseño
+math: mathjax
 ---
 
 <!-- size: 16:9 -->
@@ -101,7 +102,7 @@ section { text-align: center; }
 
 - Patrón de diseño: Una **solución general** a un **problema general** que puede adaptarse a un problema concreto
 
-- La aplicación de patrones depende del **contexto**. 
+- La aplicación de patrones depende del **contexto**.
 
 - Ofrece un **vocabulario** de patrones (una jerga entre ingenieros de software)
 
@@ -242,7 +243,7 @@ Sala "lados" *-up-> Sitio
 Sitio <|-left- Pared
 Sitio <|-right- Puerta
 Sitio <|-down- Sala
-Laberinto "salas" *-right-> Sala
+Laberinto "salas"*-right-> Sala
 
 hide members
 show methods
@@ -976,7 +977,6 @@ end note
 section { text-align: center; }
 </style>
 
-
 ### [Decorator](https://refactoring.guru/es/design-patterns/decorator)
 
 ![Decorator, center](./img/guru/decorator-mini-2x.png)
@@ -1112,8 +1112,8 @@ class ChecksummingWriter {
 }
 
 EnhancedWriter <|-- NumberingWriter
-EnhancedWriter <|-- TimestampingWriter 
-EnhancedWriter <|-- ChecksummingWriter 
+EnhancedWriter <|-- TimestampingWriter
+EnhancedWriter <|-- ChecksummingWriter
 
 hide members
 show methods
@@ -1148,16 +1148,15 @@ class ChecksummingWriter {
 }
 
 EnhancedWriter <|-- NumberingWriter
-EnhancedWriter <|-- TimestampingWriter 
-EnhancedWriter <|-- ChecksummingWriter 
+EnhancedWriter <|-- TimestampingWriter
+EnhancedWriter <|-- ChecksummingWriter
 
 NumberingWriter <|-- NumberingCheksummingWriter
 ChecksummingWriter <|.. NumberingCheksummingWriter
-TimestampingWriter <|-- TimestampingNumberingWriter 
-NumberingWriter <|.. TimestampingNumberingWriter 
-ChecksummingWriter <|-- ChecksummingNumberingWriter 
-NumberingWriter <|.. ChecksummingNumberingWriter 
-
+TimestampingWriter <|-- TimestampingNumberingWriter
+NumberingWriter <|.. TimestampingNumberingWriter
+ChecksummingWriter <|-- ChecksummingNumberingWriter
+NumberingWriter <|.. ChecksummingNumberingWriter
 
 hide members
 show methods
@@ -1192,21 +1191,21 @@ class ChecksummingWriter {
 }
 
 EnhancedWriter <|-- NumberingWriter
-EnhancedWriter <|-- TimestampingWriter 
-EnhancedWriter <|-- ChecksummingWriter 
+EnhancedWriter <|-- TimestampingWriter
+EnhancedWriter <|-- ChecksummingWriter
 
 NumberingWriter <|-- NumberingChecksummingWriter
 ChecksummingWriter <|.. NumberingChecksummingWriter
-TimestampingWriter <|-- TimestampingNumberingWriter 
-NumberingWriter <|.. TimestampingNumberingWriter 
-ChecksummingWriter <|-- ChecksummingNumberingWriter 
-NumberingWriter <|.. ChecksummingNumberingWriter 
+TimestampingWriter <|-- TimestampingNumberingWriter
+NumberingWriter <|.. TimestampingNumberingWriter
+ChecksummingWriter <|-- ChecksummingNumberingWriter
+NumberingWriter <|.. ChecksummingNumberingWriter
 
 NumberingChecksummingWriter <|-- NumberingChecksummingTimestampingWriter
 TimestampingWriter <|.. NumberingChecksummingTimestampingWriter
 
-TimestampingWriter <|-- TimestampingNumberingWriter 
-NumberingWriter <|.. TimestampingNumberingWriter 
+TimestampingWriter <|-- TimestampingNumberingWriter
+NumberingWriter <|.. TimestampingNumberingWriter
 
 ChecksummingNumberingWriter <|-- ChecksummingNumberingTimestampingWriter
 TimestampingWriter <|.. ChecksummingNumberingTimestampingWriter
@@ -1349,10 +1348,12 @@ end note
 #### Observer: roles
 
 Sin distinguir entre `Observable` y `Subject`:
+
 - `Publisher` = `Observable` = `Subject`
 - `ConcreteSubscriber` $\dashrightarrow$ `Subject`
 
-Con `Subject` separado: 
+Con `Subject` separado:
+
 - `Subscriber` = `Observer`
 - Distinguir entre `Observable` y `Subject`
 - Definir `Subscriber.update(Observable, Subject)`
@@ -1372,8 +1373,7 @@ Con `Subject` separado:
 #### Observer: Comportamiento (síncrono) – disparo externo
 
 @startuml
-scale 450 width
-scale 500 height
+scale 700 width
 
 participant "anObservable: Publisher" as anObservable
 participant "anObserver: Subscriber" as anObserver
@@ -1409,8 +1409,7 @@ deactivate anotherObserver
 #### Observer: Comportamiento (síncrono) – autodisparo
 
 @startuml
-scale 450 width
-scale 500 height
+scale 700 width
 
 participant "anObservable: Publisher" as anObservable
 participant "anObserver: Subscriber" as anObserver
@@ -1457,7 +1456,6 @@ deactivate anObservable
 <style scoped>
 section { text-align: center; }
 </style>
-
 
 ### [Visitor](https://refactoring.guru/es/design-patterns/visitor)
 
@@ -1548,7 +1546,6 @@ deactivate anElementB
 <style scoped>
 section { text-align: center; }
 </style>
-
 
 ### [State](https://refactoring.guru/design-patterns/state)
 
@@ -1825,12 +1822,12 @@ Evolución moderna del DAO que surge con la popularidad de frameworks como _Spri
 
 ---
 
-#### Repository vs DAO Conceptual
+#### Repository vs DAO
 
 <div class="cols">
 <div>
 
-**DAO (clásico)**
+<emph>DAO (clásico)</emph>
 
 - Interfaz + Implementación explícita
 - Métodos CRUD manuales
@@ -1840,7 +1837,7 @@ Evolución moderna del DAO que surge con la popularidad de frameworks como _Spri
 </div>
 <div>
 
-**Repository (moderno)**
+<emph>Repository (moderno)</emph>
 
 - Hereda de interfaz genérica
 - Métodos CRUD automáticos
@@ -2050,7 +2047,6 @@ show Mapper members
 }
 </style>
 
-
 #### Ejemplo: Usuario DTO (con ModelMapper)
 
 <div class="cols">
@@ -2224,22 +2220,23 @@ public class UsuarioService {
 
 ---
 
-# Para profundizar sobre patrones
+## Para profundizar sobre patrones
 
 - Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
-    - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
-    - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
-    - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
+  - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
+  - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
+  - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
 - Peter Norvig – [Design Patterns in Dynamic Programming](http://www.norvig.com/design-patterns/design-patterns.pdf): Implementaciones más simples para los patrones de diseño del GoF en lenguajes dinámicos
 
 ---
-# Para profundizar sobre patrones
+
+## Para profundizar sobre patrones
 
 - David Arno – [Are design patterns compatible with modern software techniques?](http://www.davidarno.org/2013/06/17/are-design-patterns-compatible-with-modern-software-techniques/)
 - Implementaciones de los patrones de diseño del GoF en diversos lenguajes de programación:
-    - Kamran Ahmed – [Design Patterns for Humans!](https://github.com/kamranahmedse/design-patterns-for-humans/blob/master/README.md): Explicación de los patrones de diseño del GoF implementados en PHP
-    - Márk Török – [Design Patterns in TypeScript](https://github.com/torokmark/design_patterns_in_typescript)
-    - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
+  - Kamran Ahmed – [Design Patterns for Humans!](https://github.com/kamranahmedse/design-patterns-for-humans/blob/master/README.md): Explicación de los patrones de diseño del GoF implementados en PHP
+  - Márk Török – [Design Patterns in TypeScript](https://github.com/torokmark/design_patterns_in_typescript)
+  - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
 - Lewis y Fowler – [Microservicios](https://martinfowler.com/articles/microservices.html)
 - Chris Richardson - [Microservices patterns](https://microservices.io/)
 - Spring Data JPA – [Query Methods Documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
