@@ -1345,6 +1345,45 @@ end note
 
 ---
 
+#### Observer: Estructura (según GoF)
+
+@startuml
+scale 420 height
+
+skinparam classAttributeIconSize 0
+
+abstract class Subject {
+  +attach(o: Observer)
+  +detach(o: Observer)
+  +notify()
+}
+
+abstract class Observer {
+  +update()
+}
+
+class ConcreteSubject {
+  -subjectState
+  +getState()
+  +setState(state)
+}
+
+class ConcreteObserver {
+  -observerState
+  -subject: ConcreteSubject
+  +update()
+}
+
+ConcreteSubject -up-|> Subject
+ConcreteObserver -up-|> Observer
+
+Subject "1" o-right- "*" Observer : observers
+ConcreteObserver --> ConcreteSubject : subject
+
+@enduml
+
+---
+
 #### Observer: roles
 
 Sin distinguir entre `Observable` y `Subject`:
@@ -1356,9 +1395,9 @@ Con `Subject` separado:
 
 - `Subscriber` = `Observer`
 - Distinguir entre `Observable` y `Subject`
-- Definir `Subscriber.update(Observable, Subject)`
-  - `ConcreteSubscriber` $\dashrightarrow$ `Observable`
-  - `ConcreteSubscriber` $\dashrightarrow$ `Subject`
+- Definir `Observer.update()`
+  - `ConcreteObserver` mantiene referencia a `ConcreteSubject`
+  - El estado se recupera desde `ConcreteSubject.getState()` (pull)
 
 ---
 
