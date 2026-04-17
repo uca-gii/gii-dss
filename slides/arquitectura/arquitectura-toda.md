@@ -1374,9 +1374,25 @@ Connecting bricks together and following certain rules about how they can and ca
 
 ---
 
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+</style>
+
+<div class="cols">
+<div>
+
 #### High coupling vs Low coupling
 
-![w:600](./img/Coupling.jpg)
+</div>
+<div>
+
+![w:500](./img/Coupling.jpg)
+
+</div>
+</div>
 
 ---
 
@@ -1456,10 +1472,7 @@ Connecting bricks together and following certain rules about how they can and ca
 ---
 
 <style scoped>
-.cols {
-  display: grid;
-  grid-template-columns: 60% 40%;
-}
+img { mix-blend-mode: multiply; }
 </style>
 
 <div class="cols">
@@ -1478,10 +1491,7 @@ A component with lots of incoming dependencies is very **stable** because it req
 ---
 
 <style scoped>
-.cols {
-  display: grid;
-  grid-template-columns: 60% 40%;
-}
+img { mix-blend-mode: multiply; }
 </style>
 
 <div class="cols">
@@ -1500,10 +1510,7 @@ A component with a lot of outgoing dependencies is very **unstable**, because ch
 ---
 
 <style scoped>
-.cols {
-  display: grid;
-  grid-template-columns: 60% 40%;
-}
+img { mix-blend-mode: multiply; }
 </style>
 
 <div class="cols">
@@ -1522,10 +1529,7 @@ A component with a lot of outgoing dependencies is very **unstable**, because ch
 ---
 
 <style scoped>
-.cols {
-  display: grid;
-  grid-template-columns: 60% 40%;
-}
+img { mix-blend-mode: multiply; }
 </style>
 
 <div class="cols">
@@ -1545,9 +1549,9 @@ Modules that are intended to be easy to change are not dependent on modules that
 
 ### SDP: Stable Abstractions Principle
 
-“A component should be as abstract as it is stable”.
-
-*Robert C. Martin*
+> _A component should be as abstract as it is stable_
+>
+> — Robert C. Martin
 
 ---
 
@@ -1563,8 +1567,9 @@ Modules that are intended to be easy to change are not dependent on modules that
 <style scoped>
 .cols {
   display: grid;
-  grid-template-columns: 30% 70%;
+  grid-template-columns: 40% 60%;
 }
+img { mix-blend-mode: multiply; }
 </style>
 
 <div class="cols">
@@ -1572,12 +1577,13 @@ Modules that are intended to be easy to change are not dependent on modules that
 
 **Open-Closed Principle**
 
-open for extension, but closed for modification
+Open for extension, but
+Closed for modification
 
 </div>
 <div>
 
-![fit center](./img/SAP_Example.png)
+![w:550](./img/SAP_Example.png)
 
 </div>
 </div>
