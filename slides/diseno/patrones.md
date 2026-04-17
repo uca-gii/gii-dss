@@ -1678,6 +1678,67 @@ section { text-align: center; }
 <style scoped>
 .cols {
   display: grid;
+  grid-template-columns: 70% 30%;
+}
+</style>
+
+### Patrón _Active Record_
+
+<div class="cols">
+<div>
+
+El objeto de dominio mantiene el **estado** e incorpora la **lógica de persistencia** sobre ese estado.
+
+- La entidad representa los datos del dominio y expone operaciones CRUD (`save()`, `delete()`, etc.)
+- Lógica de acceso a datos acoplada al modelo persistente
+
+**Desventajas:**
+
+- **Mezcla de responsabilidades** en la misma clase
+- **Acoplamiento** al ORM o a la base de datos
+- **Pruebas más difíciles**: cuesta el _mocking_
+- **Escala peor** cuando aparecen reglas complejas
+
+</div>
+<div>
+
+#### Estructura
+
+@startuml
+top to bottom direction
+scale 200 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Usuario {
+  {field} id: int
+  {field} nombre: String
+  {field} email: String
+  {method} save(): void
+  {method} delete(): void
+  {method} findById(id): Usuario
+}
+
+class BD {
+  {method} CRUD methods
+}
+
+Usuario .down.> BD
+
+hide empty members
+show methods
+show Usuario members
+show BD methods
+
+@enduml
+
+</div>
+</div>
+
+---
+<style scoped>
+.cols {
+  display: grid;
   grid-template-columns: 65% 35%;
 }
 </style>

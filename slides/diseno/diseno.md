@@ -1,5 +1,3 @@
-# DISEÑO DE SISTEMAS SOFTWARE
-
 ## Índice
 
 - [Fundamentos de Diseño](#fundamentos-de-diseño)
@@ -8,6 +6,7 @@
 
 
 <!-- Source: fundamentos.md -->
+# DISEÑO DE SISTEMAS SOFTWARE
 
 
 ## INTRODUCCIÓN
@@ -1060,7 +1059,7 @@ En la arquitectura del framework se observan diversos patrones:
 </div>
 
 
-## Bibliotecas y frameworks
+### Bibliotecas y frameworks
 
 #### Flujo de control en una biblioteca
 
@@ -1521,7 +1520,7 @@ Es la base de la inyección de dependencias
 >
 > –– Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]
 
-[1] http://martinfowler.com/articles/injection.html
+[1] <http://martinfowler.com/articles/injection.html>
 
 
 #### IoC–Inversion of Control / DI–Dependency Injection
@@ -1547,7 +1546,7 @@ Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
 >
 > –– Roger Sessions, [The Misuse of Reuse](http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html) [2]
 
-[2] http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html
+[2] <http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html>
 
 
 ### Factorizar una función
@@ -3332,7 +3331,7 @@ Pero hay más...
 
 #### Ejemplo: Juego de laberinto
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNqFU11L7DAQfc-vGPapK1ZWufogsijogyJ6cfUHpM3YBptkSaYsXvW_30la-rGCviTNyZlzTibpZSDpqTWNILcFclA4ImdAaY8laWdFKGWDcLw6-QM7rajugbPTFdSoq5pEeNN2K7000GiL9L5FcJ5qN9koGxnCFZHXRUt4Wzq70f8QVkKgbQ1cR7eS3eBDADw8Pj3f8Lx5eeLxZpMWj_38YZCl1Rdoq3SJ2fKcv0h8CZE84K7Fyt3LAj3DLukNJUZqmy2nSOlR-oHNe6wji0BeltSFho3mNsxk0PK-78g9RzYyUV41NszgM0VoWlQh3UvlsuGoHDxJT0lhn3TYcZY_2_9t0dMsAPK1XhU6whM0cKbjvfXJVNqRdzHANQaFWTzCb87So_qlOUN7ZzxZeaykjx7fjbhZEXtoTcaFSWvvXo-U29mj9SguRKyARcPxwwIO8nabr_sOpxEuPvMGXynvQo-gj48475s4wtEgTzcrRttFbFmS76rWHUHUWiEYNMwLItRuB91R-sX4vmeclHiGdCEGTFyiVfxz_gepPj4-)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqFU11L7DAQfc-vGPapK1ZWUR8usijogyIqrvcHpM3YBptkSaYs96r_3Ula-rGCviTNmTNzzkzSy0DSU2saQW4L5KBwRM6A0h5L0s6KUMoG4Xh1cgo7rajugfOzFdSoq5pEeNN2K7000GiL9G-L4DzVbhIoGxnCFZHXRUt4Wzq70f8RVkKgbQ1cR7WS1eBdADw8Pr_c8L75-8zrzSYdHvv93SCXVp-grdIlZss__EXiU4ikAXctVu5eFugZdqnekGKkttlyipQepR_YHOM6sgjkZUmdadhoHsOsDFqO-47cc2QjE-VVY8MM7ilC06QK6V4qlw2tsvFUekoK-6TDjrP8Wf6pRU8zA8jXelXoCE_QwJ6O984n09KOvIsGrjEozGILvylLj-qX4QzjnfFk5bGSPmp8F-JhReyhNRknplp793qk3M4ercfiQsQMWDRsPyzgIG-3-bqfcFrh4iNv8JXyzvQI-viI836IIxwF8nSzYpRdxJGFxUGftO7iotYKwaBhWhChdjvoOukP4_OecZLhGdJ5GDBxiVbxv_kFhHY-Hg)
 
 <details>
 <summary>PlantUML source</summary>
@@ -3392,7 +3391,7 @@ Sala "lados" *-up-> Sitio
 Sitio <|-left- Pared
 Sitio <|-right- Puerta
 Sitio <|-down- Sala
-Laberinto "salas" *-right-> Sala
+Laberinto "salas"*-right-> Sala
 
 hide members
 show methods
@@ -4208,7 +4207,7 @@ end note
 
 #### Ejemplo: `EnhancedWriter` original
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkTFLBEEMhfv8ipRaHKyiVhYnYiGIjYL17Ey4CbeZLJMsi573391lLeTYwmuT9-W9R7bmofogHbj26Iqtuqtg4krRWQtYDB3hVXN9gyMnz7-Du9sGM_EuO9ieSx9qEOy4kH_2hFo9659F7ILZg3vldnB6jlre-IuwAQiteQ3RFwk-lRxKpPRR2aniARAPQtOxdMRxnr1MFhezzyUcARbodZCWKpfdWdQ7C03tpT8XfMwU9zaI_B88qXX_vdmcpl7VrGRc1a1EAsicCIVmFwPLOuKS0AC2VNL09B-FvrZ9)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkTFPw0AMhXf_Co8wVAoImBiKEAMSYgGJ-XJn9azGd5HtKILS_06iMKC2A13t9_m9J6_Ng_ogHXjt0Su21b0KJlaKzrWAxdARXjXXNzhy8vw7uLttMBNvsoNtufRBg2DHhfyzJ6zquf5ZxC6YPbgrt4PTc6zljb8IG4DQmmuIvkjwqeRQIqUPZSfFHSDuhKZjaY_jPHuZLC5mn0vYAyzQ6yAtKZfNWdQ7C03tpT8XfMwUtzaI_B88qHX_vVodpj6pOc54UnacCCBzIhSaPQws1xGXfAawppKml_8AMiG2PQ)
 
 <details>
 <summary>PlantUML source</summary>
@@ -4252,7 +4251,7 @@ show methods
 
 #### Ejemplo: `EnhancedWriter` ampliado – herencia fuera de control
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVk7FOwzAQhvd7ihthaBUqYOpQhBiQKhaQmB37VJ8a25F9UQRt3x1HYaDBitr1fN_939nyJomK0rkGJLQoAesgEhwajqSFg4ekVUN4V63usWcj9rfw-FChJd5ZgbRn36qoHDbsSb5awhDFhj8HulEpPYlErjuhVx38O38TVgCqThKVlrEFX7xVXpP5jCwU8QCIB0d5mDlhP9S2OeJmyLmFE8AIvXWupsh-dxX1wY7y9q69Fny2pPepc-5ycLLW-rhYTK2LPQXHYl9BCWB6LeepGTknoDBkfVwu55CC3z_vqUbBK4fMEkWzydqXxcwSAJYNoaOhniDZ0OP4qAlgQ97kf_IDmbApTQ)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkzFPwzAQhff7FTfC0CogYOpQhBiQEAtIzI59qk-N7ci-KIK2_x1HYQAnitr1-T6_987yNomK0rkGJLQoAesgEhwajqSFg4ekVUN4U93eYc9G7K_wcF-hJd5ZgbRn36qoHDbsSb5awhDFhj8HulEpPYpErjuhFx38O38TVgCqThKVlnEEn71VXpP5jCwU8QCIB0f5MnPCftBes8XV4HMNJ4AReutcTZH97iLqgx3l9q69FHyypPepc-58sKi1Oa5WZerZmWnG2bFpIoByKf89M1EAM602x_V6CZnZ4CR12XIaK3ssAbO5is5nmSwBYNkQOhrUBMmGHsfXTABb8iZ_kB-jziiD)
 
 <details>
 <summary>PlantUML source</summary>
@@ -4292,7 +4291,6 @@ NumberingWriter <|.. TimestampingNumberingWriter
 ChecksummingWriter <|-- ChecksummingNumberingWriter
 NumberingWriter <|.. ChecksummingNumberingWriter
 
-
 hide members
 show methods
 
@@ -4304,7 +4302,7 @@ show methods
 
 #### Ejemplo: `EnhancedWriter` ampliado –  herencia fuera de control
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNq9lD1PwzAQhvf7FTfC0CogYOpQVDEgIRaQmB37VFuN7ci-KIK2_51EYYDEtZKF9XyP3w_J3kYWgRtbAfsa2WPpmb1FZQJJNt5BlKIivClu77A1ivXP4OG-QE1mrxniwbhaBGGxMo74syb0gbX_dSArEeMjczBlw_QsvXszX4QFgCgjByF5WMEnp4WTpD6CYQp4BMSjpe4ydca2n710Ele9zjWcAQbotbElBeP2i6h3Y6lLb-ul4E6TPMTG2vngKNbmtFqNXSd3Eh6TewlLAONa_qpOEUjcsjmt11km4XDifGwk4axTyRJJa6Pg82SyBGSiZvqblpDu5VKXCf6_ioVcH5crXpB4Lg_aKEJL_UaEqH2Lw4uKAFtyqvukvgFkyLsG)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNq9lD1PwzAQhvf7FTfC0KogYOpQhBiQEAtIzI5zqk-N7ci-KIK2_51EYYDEWMnCat_j98Oyd1FUkMZWIL5G8Vh4EW-x5EBa2DuIWlWEV5vrG2y5FPO9cHe7QUO8NwLxwK5WQVms2JF81IQ-iPE_NnSlYrwXCVw0Qk_au1f-JNwAqCJKUFqGEXx0RjlN5XtgoYBHQDxa6g4rz9j2a8-dxEWvcwlngAF6aWxBgd1-EfXGlrr0tl4KPhjSh9hYOx8cxdqeVqux6-TM1GNybOoIYFzKb80EkYi1Pa3XWSbR4cT3OOfUWCeSA5LGRqlnieQAyMTMdJe4oGQnf_WY4P-nVMiUkal3Qd65PBguCS31ExGi8S0OLykC7MiV3ef0BVwcugY)
 
 <details>
 <summary>PlantUML source</summary>
@@ -4478,18 +4476,67 @@ end note
 ![](./img/guru/observer-structure-2x.png)
 
 
+#### Observer: Estructura (según GoF)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptUctOxDAMvPsrrJ66oEgL4tTDalecOHHoF6Sp2Qa6SRU7SLz-nZY0Atpeoow9nhnZRxYdJF56YKN7wrvbPXZkz50A8It1gw76gqbXzCeRYJso9GC8q-074R5ANyxBG0kUrGPzTCP6AMRrLaJNV_oKHxum8EphN5Vb2iw7L_bprdzB10o185JsHFotlIipf--dCST0111xArWM5GnsTOlf_rhxRjy9G1r_PJWfUVbL6tXSexlwGU3FQX0e8p5g5Tb3MwbIg8VNgV6F6TIKi6vidykV5nS8oacOq_VUOKcHOJJrx-N_A-l2rtw)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 420 height
+
+skinparam classAttributeIconSize 0
+
+abstract class Subject {
+  +attach(o: Observer)
+  +detach(o: Observer)
+  +notify()
+}
+
+abstract class Observer {
+  +update()
+}
+
+class ConcreteSubject {
+  -subjectState
+  +getState()
+  +setState(state)
+}
+
+class ConcreteObserver {
+  -observerState
+  -subject: ConcreteSubject
+  +update()
+}
+
+ConcreteSubject -up-|> Subject
+ConcreteObserver -up-|> Observer
+
+Subject "1" o-right- "*" Observer : observers
+ConcreteObserver --> ConcreteSubject : subject
+
+@enduml
+```
+
+</details>
+
+
 #### Observer: roles
 
 Sin distinguir entre `Observable` y `Subject`:
+
 - `Publisher` = `Observable` = `Subject`
 - `ConcreteSubscriber` $\dashrightarrow$ `Subject`
 
 Con `Subject` separado:
+
 - `Subscriber` = `Observer`
 - Distinguir entre `Observable` y `Subject`
-- Definir `Subscriber.update(Observable, Subject)`
-  - `ConcreteSubscriber` $\dashrightarrow$ `Observable`
-  - `ConcreteSubscriber` $\dashrightarrow$ `Subject`
+- Definir `Observer.update()`
+  - `ConcreteObserver` mantiene referencia a `ConcreteSubject`
+  - El estado se recupera desde `ConcreteSubject.getState()` (pull)
 
 
 #### Observer: Detalles de implementación
@@ -4501,15 +4548,14 @@ Con `Subject` separado:
 
 #### Observer: Comportamiento (síncrono) – disparo externo
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkkGOwjAMRfc-hcUKFlRdDJsIMdwAJE6QtIZYKp0qcUFz-8kgEHVokVgm8ft-trKNYoP05wZiZRvCr1WJV67F38-rskRPfPIC0KVKrrizreDMtjsXKVysa8jgvncNR09hhjbi8G2comDw0LtYBXYZRCFHfiQFv-HUO8AzCJcb5YIG4wOei-e4AFsJX6zQsH1NY7eQNfosXDuqDpl-URQA31m4wVTGx9_5iPFty6BUBnQSNdh3dSLejKzo9VLTJ5KD_POL6dXkzfWqpg308K8aec6US7bELbV1-tR_J4wHwA)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkkEKwjAQRfdzisFVu7B0JwRRb6DQEyTtaAO1lmRa8fZGQezEtuA2k_fn5ZODZ-24vzbgS90QbvIc77biGqALA1vaTreMK90ejSc3aNOQwlNvGutrcivUHsezaYqcwqI3vnTWRBC5GLlxCF7gxBzgG4TrnXBBhf4DJ1xbn4Iu2Q6aaby-oqlTiBb9Fy4dxYZIP8sygH0UrjBcs-dHMmH8bhmEyogOogr7rgrEwpMFvV1L-kJc8ItP56uJl8uq5g3k43814pw5l6jEA7VV-MNP1yoCXg)
 
 <details>
 <summary>PlantUML source</summary>
 
 ```plantuml
 @startuml
-scale 450 width
-scale 500 height
+scale 700 width
 
 participant "anObservable: Publisher" as anObservable
 participant "anObserver: Subscriber" as anObserver
@@ -4546,15 +4592,14 @@ deactivate anotherObserver
 
 #### Observer: Comportamiento (síncrono) – autodisparo
 
-![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVk0FuAjEMRfc-hcWKLhjNAjZRRbkBlThBMuMSS8N0lHiouD0BtQKnSaUuE_v9__Ol7KLYIPNpgNjZgXC9afGLe_Hf503boic-egGY0iZ3PNlRcGHHvYsUztYNZPB9dgNHT2GBNuLzrExRMHiYXewCuwyikCOfkoT_4NQc4CGEq63KggbjD7wUz_EFbCd8tkLP9j2VbiEz-p-4zqgcsvhN0wC8FcRJDpKIZSH0vWi1n_EGkw1_XBJc3UtPMjhP_c2jXo6iX1eaPj4yVkvMzXWp9QS6pt8xcp1alqzuQs57m7CjsU__4gqXLx9X)
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVk0EKwjAQRfdzisFVXVi6E4KoN1DwBEk72kCtJZkq3t5YEJ2YCG4zefNfPmTrWTsezx34WneEy6rCm224BRjCwNZ20D3jTPc748ldtelI4X40nfUtuRlqj5-zNEVO4WE0vnbWRBC5GLlwWPyDE3OA9yJcrIULKvQvuODW-jnomu1VM33GN5Q6hSjov-XSUSRE-mVZAmwSy4kPHIgiIT0VLe5HvMIQY4_3AGfvhScpHIfmmZEvR9CrhaRPb8dsiXG4LDVvIGv61oj35FyiuhOeU5uwpb4J3-AB3hgZ9Q)
 
 <details>
 <summary>PlantUML source</summary>
 
 ```plantuml
 @startuml
-scale 450 width
-scale 500 height
+scale 700 width
 
 participant "anObservable: Publisher" as anObservable
 participant "anObserver: Subscriber" as anObserver
@@ -4755,6 +4800,69 @@ class Document {
 ## Otros patrones específicos
 
 
+### Patrón _Active Record_
+
+<div class="cols">
+<div>
+
+El objeto de dominio mantiene el **estado** e incorpora la **lógica de persistencia** sobre ese estado.
+
+- La entidad representa los datos del dominio y expone operaciones CRUD (`save()`, `delete()`, etc.)
+- Lógica de acceso a datos acoplada al modelo persistente
+
+**Desventajas:**
+
+- **Mezcla de responsabilidades** en la misma clase
+- **Acoplamiento** al ORM o a la base de datos
+- **Pruebas más difíciles**: cuesta el _mocking_
+- **Escala peor** cuando aparecen reglas complejas
+
+</div>
+<div>
+
+#### Estructura
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptkbFOw0AMhnc_hceyVBVjBlRCl65UfYBL7BKLu3N05zQKVd-doyUQJEb_32_7t7zN5pINwYNpj6bYqJkGJEncmmiE3DrP-LjZ4ChkHeR3ib1LLqCXyDb1jJqs0wVovcv52SxJMxjvW40H-WDcANwIHvPgkiheAPFyEvZ0RaEKJdpCiRqaxBUeypz4tgAcnPilHrjsLyC7M68eKjyr0FIn9mz_kpNEqqc9rYQK_c4F1zlovbtnnO0vr8cd3ov85ZoPWZOOcf1U_ACdEJeIvU3FGRpOGXKn40_brZgb_zjq39mw5UjlK5-RN4_s)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 200 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Usuario {
+  {field} id: int
+  {field} nombre: String
+  {field} email: String
+  {method} save(): void
+  {method} delete(): void
+  {method} findById(id): Usuario
+}
+
+class BD {
+  {method} CRUD methods
+}
+
+Usuario .down.> BD
+
+hide empty members
+show methods
+show Usuario members
+show BD methods
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
 ### Patrón _Data Access Object_ (DAO)
 
 <div class="cols">
@@ -4933,7 +5041,7 @@ Evolución moderna del DAO que surge con la popularidad de frameworks como _Spri
 - Ambos abstraen la persistencia, pero Repository reduce boilerplate
 
 
-#### Repository vs DAO Conceptual
+#### Repository vs DAO
 
 <div class="cols">
 <div>
@@ -5334,21 +5442,22 @@ public class UsuarioService {
 ```
 
 
-# Para profundizar sobre patrones
+## Para profundizar sobre patrones
 
 - Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
-    - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
-    - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
-    - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
+  - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
+  - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
+  - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
 - Peter Norvig – [Design Patterns in Dynamic Programming](http://www.norvig.com/design-patterns/design-patterns.pdf): Implementaciones más simples para los patrones de diseño del GoF en lenguajes dinámicos
 
-# Para profundizar sobre patrones
+
+## Para profundizar sobre patrones
 
 - David Arno – [Are design patterns compatible with modern software techniques?](http://www.davidarno.org/2013/06/17/are-design-patterns-compatible-with-modern-software-techniques/)
 - Implementaciones de los patrones de diseño del GoF en diversos lenguajes de programación:
-    - Kamran Ahmed – [Design Patterns for Humans!](https://github.com/kamranahmedse/design-patterns-for-humans/blob/master/README.md): Explicación de los patrones de diseño del GoF implementados en PHP
-    - Márk Török – [Design Patterns in TypeScript](https://github.com/torokmark/design_patterns_in_typescript)
-    - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
+  - Kamran Ahmed – [Design Patterns for Humans!](https://github.com/kamranahmedse/design-patterns-for-humans/blob/master/README.md): Explicación de los patrones de diseño del GoF implementados en PHP
+  - Márk Török – [Design Patterns in TypeScript](https://github.com/torokmark/design_patterns_in_typescript)
+  - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
 - Lewis y Fowler – [Microservicios](https://martinfowler.com/articles/microservices.html)
 - Chris Richardson - [Microservices patterns](https://microservices.io/)
 - Spring Data JPA – [Query Methods Documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
