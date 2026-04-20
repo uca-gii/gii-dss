@@ -2,11 +2,8 @@
 
 ## Slides
 
-- [Introducción a la arquitectura software](arquitectura-intro.md)
-- [Comunicando arquitecturas](arquitectura-comunicando.md)
-- [Patrones arquitectónicos](arquitectura-patrones.md)
-- [Principios arquitectónicos](arquitectura-principios.md)
-- [Tácticas arquitectónicas](arquitectura-tacticas.md)
+- [Introducción y comunicando arquitecturas software](arch-intro-communicating.md)
+- [Principios y patrones arquitectónicos](arch-principles-patterns.md)
 
 Para generar las slides hay que instalar [marp-cli](https://github.com/marp-team/marp-cli).
 
