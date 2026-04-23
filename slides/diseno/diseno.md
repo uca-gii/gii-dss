@@ -1,13 +1,12 @@
+# DISEÑO DE SISTEMAS SOFTWARE
+
 ## Índice
 
 - [Fundamentos de Diseño](#fundamentos-de-diseño)
 - [Principios de Diseño](#principios-de-diseño)
 - [Patrones de Diseño](#patrones-de-diseño)
 
-
 <!-- Source: fundamentos.md -->
-# DISEÑO DE SISTEMAS SOFTWARE
-
 
 ## INTRODUCCIÓN
 

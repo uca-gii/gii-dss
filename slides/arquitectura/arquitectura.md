@@ -1,4 +1,3 @@
-<!-- Source: arch-intro-communicating.md -->
 # SOFTWARE ARCHITECTURE
 
 **Introduction to software architectures**
@@ -6,6 +5,7 @@
 Architectural principles
 Architectural patterns
 
+<!-- Source: arch-intro-communicating.md -->
 
 # INTRODUCTION TO SOFTWARE ARCHITECTURES
 
