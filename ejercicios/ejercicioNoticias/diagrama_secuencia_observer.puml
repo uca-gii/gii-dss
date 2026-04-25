@@ -1,0 +1,30 @@
+@startuml
+actor "u: Usuario" as U
+participant "op: Operador" as O
+
+== Suscripción ==
+U -> O : attach("nacionales", u)
+activate O
+O --> U : Confirmación
+deactivate O
+
+U -> O : attach("deportes", u)
+activate O
+O --> U : Confirmación
+deactivate O
+
+== Generación de Noticia ==
+O <- : recibirNuevaNoticia("El equipo local gana la liga", "deportes")
+activate O
+O -> O : notify("El equipo local gana la liga", "deportes")
+activate O
+
+note right of O: Itera sobre la lista\nde observers de 'deportes'
+O -> U : update("El equipo local gana la liga", "deportes")
+activate U
+U --> O : 
+deactivate U
+
+deactivate O
+deactivate O
+@enduml

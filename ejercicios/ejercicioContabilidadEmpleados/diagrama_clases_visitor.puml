@@ -1,0 +1,69 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' --- Jerarquía de Operaciones (Visitantes) ---
+interface VisitorOperaciones {
+  + visit(i: Ingeniero): void
+  + visit(p: Programador): void
+  + visit(t: Tecnico): void
+  + visit(a: Administrativo): void
+}
+
+class ContabilidadVisitor implements VisitorOperaciones {
+  + visit(i: Ingeniero): void
+  + visit(p: Programador): void
+  + visit(t: Tecnico): void
+  + visit(a: Administrativo): void
+}
+
+class SeguimientoVisitor implements VisitorOperaciones {
+  + visit(i: Ingeniero): void
+  + visit(p: Programador): void
+  + visit(t: Tecnico): void
+  + visit(a: Administrativo): void
+}
+
+' --- Jerarquía de Empleados (Elementos) ---
+interface Empleado {
+  + accept(v: VisitorOperaciones): void
+}
+
+class Ingeniero implements Empleado {
+  + accept(v: VisitorOperaciones): void
+}
+
+class Programador implements Empleado {
+  + accept(v: VisitorOperaciones): void
+}
+
+class Tecnico implements Empleado {
+  + accept(v: VisitorOperaciones): void
+}
+
+class Administrativo implements Empleado {
+  + accept(v: VisitorOperaciones): void
+}
+
+' --- Relaciones ---
+' El Empleado recibe al visitante
+Empleado -> VisitorOperaciones : "accept(v)"
+
+' El Visitante opera sobre los elementos concretos
+VisitorOperaciones .down.> Ingeniero : "visit(i)"
+VisitorOperaciones .down.> Programador : "visit(p)"
+VisitorOperaciones .down.> Tecnico : "visit(t)"
+VisitorOperaciones .down.> Administrativo : "visit(a)"
+
+note right of Empleado
+  Cada clase concreta implementa:
+  ""accept(VisitorOperaciones v) {""
+  ""  v.visit(this);""
+  ""}""
+end note
+
+note top of VisitorOperaciones
+  Permite definir nuevas operaciones
+  (ej. Contabilidad, Seguimiento)
+  sin modificar las clases de empleados.
+end note
+@enduml

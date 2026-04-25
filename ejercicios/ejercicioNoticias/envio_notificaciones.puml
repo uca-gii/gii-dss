@@ -1,0 +1,29 @@
+@startuml
+interface Notificacion {
+  + avisar(mensaje: String): void
+}
+
+class NotificacionMovil implements Notificacion {
+  + avisar(mensaje: String): void
+}
+
+abstract class NotificacionDecorator implements Notificacion {
+  - wrappee: Notificacion
+  + NotificacionDecorator(n: Notificacion)
+  + avisar(mensaje: String): void
+}
+
+class EmailDecorator extends NotificacionDecorator {
+  + EmailDecorator(n: Notificacion)
+  + avisar(mensaje: String): void
+  - enviarEmail(mensaje: String): void
+}
+
+class TelegramDecorator extends NotificacionDecorator {
+  + TelegramDecorator(n: Notificacion)
+  + avisar(mensaje: String): void
+  - enviarTelegram(mensaje: String): void
+}
+
+NotificacionDecorator o--> Notificacion : "envuelve"
+@enduml

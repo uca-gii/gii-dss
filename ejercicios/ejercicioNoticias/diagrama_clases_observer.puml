@@ -1,0 +1,28 @@
+@startuml
+interface Observer {
+  + update(noticia: String, categoria: String): void
+}
+
+interface Subject {
+  + attach(categoria: String, o: Observer): void
+  + detach(categoria: String, o: Observer): void
+  + notify(noticia: String, categoria: String): void
+}
+
+class Operador implements Subject {
+  - suscriptores: Map<String, List<Observer>>
+  + attach(categoria: String, o: Observer): void
+  + detach(categoria: String, o: Observer): void
+  + notify(noticia: String, categoria: String): void
+  + recibirNuevaNoticia(noticia: String, categoria: String): void
+}
+
+class Usuario implements Observer {
+  - nombre: String
+  - notificacion: Notificacion
+  + update(noticia: String, categoria: String): void
+}
+
+Subject -> Observer : notifica >
+Operador --> Usuario : conoce
+@enduml
