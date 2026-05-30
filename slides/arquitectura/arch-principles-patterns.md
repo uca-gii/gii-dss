@@ -449,7 +449,7 @@ Modules that are intended to be easy to change are not dependent on modules that
 ---
 <!-- _class: lead -->
 
-### SDP: Stable Abstractions Principle
+### SAP: Stable Abstractions Principle
 
 > _A component should be as abstract as it is stable_
 >

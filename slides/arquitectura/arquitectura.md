@@ -1,3 +1,10 @@
+## Índice
+
+- [Architecture](#architecture)
+- [Architecture](#architecture-1)
+
+
+<!-- Source: arch-intro-communicating.md -->
 # SOFTWARE ARCHITECTURE
 
 **Introduction to software architectures**
@@ -5,7 +12,6 @@
 Architectural principles
 Architectural patterns
 
-<!-- Source: arch-intro-communicating.md -->
 
 # INTRODUCTION TO SOFTWARE ARCHITECTURES
 
@@ -934,8 +940,14 @@ This deployment diagram is based upon *UML deployment diagram*.
 - AADL standard, <https://www.aadl.info/>
 - Structurizr, <https://structurizr.com/>
 - PlantUML, <https://plantuml.com/>
-
 <!-- Source: arch-principles-patterns.md -->
+# SOFTWARE ARCHITECTURE
+
+Introduction to software architectures
+Communicating architectures
+**Architectural principles**
+**Architectural patterns**
+
 
 # ARCHITECTURAL DESIGN PRINCIPLES
 
