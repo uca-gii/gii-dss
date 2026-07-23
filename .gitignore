@@ -5,7 +5,7 @@ apuntes/construccion-sw/site/
 .DS_Store
 
 # VS Code
-.vscode/
+# .vscode/
 
 # Output
 *.html
@@ -161,6 +161,3 @@ package-lock.json
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
-### VS Code ###
-.vscode/

@@ -1,0 +1,5464 @@
+## Índice
+
+- [Fundamentos de Diseño](#fundamentos-de-diseño)
+- [Principios de Diseño](#principios-de-diseño)
+- [Patrones de Diseño](#patrones-de-diseño)
+
+
+<!-- Source: fundamentos.md -->
+# DISEÑO DE SISTEMAS SOFTWARE
+
+
+## INTRODUCCIÓN
+
+
+### Problemáticas
+
+![Background image](./img/design-problems.png)
+
+<div class="two-cols">
+<div class="left">
+
+- Variabilidad
+- Acoplamiento
+- Complejidad
+- Robustez
+- Reutilización
+- Flexibilidad
+
+</div>
+<div class="right">
+
+- Sobreingeniería
+- Deuda técnica
+- Carga cognitiva
+- Rendimiento
+- Resiliencia
+- Costes
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+### Técnicas
+
+- Refactoring
+- Inyección de dependencias
+- Contratos
+- Aspectos
+- Patrones
+- Frameworks
+
+</div>
+<div>
+
+### Principios
+
+- SRP: Single Responsibility Principle
+- OCP: Open/Closed Principle
+- ISP: Interface Segregation Principle
+- LSP: Liskov Substitution Principle
+- DIP: Dependency Inversion Principle
+
+</div>
+</div>
+
+
+### Paradigmas
+
+- Estructurado (E. W. Dijsktra)
+- Orientado a objetos (O. J. Dahl & K. Nygaard)
+- Funcional (J. McCarthy)
+- Orientado a aspectos (G. Kiczales)
+- [Orientado a datos](https://www.dataorienteddesign.com/dodbook/) (R. Fabian)
+
+
+#### Preguntas
+
+_¿De qué fecha data cada paradigma?_
+_Ordenar cronológicamente_
+
+
+#### Respuesta
+
+![Background image](./img/timeline_paradigmas.png)
+
+_¿De qué fecha data cada paradigma?_
+
+- Funcional (1958)
+- Orientado a Objetos (1966)
+- Estructurado (1968)
+- Orientado a Aspectos (1997)
+- Orientado a Datos (2018)
+
+
+### Bloques
+
+- I. Fundamentos de diseño
+- II. Principios de diseño OO
+- III. Patrones de diseño
+- IV. Arquitectura de software
+
+
+# FUNDAMENTOS DE DISEÑO
+
+
+<div class="cols">
+<div>
+
+## Casos prácticos
+
+<ul class="no-bullets">
+<li> Caso 1. Identificadores </li>
+<li> Caso 2. Framework de pruebas unitarias </li>
+<li> Caso 3. Caballeros de la mesa redonda </li>
+<li> Caso 4. Figuras geométricas </li>
+</ul>
+
+</div>
+<div>
+
+## Conceptos teóricos
+
+- Cohesión y acoplamiento
+- Bibliotecas y frameworks
+- Inyección de dependencias / Inversión de control
+- Reutilización y flexibilidad
+- Principios SOLID
+- Orientación a aspectos
+- Diseño por contratos
+
+</div>
+</div>
+
+
+## CASO PRÁCTICO 1
+
+### Identificadores
+
+
+¿Cómo diseñar la identificación de los empleados de una empresa?
+
+
+### Versión inicial: Identificadores v0.1
+
+<div class="cols">
+<div>
+
+```java
+class Empleado implements Comparable<Empleado> {
+  private final int dni;
+
+  Empleado(String dni) {
+    this.dni = Integer.parseInt(dni);
+  }
+
+  public int getDni() {
+    return dni;
+  }
+
+  @Override
+  public String toString() {
+    return Integer.toString(dni);
+  }
+```
+
+</div>
+<div>
+
+```java
+  @Override
+  public int compareTo(Empleado otro) {
+    return Integer.compare(this.dni,
+                           otro.getDni());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Empleado otro))
+      return false;
+    return dni == otro.dni;
+  }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(dni);
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### Nuevos requisitos:
+
+- El Real Decreto 338/1990 regula el uso de NIFs en lugar de DNIs. ¡Hay que cambiar toda la implementación!
+
+### Implementación alternativa: Identificadores v0.2
+
+<div class="cols">
+<div>
+
+```java
+class Empleado implements Comparable<Empleado> {
+  private final String nif;
+
+  Empleado(String nif) {
+    this.nif = nif;
+  }
+
+  public String getNif() {
+    return nif;
+  }
+
+  @Override
+  public String toString() {
+    return nif;
+  }
+```
+
+</div>
+<div>
+
+```java
+  @Override
+  public int compareTo(Empleado otro) {
+    return this.nif.compareTo(otro.getNif());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Empleado otro)) return false;
+    return nif.equals(otro.nif);
+  }
+
+  @Override
+  public int hashCode() {
+    return nif.hashCode();
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### Críticas:
+
+- __Flexibilidad__ / __Reutilización__: Posiblemente haya más situaciones (algunas futuras) donde hagan falta _identificadores_ que incluso pueden cambiar.
+- Ejemplo: UUID, números de la seguridad social, tarjetas de identidad, números de cuenta corriente, IBAN, etc.
+
+### Hacemos refactoring: patrón _handler_
+
+- Manejo de _identificadores_ de forma independiente de la implementación del objeto identificado.
+
+- Cambio fácil de implementación de los identificadores (`int`, `String`, etc.) hacia cualquier tipo básico o clase primitiva, sencilla o compuesta.
+
+
+## Diseño de un Handler
+
+<div class="cols">
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9U01P4zAQvfMr5ratUCPgiKoKhJCoBCe4IQ5Te9JMceziDwTd5VftT9g_tuMkQJMAh1jRvDfvPXvssxDRx1SbA4DwyHaLHmtQBkM4j9HzKkVaKmdveUdw1CMZthRftwTOx8oJ1HTBUpONXDKuDMFvKQPMgDWcwhVabcg3pUNYU1zqyXRU3--fdNBUsDf52EbyJSp67-kMDiG6W0lr141g-9shytWSl-7ch5gwRKiTbENfOKs8Reoox_3gLTuLDXkTgabfYYPwXzqd9J16yYfUSYtOv4N7frL8gssQHZSJ_A4B-5NBeEqk0Yf8axB495SYvEbQtDeRXs_svmIthQfP6yrOFnu8xu58k-Q61S5kwdKQqhq1FBzkK5MdAbdJhth6avKZM7QpGvniQ17OZT5PgcJi0W7rGsG6iIr__bUw_1MUMmTjFAIZMdKe4HPW6OUSI7yCkVgVb2TFFW4kkfMSoCQVXSGq716N3Og65ARcbw3VkjPn-LnhZNzQBL_zSTmgl-jxFG5QDsKKwl4yAzWH2oHlZ9nLM4eE-WWO8owmMQxwcEZWy7P-D1vuQj8)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+  skinparam classAttributeIconSize 0
+  skinparam linetype ortho
+  class Identifiable {
+    - id : Handler
+    + getId() : Handler
+    + Identifiable(Handler)
+  }
+  interface Handler {
+    + toString() : String
+    + compareTo(Handler) : int
+  }
+  class ConcreteHandler1 {
+    - id : int
+    + ConcreteHandler1(int)
+    + ConcreteHandler1(Handler)
+  }
+  class ConcreteHandler2 {
+    - id : String
+    + ConcreteHandler2(String)
+    + ConcreteHandler2(Handler)
+  }
+
+  ' Esto fuerza a Identifiable a quedarse a la izquierda de Handler
+  Identifiable -[hidden]right-> Handler
+
+  ' Ajustamos la flecha de uso para que apunte a la derecha
+  Identifiable .right.> Handler : <<uses>>
+
+  ' La notación <|.. coloca el padre (Handler) arriba y los hijos abajo por defecto.
+  Handler <|.. ConcreteHandler1 : <<implements>>
+  Handler <|.. ConcreteHandler2 : <<implements>>
+
+  ' Truco extra: Mantener los hijos al mismo nivel visual
+  ConcreteHandler1 -[hidden]right-> ConcreteHandler2
+@enduml
+```
+
+</details>
+
+</div>
+<div>
+
+- __Identifiable__: Clase cliente que necesita identificar a sus objetos a través de algún atributo identificador
+
+- __Handler__: Interfaz para declarar los identificadores de los objetos de la clase `Identifiable`
+
+- __ConcreteHandler__: Implementación concreta de la interfaz `Handler`
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+### Implementación del diseño en Java
+
+```java
+interface Handler<T extends Comparable<? super T>>
+    extends Comparable<Handler<T>> {
+  T getId();
+
+  @Override
+  public boolean equals(Object o);
+
+  @Override
+  default int compareTo(Handler<T> otro) {
+    return getId().compareTo(otro.getId());
+  }
+}
+```
+
+</div>
+<div>
+
+```java
+final class IdentificadorNumerico
+    implements Handler<Integer> {
+  private final Integer id;
+
+  IdentificadorNumerico(String id) {
+    this.id = Integer.valueOf(id);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof IdentificadorNumerico otro))
+      return false;
+    return id.equals(otro.id);
+  }
+
+  @Override
+  public Integer getId() {
+    return id;
+  }
+
+  @Override
+  public String toString() {
+    return id.toString();
+  }
+}
+```
+
+</div>
+</div>
+
+
+### Conceptos de diseño
+
+- __Responsabilidad única__: La lógica de generación de identificadores (ej. limpiar caracteres, validar formato) debe estar aislada de la lógica de negocio principal.
+
+- __Acoplamiento__ (bajo): El sistema principal debe usar interfaces para generar IDs, sin depender de si se usa un UUID, una secuencia o un algoritmo custom.
+
+- __Cohesión__ (alta): Agrupar métodos relacionados con la manipulación de IDs en un único componente.
+
+- __Encapsulamiento__: Ocultar los detalles algorítmicos de la construcción del identificador tras los métodos públicos.
+
+- __Reutilización y flexibilidad__: Permitir la reutilización del componente de identificación en otros sistemas y facilitar la adaptación a futuros cambios.
+
+
+### Implementación en los lenguajes
+
+#### Java: Identificadores con `java.lang.Comparable`
+
+`Comparable<T>` es una interfaz que define el orden natural entre objetos del mismo tipo. La implementan `String`, `File`, `Date`, etc. y las _clases de envoltura_ del JDK (i.e. `Integer`, `Long`, etc.)
+
+__Método de la interfaz__:
+
+```java
+  public int compareTo(T o)
+```
+
+El tipo `T` garantiza seguridad de tipos: un `Comparable<Empleado>` solo se compara con `Empleado`, evitando casts y errores en tiempo de ejecución.
+
+
+__Invariantes:__ las debe asegurar cualquier implementación de `compareTo`
+
+`sgn(x.compareTo(y)) = -sgn(y.compareTo(x))`
+
+`(x.compareTo(y)>0 and y.compareTo(z)>0)` $\Rightarrow$ `x.compareTo(z)>0`
+
+`x.compareTo(y)=0` $\Rightarrow$ `sgn(x.compareTo(z))=sgn(y.compareTo(z))` $\forall$ `z`
+
+__Consistencia con `equals`__: recomendable pero no exigible
+
+`(x.compareTo(y)=0)` $\Leftrightarrow$ `(x.equals(y))`
+
+> [!NOTE]
+> En Java no se puede definir un método `default` en una `interface` que sea override‑equivalent a un método público de Object (como equals, hashCode, toString). Puedes declararlo de forma abstracta en la interfaz, pero no darle implementación default.
+
+
+#### C++: Comparación de identificadores
+
+Cómo implementar la interfaz de comparación de un Handler en C++
+
+¿Tienen sentido las siguientes implementaciones?
+
+```c++
+   static int compare(const Handler&, const Handler&);
+   int compareTo(const Handler&); // member function
+```
+
+Ver __[stackoverflow](https://stackoverflow.com/questions/20005392/is-there-a-compareto-method-in-c-similar-to-java-where-you-can-use-opera)__
+
+
+__Sobrecarga de operadores en C++__:
+
+```c++
+template <typename T>
+struct Handler {
+    T id;
+    explicit Handler(T v) : id(std::move(v)) {}
+    bool operator==(const Handler& other) const = default;
+    auto operator<=>(const Handler& other) const = default;
+};
+using NumericHandler = Handler<int>;
+using StringHandler  = Handler<std::string>;
+```
+
+```c++
+int main() {
+    StringHandler a{"EMP-001"};
+    StringHandler b{"EMP-002"};
+    auto ord = (a <=> b);  // OK
+    NumericHandler c{123};
+    // bool same = (a == c);  // ERROR: tipos distintos
+}
+```
+
+
+<div class="cols">
+<div>
+
+## Reutilización y flexibilidad
+
+- __Reutilización__: Construir software fácil de reutilizar sin tener que cambiar los módulos ya escritos (afecta a la fase de __desarrollo__)
+- __Flexibilidad__: Adaptarse a cambios de requisitos y construir software fácil de cambiar (afecta a la fase de __mantenimiento adaptativo__)
+
+</div>
+<div>
+
+### El árbol de la calidad del software
+
+![](./img/sqa-tree.png)
+
+</div>
+</div>
+
+
+## CASO PRÁCTICO 2
+
+### Pruebas unitarias
+
+
+### jUnit: Framework de pruebas unitarias
+
+- JUnit es un framework en Java que sirve para diseñar, construir y ejecutar __pruebas unitarias__
+- Una prueba unitaria comprueba la corrección de un _módulo_ de software en cuanto a funcionalidades que ofrece.
+- En el caso de Java, las pruebas unitarias comprueban la corrección de cada uno de los métodos de _cada clase_.
+
+
+¿Por qué? ¿Cómo funciona?
+
+
+### ¿Cómo se probaba `Saludo.java` sin bibliotecas de pruebas unitarias?
+
+<div class="cols">
+<div>
+
+```java
+class Saludo {
+  /**
+  * Imprime "Hola Mundo!"
+  */
+  void saludar() {
+    System.out.println("Hola Mundo!");
+  }
+
+  /**
+  * Imprime un mensaje
+  */
+  void saludar(String mensaje) {
+    System.out.println(mensaje);
+  }
+
+```
+
+</div>
+<div>
+
+Incluir un método `main` que pruebe la funcionalidad de la clase:
+
+```java
+  /**
+  * Tests
+  */
+  public static void main( String[] args ) {
+    Saludo saludo1 = new Saludo();
+    saludo1.saludar();
+
+    Saludo saludo2 = new Saludo("Hola caracola!");
+    saludo2.saludar();
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### Pegas
+
+- Cuanto más grande sea la interfaz de la clase, mayor será el `main`
+
+- El tamaño del código de la clase crece por las pruebas
+
+- Poco fiable, porque `main` forma parte de la misma clase y tiene acceso a los elementos privados
+
+- Difícil de automatizar las pruebas, incluso pasando argumentos a `main`
+
+
+### Ejemplo: software _cliente_ del framework jUnit
+
+#### Caso de prueba con jUnit 4
+
+```java
+import org.junit.*;
+import static org.junit.Assert.*;
+
+public class SaludoTest {
+  public static void main(String args[]) {
+    junit.textui.TestRunner.run(SaludoTest.class);
+  }
+  @Test
+  public void saludar() {
+    Saludo hola = new Saludo();
+    assert( hola!=null );
+    assertEquals("Hola Mundo!", hola.saludar() );
+  }
+}
+```
+
+
+#### Ejecución de los tests:
+
+```java
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
+public class MyTestRunner {
+  public static void main(String[] args) {
+    Result result = JUnitCore.runClasses(SaludoTest.class);
+    for (Failure failure : result.getFailures()) {
+      System.out.println(failure.toString());
+    }
+  }
+}
+```
+
+
+¿De qué están hechas las anotaciones como `@Test`?
+
+
+<div class="cols">
+<div>
+
+#### Caso de prueba con jUnit 3
+
+Veamos una versión anterior de jUnit, que expone más claramente las _tripas_ del framework
+
+```java
+import junit.framework.TestCase;
+import junit.framework.Assert;
+
+public class SaludoTest extends TestCase {
+    public SaludoTest(String nombre) {
+      super(nombre);
+    }
+    public void testSaludar() {
+      Saludo hola = new Saludo();
+      assert( hola!=null );
+      assertEquals("Hola Mundo!", hola.saludar() );
+    }
+}
+```
+
+</div>
+<div>
+
+### Diseño del framework jUnit
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNUkGKwzAMvPsVPu5SnBcsJUtLP7BdyFU4KgRSu0gyPTT9-8Z2GndND71ZM9LMSLhlAZJwHpUanCCdwKI-Iou-Ka031gcnsdwBI398RoyCmx93pewIzPqbGSm332YxGexdbyCBRwqYZmriACO_ZrquexaP1j9hEMxxoO8jknMsRaIrLUsIgqU1R86PgkrcKy5YSq7N497Z-7UGo_xeHvNAe391tcQerScQT2-cdLU04WKm7XLcBOuvqWnWTBWUjqDKtbwx20RkyRKhaaaF-I-bJzfVouvnL_EHZsWsZA)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+
+interface Test {
+  +countTestCases()
+  +run()
+}
+
+class Assert {
+  {static} +assertTrue()
+  {static} +assertFalse()
+  {static} +assertXXX()
+}
+
+class TestSuite {
+  +addTest()
+  +addTestSuite()
+  {static} +createTest()
+  +run()
+  +runTest()
+  +testCount()
+  +tests()
+}
+
+class TestCase {
+  +run()
+  +runTest()
+  +setUp()
+  +tearDown()
+}
+
+class TestDecorator {
+  +countTestCases()
+  +run()
+}
+
+TestCase -up-|> Assert
+Test <|.. TestCase
+Test <|.. TestSuite
+TestSuite o--> Test
+
+TestDecorator ..|> Test
+TestDecorator --|> Assert
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+### Ejemplo: aplicación de comercio electrónico
+
+Diseño de una aplicación de comercio electrónico:
+
+- `ShoppingCart` - carrito de la compra
+- `CreditCard` - tarjeta de crédito
+- `Product`- artículos
+- Etc.
+
+Diseño de pruebas unitarias de `ShoppingCart` para:
+
+- Probar carrito de la compra (añadir/eliminar artículos)
+- Probar validación de tarjetas de crédito
+- Probar manejo de varias monedas
+- Etc.
+
+
+<div class="cols">
+<div>
+
+#### Utilización del framework jUnit
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9kE0OgkAMhfc9xQsrjeECLIyRG6gXmAwFR6BDZkpYKHd3RE2MJu6a7_007S6qCTr2HXVcK9QjuOasqFxgq84L0WBsaxpGdhnFaVHUwfQ8-dBmuBLgRDnUxjJOHHVBwMb6UfQBShM5rtZPGkZZxpnm394kCodnqe1MjNin7KPjsCi4phC-YZ5vl8U0A0THsx8GJ02ZjnpvR175SfLby_fHssWnSLRjqdJr7seiYek)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+left to right direction
+
+package "junit::framework" {
+  interface Test {
+    +countTestCases()
+    +run()
+  }
+}
+
+package "junit::runner" {
+  class BaseTestRunner {}
+
+  BaseTestRunner --> Test
+}
+
+ShoppingCartTestCase -down-|> Test
+ShoppingCartTestCase -down-> ShoppingCart
+
+@enduml
+```
+
+</details>
+
+</div>
+<div>
+
+#### ShoppingCart
+
+```java
+public class ShoppingCart {
+  private ArrayList items;
+  public ShoppingCart() { ... }
+  public double getBalance() { ... }
+  public void addItem(Product p) { ... }
+  public void removeItem(Product p)
+      throws ProductNotFoundException { ... }
+  public int getItemCount() { ... }
+  public void empty() { ... }
+  public boolean isEmpty() { ... }
+}
+```
+
+</div>
+</div>
+
+
+#### ShoppingCartTestCase con jUnit 3
+
+<div class="cols">
+<div>
+
+```java
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import junit.framework.Assert;
+
+public class ShoppingCartTest extends TestCase {
+  private ShoppingCart bookCart;
+  private Product defaultBook;
+  //...
+  protected void setUp() {
+      bookCart = new ShoppingCart();
+      defaultBook = new Product("Extreme Programming", 23.95);
+      bookCart.addItem(defaultBook);
+  }
+  protected void tearDown() {
+      bookCart = null;
+  }
+  public void testEmpty() {
+      bookCart.empty();
+      assertTrue(bookCart.isEmpty());
+  }
+  public void testProductAdd() {
+      Product book = new Product("Refactoring", 53.95);
+      bookCart.addItem(book);
+      double expectedBalance = defaultBook.getPrice() + book.getPrice();
+      assertEquals(expectedBalance, bookCart.getBalance(), 0.0);
+      assertEquals(2, bookCart.getItemCount());
+  }
+```
+
+</div>
+<div>
+
+```java
+  public void testProductRemove() throws ProductNotFoundException {
+      bookCart.removeItem(defaultBook);
+      assertEquals(0, bookCart.getItemCount());
+      assertEquals(0.0, bookCart.getBalance(), 0.0);
+  }
+  public void testProductNotFound() {
+      try {
+          Product book = new Product("Ender's Game", 4.95);
+          bookCart.removeItem(book);
+          fail("Should raise a ProductNotFoundException");
+      } catch(ProductNotFoundException success) {
+          ...
+      }
+  }
+  public static Test suite() {
+      // Use reflection to add all testXXX() methods
+         TestSuite suite = new TestSuite(ShoppingCartTest.class);
+      // Alternatively, but prone to error when adding more
+      // test case methods...
+      // TestSuite suite = new TestSuite();
+      // suite.addTest(new ShoppingCartTest("testProductAdd"));
+      // suite.addTest(new ShoppingCartTest("testEmpty"));
+      // suite.addTest(new ShoppingCartTest("testProductRemove"));
+      // suite.addTest(new ShoppingCartTestCase("testProductNotFound"));
+         return suite;
+  }
+}
+```
+
+</div>
+</div>
+
+
+Podemos agrupar varios casos de prueba en una misma _suite_:
+
+```java
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
+public class EcommerceTestSuite extends TestSuite {
+    //...
+    public static Test suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTest(ShoppingCartTest.suite());
+        return suite;
+    }
+}
+
+public class MyTestRunner {
+  public static void main(String[] args) {
+    Result result = JUnitCore.runClasses(EcommerceTestSuite.class);
+    for (Failure failure : result.getFailures()) {
+      System.out.println(failure.toString());
+    }
+  }
+}
+```
+
+
+#### ShoppingCartTestCase con jUnit 4
+
+<div class="cols">
+<div>
+
+```java
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+public class ShoppingCartTest {
+  private ShoppingCart bookCart;
+  private Product defaultBook;
+  //...
+  @Before
+  protected void setUp() {
+      bookCart = new ShoppingCart();
+      defaultBook = new Product("Extreme Programming", 23.95);
+      bookCart.addItem(defaultBook);
+  }
+  @After
+  protected void tearDown() {
+      bookCart = null;
+  }
+```
+
+</div>
+<div>
+
+```java
+  @Test
+  public void testEmpty() {
+      bookCart.empty();
+      assertTrue(bookCart.isEmpty());
+  }
+  @Test
+  public void testProductAdd() {
+      Product book = new Product("Refactoring", 53.95);
+      bookCart.addItem(book);
+      double expectedBalance = defaultBook.getPrice() + book.getPrice();
+      assertEquals(expectedBalance, bookCart.getBalance(), 0.0);
+      assertEquals(2, bookCart.getItemCount());
+  }
+  @Test
+  public void testProductRemove() {
+      bookCart.removeItem(defaultBook);
+      assertEquals(0, bookCart.getItemCount());
+      assertEquals(0.0, bookCart.getBalance(), 0.0);
+  }
+  @Test(expected = ProductNotFoundException.class)
+  public void testProductNotFound() {
+      Product book = new Product("Ender's Game", 4.95);
+      bookCart.removeItem(book);
+      fail("Should raise a ProductNotFoundException");
+  }
+}
+```
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+#### EcommerceTestSuite con jUnit 3
+
+```java
+public class EcommerceTestSuite extends TestSuite {
+  //...
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTest(ShoppingCartTest.suite());
+    suite.addTest(CreditCardTest.suite());
+    // etc.
+    return suite;
+  }
+}
+```
+
+</div>
+<div>
+
+#### EcommerceTestSuite con jUnit 4
+
+```java
+@RunWith(Suite.class)
+@SuiteClasses({
+    ShoppingCartTest.class,
+    CreditCardTest.class
+})
+public class EcommerceTestSuite {
+    //...
+}
+```
+
+</div>
+</div>
+
+
+#### Pregunta
+
+¿Qué hemos conseguido con las anotaciones `@Test` del JDK $\geq$ 1.5?
+
+
+¿Qué hemos conseguido con las anotaciones `@Test`?
+
+#### Respuesta:
+
+- No necesitar de la incómoda herencia (i.e. mecanismo de implementación)
+
+
+### Ejercicio propuesto: CreditCardTest
+
+Diseñar y codificar una suite de casos de prueba unitaria para `CreditCard` usando jUnit versión 4.
+
+
+### Arquitectura del framework jUnit
+
+<div class="cols">
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9U0tu2zAQ3fMUA28iN5DRz84QjBh2gbZogyBOuwm6GFMjmShFqiSFwE5ymJ6hR8jFOqT8R1sJkMjH4bw3fMMrH9CFrtHC_1CmRYcN-LDWxF-n5NmK1Oj9NPDKsgv0UVqzUBuC10chWhkK65bAurCyx1lXWNoHZWqoUHsS4gLejGBOlTJKqpffBkqCa1taL5QJ5CqUBHfkAxTFzDat9SrQOI0MmTCZwKMAfi7BdSaLgbfkOx2G4lmIJBQOYMqhNckQBdxEQcQcKQmH45KrRRngsG-GnnrmBk3JgUVxR02rMRB8IS6txw7KPhNWCbrRXV3jko9wQZHRur3WHKprZv6H7h593Il5jgFxPdsteQpf2_0sELq5fTDZWcWLjuUcS_vPUfUolmXiiZ-U7AJmOtaPhn1RDYIF9lo6CgjRTSAN0xJbPsIt8YBf9DtwlrCi2E4hS8DwVMi2tET3dgS3pFEq9tbDJ3Ivv9zPTklOmX0jF3ikyQ9F3w9Po9HeozMoFS8OBj7l-YmoSPbuhOyDdWpjTYgEsIb3fPgd972Lcw6exobGvkEr6zZY4vjQIAgaQW1YKrkSYwf_RUR-v1JlSea7U_Uq5JOjmEhQO6q3BNnes77U3kqbdy3vGrwa9PdhDFX8p1rm1JLh3FLhEaGmasfTOy3EFYfxZf4D5tBT8g)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+skinparam style strictuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+
+' 1. Definición de Nodos
+interface Test <<Composite:Component>> {
+    + run(TestResult)
+}
+
+class TestResult <<Collecting Parameter>> {
+}
+
+abstract class TestCase <<Command>> <<Template Method>> <<Composite:Leaf>> <<Pluggable Selector>> {
+    - fName
+    + run(TestResult)
+    + {abstract} runTest()
+    + setUp()
+    + tearDown()
+}
+
+class TestSuite <<Composite>> {
+    + run(TestResult)
+    + addTest(Test)
+}
+
+' Clase anónima o concreta para el Adapter
+class " " as AdapterClass <<Adapter (Class)>> {
+    + runTest()
+}
+
+' 2. Relaciones Jerárquicas (Verticales)
+Test <|.. TestCase
+Test <|.. TestSuite
+TestCase <|-- AdapterClass
+
+' 3. Relaciones Horizontales y Estructurales
+' Alineación forzada: TestCase a la izquierda de TestSuite
+TestCase -[hidden]right-> TestSuite
+
+' Agregación (Composite)
+TestSuite o-up-> "*" Test : fTests
+
+' Dependencia
+TestCase -left-> TestResult
+
+@enduml
+```
+
+</details>
+
+</div>
+<div>
+
+En la arquitectura del framework se observan diversos patrones:
+
+- Composite
+- Command
+- Adapter
+- Factory
+- Decorator
+- etc.
+
+</div>
+</div>
+
+
+### Bibliotecas y frameworks
+
+#### Flujo de control en una biblioteca
+
+![](./img/biblioteca.png)
+
+
+#### Flujo de control en un framework
+
+![](./img/framework.png)
+
+
+### Frameworks
+
+#### Definición de *framework*
+
+> Colección de clases e interfaces que cooperan para formar un diseño reutilizable de un tipo específico de software
+>
+> –– [E. Gamma et al.](bibliografia.html#gamma)
+
+- El framework proporciona unas guías arquitectónicas (diseño empaquetado) para dividir el diseño en clases abstractas y definir sus _responsabilidades_ y _colaboraciones_.
+- El framework se debe personalizar definiendo subclases y combinando instancias, o bien configurando valores que definen el comportamiento por defecto
+
+
+### Principios de diseño de un framework OO
+
+- Datos encapsulados
+- Interfaces y clases abstractas
+- Métodos polimórficos
+- Delegación
+
+### Herramientas de diseño OO
+
+- __Patrones__: elementos reutilizables de diseño
+- __Frameworks__: colecciones de patrones abstractos a aplicar
+
+
+### Framework vs. biblioteca
+
+- API orientado a objetos vs. API basado en funciones (en general)
+- Flujo de control invertido
+- Programador _cliente_ (código específico) vs. programador de _API_ (código reutilizable)
+
+
+### Principios y técnicas de un framework
+
+- __Abstracción__
+  - Clases y componentes abstractos
+  - Interfaces abiertas
+  - Uso de patrones de diseño
+  - Componentes de un dominio específico
+
+- Máxima __cohesión__, mínimo __acoplamiento__
+  - Minimizar dependencias: Una clase A presenta una dependencia con otra clase B (A $\rightarrow$ B) si la primera usa una instancia de la segunda.
+  - Cuando no se pueden eliminar las dependencias, mantener las abstractas e __inyectar__ las concretas.
+
+
+#### Dependencias
+
+> Coupling is the enemy of change, because it links together things that must change in parallel
+>
+> D. Thomas & A. Hunt, [The Pragmatic Programmer](https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/), 20th Anniversary Edition, 2019
+
+- La reducción de dependencias debe ser estratégica, es decir, centrada en los puntos del sistema que cambian con distinta frecuencia.
+
+- Si A y B cambian al mismo tiempo, no hay demasiado problema porque A $\rightarrow$ B
+
+- Si cambian con distinta frecuencia...
+
+
+#### Inyección de dependencias
+
+Una clase o módulo no debería configurar sus dependencias estáticamente, sino ser configurada desde fuera
+
+
+## CASO PRÁCTICO 3
+
+### Caballeros de la mesa redonda
+
+
+Añadir pruebas unitarias al programa siguiente:
+
+<div class="cols">
+<div>
+
+```java
+public class KnightOfTheRoundTable {
+  private String name;
+  private HolyGrailQuest quest;
+
+  public KnightOfTheRoundTable(String name) {
+    this.name = name;
+    quest = new HolyGrailQuest();
+  }
+  public HolyGrail embarkOnQuest()
+      throws GrailNotFoundException {
+    return quest.embark();
+  }
+}
+```
+
+ </div>
+<div>
+
+```java
+public class HolyGrailQuest {
+  public HolyGrailQuest() {
+    /*...*/
+  }
+
+  public HolyGrail embark()
+          throws GrailNotFoundException {
+    HolyGrail grail = null;
+    // Look for grail ...
+    return grail;
+  }
+
+}
+```
+
+</div>
+</div>
+
+
+### Diseño de pruebas con jUnit 3
+
+
+¿Dónde está el acoplamiento?
+
+```java
+import junit.framework.TestCase;
+
+public class KnightOfTheRoundTableTest extends TestCase {
+  public void testEmbarkOnQuest() throws GrailNotFoundException {
+    KnightOfTheRoundTable knight =
+        new KnightOfTheRoundTable("CruzadoMagico");
+    HolyGrail grail = knight.embarkOnQuest();
+    assertNotNull(grail);
+    assertTrue(grail.isHoly());
+  }
+}
+```
+
+
+### Diagrama de clases
+
+
+¿Dónde está el acoplamiento?
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqFUkEKgzAQvOcVwVN70Ad4KN5a6EFavJUeolk1GGObREop_r1JKmKtpIHAMjszO1mSKE2k7luO0I0UDakAB7LrBc1IziHAL4QwLjhRCh8Fq2qdllkN54lhCNgcQVpwxb0HpV0FbU5kk4qTRTZbgw3mTm6Hjj_3kjDu-qNNZYGZ2iMbFUxZZM5bjxlyKHW4W4z9KBZRIto9RDSj-nyjLyIaVtcYx9oY_19m5jbhfYijRNJ2zORVil96qRmlIK4_uRMQ1PyDNxbuqps)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+
+package "roundTable" {
+
+  class KnightOfTheRoundTable {
+    name
+    quest
+    embarkOnQuest()
+  }
+
+  class HolyGrailQuest {
+    grail
+    embark()
+  }
+
+  class HolyGrail {
+    isHoly()
+  }
+
+  KnightOfTheRoundTable -left-> HolyGrailQuest
+
+  HolyGrailQuest .down.> HolyGrail
+
+  KnightOfTheRoundTable ..> HolyGrail
+
+}
+
+package "roundTable::test" {
+
+  class KnightOfTheRoundTableTest { }
+
+  KnightOfTheRoundTableTest .right.> KnightOfTheRoundTable
+  KnightOfTheRoundTableTest .[hidden].> HolyGrail
+
+}
+
+@enduml
+```
+
+</details>
+
+
+### Acoplamiento
+
+
+No deseable
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNUssKwyAQvPsVkl7aQ_yAHEpuLfQQWvIDJm4exJhWDaWU_HvVhiBB0grCMjszOy6mSlOpx54jdKdlR2vAkRxGwXJacIjwGyGMS06VwhfR1o3OqryB28IwBGyOoD244jGC0q6CvqCyy8TVIvuDwSZzF7fzwF8nSVvu-rNNbQFPvSGbFa2yiM8Lx4w5VDo-rsZ-FasohA1PQTzqli_xiRjvJDCEpuAyk0Qb-98rzd0-Np_jKETajpkfpPwnDUVPQTDzIT7JCKzR)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+
+package "roundTable" {
+
+  class KnightOfTheRoundTable {
+    name
+    quest
+    embarkOnQuest()
+  }
+
+  class HolyGrailQuest {
+    grail
+    embark()
+  }
+
+  class HolyGrail {
+    isHoly()
+  }
+
+  KnightOfTheRoundTable -left-> HolyGrailQuest
+
+  HolyGrailQuest .down.> HolyGrail
+
+  KnightOfTheRoundTable ..> HolyGrail  #red
+
+}
+
+package "roundTable::test" {
+
+  class KnightOfTheRoundTableTest { }
+
+  KnightOfTheRoundTableTest .right.> KnightOfTheRoundTable
+  KnightOfTheRoundTableTest .right.> HolyGrail  #red
+
+}
+
+@enduml
+```
+
+</details>
+
+
+#### Pegas:
+
+- Instanciación de `HolyGrail`
+
+- Cada vez que se prueba `KnightOfTheRoundTable`, también se prueba `HolyGrailQuest`.
+
+- No se puede pedir a `HolyGrailQuest` que se comporte de otra forma (v.g. devolver null o elevar una excepción)
+
+
+Ocultar la implementación detrás de una interfaz:
+
+<div class="cols">
+<div>
+
+```java
+public interface Knight {
+  Object embarkOnQuest()
+          throws QuestFailedException;
+}
+
+public class KnightOfTheRoundTable
+             implements Knight {
+  private String name;
+  private Quest quest;
+
+  public KnightOfTheRoundTable(String name) {
+    this.name = name;
+    quest = new HolyGrailQuest();
+  }
+  public Object embarkOnQuest()
+          throws QuestFailedException {
+    return quest.embark();
+  }
+}
+```
+
+</div>
+<div>
+
+```java
+public interface Quest {
+  abstract Object embark()
+    throws QuestFailedException;
+}
+
+public class HolyGrailQuest implements Quest {
+  public HolyGrailQuest() { /*...*/ }
+  public Object embark()
+          throws QuestFailedException {
+    // Do whatever it means
+    // to embark on a quest
+    return new HolyGrail();
+  }
+}
+```
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+#### Dependencias
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9Ut0KgjAUvt9TDLupC_cEEd4VdBGFL3DUo0lz1jaJKN-9bYpMMwfC-M73d9RIaZC6qTghd0hvUCANZN2ILIaEY0DfhFBaCo0yhxTpUZTFVRuUmoNVAvJ2EucGlV5vDNaaZ8R3oxHd56UclOo9T3l8xcuQ3GsEVOguD2u0nNq5HWr-2ksouR9dWGCxxCDrFaWyiM_rV99-GJuv3NG6WMcaV_FdpsuG0qLhbtp-JTHrdJMBy-qnYB7fo85HsF82aQlZ-ASxe39mffJ_bF3n81zCsnBaJ0KRmT_xC4k00Qs)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+
+package "roundTable" {
+
+  interface Knight {
+    embarkOnQuest()
+  }
+
+  interface Quest {
+    embark()
+  }
+
+  class KnightOfTheRoundTable {
+    name
+    quest
+    embarkOnQuest()
+  }
+
+  class HolyGrailQuest {
+    grail
+    embark()
+  }
+
+  class HolyGrail {
+    isHoly()
+  }
+
+  Knight <|.. KnightOfTheRoundTable
+
+  Quest <|.. HolyGrailQuest
+
+  KnightOfTheRoundTable -right-> HolyGrailQuest #red
+
+  HolyGrailQuest .down.> HolyGrail #red
+
+  KnightOfTheRoundTable ..> HolyGrail #red
+
+}
+
+class KnightOfTheRoundTableTest { }
+
+KnightOfTheRoundTableTest ..> KnightOfTheRoundTable #red
+KnightOfTheRoundTableTest ..> HolyGrail #red
+
+@enduml
+```
+
+</details>
+
+</div>
+<div>
+
+#### Pegas:
+
+- El `KnightOfTheRoundTable` aún depende de un tipo específico de `Quest` (i.e. `HolyGrailQuest`) obtenido mediante `new`
+
+
+¿Debe ser el caballero responsable de obtener un desafío?
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+```java
+public class KnightOfTheRoundTable
+               implements Knight {
+  private String name;
+  private Quest quest;
+
+  public KnightOfTheRoundTable(String name) {
+    this.name = name;
+  }
+  public Object embarkOnQuest()
+          throws QuestFailedException {
+    return quest.embark();
+  }
+  public void setQuest(Quest quest) {
+    this.quest = quest;
+  }
+}
+```
+
+</div>
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpzKC5JLCopzc3h4ioAMjKTMwsS80oUMvOyUpNL8osMFfKLUlKLFAwNUKQz8nMq3YsSM3MCS1OLS6BqjAywGmEElTZGlc7OzMlxKUpMz89DNsMEVZGSlXdeZnpGiRJU2tSAiwvhNF07dIdYKeSllqMpQZhhpVCcWgJWqIGqTxOhxQikBd1taMYa4TQWTSPQXIfUvBRg6AIATWx8pg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+
+participant injector1 order 10
+participant holyGrailQuest order 20
+participant injector2 order 30
+participant killDragonQuest order 40
+participant ":Knight" order 50
+
+injector1 -> holyGrailQuest : new
+
+injector1 -> ":Knight" : setQuest(holyGrailQuest)
+
+injector2 -> killDragonQuest : new
+
+injector2 -> ":Knight" : setQuest(killDragonQuest)
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+- El caballero sólo sabe del desafío a través de su interfaz `Quest`.
+
+- Puede asignársele cualquier implementación de `Quest`
+ (`HolyGrailQuest`, `KillDragonQuest`, etc.)
+
+
+- Parece que no hay dependencia entre `KnightOfTheRoundTable` y `HolyGrail` porque `embark()` se ha definido como que devuelve un `Object`
+
+Ejercicio: Discutir el tipo de retorno `Object` de `embarkOnQuest`:
+
+- Puede provocar `ClassCastException`
+- Solución propuesta: rediseñar la interfaz `Quest`
+
+
+### Inversión de control
+
+Es la base de la inyección de dependencias
+
+> The question is: _what aspect of control are they inverting?_ [...] Early __user interfaces__ were controlled by the application program. You would have a sequence of commands like "Enter name", "enter address"; your program would drive the prompts and pick up a response to each one. With __graphical__ (or even screen based) UIs the UI framework would contain this main loop and your program instead provided event handlers for the various fields on the screen. The main control of the program was inverted, moved away from you to the framework.
+>
+> –– Martin Fowler, [IoC containers and the DI pattern](http://martinfowler.com/articles/injection.html) [1]
+
+[1] <http://martinfowler.com/articles/injection.html>
+
+
+#### IoC–Inversion of Control / DI–Dependency Injection
+
+- Una aplicación está compuesta por dos o más clases que colaboran.
+- Los objetos deben recibir las dependencias en su creación, por parte de una entidad externa o __contenedor__ que los coordina.
+- IoC = Inversión de la responsabilidad de cómo un objeto obtiene referencias a los objetos con los que colabora
+- Ventaja = __bajo acoplamiento__: un objeto sólo sabe de sus dependencias por su _interfaz_, no por su _implementación_, ni por cómo fueron instanciados.
+- Entonces la dependencia puede cambiarse por una implementación distinta (incluso en __tiempo de ejecución__)
+- _Hollywood Principle: Don't call us, we'll call you"._
+
+
+### Factorías
+
+Una factoría proporciona un mecanismo de inyección de dependencias, visto desde el lado opuesto (los clientes adquieren las dependencias, no se les inyecta)
+
+Ejemplo: [Spring FactoryBean](http://www.baeldung.com/spring-factorybean)
+
+
+## Discusión sobre la reutilización
+
+> We most likely would have been better off not attempting to create a reusable function in the first place
+>
+> –– Roger Sessions, [The Misuse of Reuse](http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html) [2]
+
+[2] <http://simplearchitectures.blogspot.com.es/2012/07/misuse-of-reuse.html>
+
+
+### Factorizar una función
+
+<div class="cols">
+<div>
+
+![](./img/misuse-reuse-1.png)
+
+</div>
+<div>
+
+![](./img/misuse-reuse-2.png)
+
+</div>
+</div>
+
+#### Ventajas (supuestas) de reutilizar
+
+__Ahorro__: Si $\exists$ $s$ sistemas $\wedge ~ coste(Function~1) = c$ $\Rightarrow$ ahorro = $c \times (s-1)$
+
+
+### Amenazas (reales) a la reutilización
+
+<div class="cols">
+<div>
+
+![](./img/misuse-reuse-3.png)
+
+</div>
+<div>
+
+- Realmente el ahorro depende de la __complejidad__ de la función, que suele estar relacionada exponencialmente con el número de sistemas.
+- Con un único punto de fallo, si $Function 1$ falla, todos los sistemas pueden fallar a la vez.
+- La seguridad es inversamente proporcional a la complejidad del sistema.
+
+</div>
+</div>
+
+
+### Conclusión sobre la reutilización
+
+- Aplicar el principio __YAGNI__ (_You Ain't Gonna Need It_)
+- No crear funciones reutilizables en primer lugar
+- No hacer sobreingeniería
+- Cuidado con las abstracciones prematuras
+- Comprobar el acoplamiento semántico entre sistemas
+- No aplicar patrones de diseño antes de tiempo
+- Aplicar YAGNI es un pedir un _préstamo_ (asumir una deuda técnica conscientemente)
+
+**Acoplamiento semántico**: A veces, dos componentes parecen idénticos, pero cambian por razones de negocio diferentes. Si los unificas para reutilizar, creas un acoplamiento semántico. En fases iniciales, es más barato duplicar que crear una mala abstracción, porque el código duplicado es fácil de borrar o cambiar independientemente, mientras que una abstracción incorrecta ata de manos a todo el sistema
+<!-- Source: principios.md -->
+# PRINCIPIOS DE DISEÑO
+
+## ORIENTADO A OBJETOS
+
+
+## Principios SOLID
+
+Los principios SOLID de [Uncle Bob Martin](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) nos dicen:
+
+- Cómo organizar en __módulos__ (en OO, __clases__) las estructuras de datos y las funciones
+- Cómo deben quedar _interconectadas_ las clases (vía __dependencias__)
+
+El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
+
+- _flexibles_: tolerantes a los cambios
+- _poco complejas_: fáciles de comprender
+- _reutilizables_: la base de componentes útiles para muchos sistemas software
+
+En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
+
+
+## SRP: *Single Responsibility Principle*
+
+
+### Principio de responsabilidad única
+
+> A class should have only one reason to change
+> –– Bob Martin
+
+- Una clase que modela múltiples aspectos genera acoplamiento entre los distintos aspectos
+- Un cambio en algún aspecto obligará a cambios accidentales en los clientes que no dependen de dicho aspecto
+
+SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html#demarco)
+
+
+SRP es aplicación directa de la [ley de Conway](http://www.melconway.com/Home/Conways_Law.html):
+> Any organization that designs a system (...) will produce a design whose structure is a copy of the organization's communication structure.
+> –– M. Conway, _Datamation_, April 1968
+
+- Cuando se diseña software, hace falta conocer los grupos/equipos/roles a los que éste sirve, y dividir el sistema en componentes separados, de forma similar a como estos grupos de personas se comunican normalmente en la vida real.
+
+- Es necesario tener conocimiento del __dominio__ para poder dividir bien las responsabilidades
+
+- Tiene que ver con la __variabilidad__ de los requisitos
+
+>[!NOTE]
+> Los módulos enmarañados que nunca cambian no son problemáticos
+
+
+## CASO PRÁCTICO 4
+
+### Figuras geométricas
+
+
+### Ejemplo: Shapes versión 1 en Java
+
+<div class="cols">
+<div>
+
+```java
+package shapes;
+
+interface Shape {
+  double area();
+  void draw();
+}
+
+class Point {
+  double getX() {...}
+  double getY() {...}
+}
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Triangle extends Polygon {
+  double area() {...}
+}
+abstract class RectParallelogram extends Polygon {
+  double area() {...}
+}
+```
+
+</div>
+<div>
+
+```java
+class Square extends RectParallelogram {...}
+
+class Rectangle extends RectParallelogram {...}
+
+abstract class ClosedCurve implements Shape {...}
+
+class Circle extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Ellipse extends ClosedCurve {
+  double getApogeeRadius() {...}
+  double getPerigeeRadius() {...}
+  Point getFocus1() {...}
+  Point getFocus2() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+```
+
+</div>
+</div>
+
+
+#### Preguntas
+
+- ¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`?
+- ¿Cuáles son estas responsabilidades?
+- ¿Qué parte no cumple SRP en el ejemplo?
+
+
+#### Respuestas
+
+- Dos responsabilidades: geometría computacional + dibujo en pantalla
+- Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
+
+#### Solución
+
+Patrón de diseño __Visitor__
+
+
+### Ejercicio
+
+- Buscar información de los patrones _ActiveRecord_ y _Data Access Object (DAO)_.
+- Discutir si cumplen o violan el SRP.
+
+<details>
+<summary>ActiveRecord y SRP</summary>
+En general, ActiveRecord tiene la responsabilidad de modelar los datos en la base de datos, proporcionar una interfaz para acceder y manipular esos datos, y también puede incluir la lógica de negocio necesaria para trabajar con los datos.
+
+Desde una perspectiva del principio de responsabilidad única (SRP), ActiveRecord no cumple completamente con este principio porque tiene varias responsabilidades. Específicamente, ActiveRecord tiene la responsabilidad de:
+- Representar y manipular datos en la base de datos
+- Proporcionar una interfaz para acceder y manipular esos datos
+- Incluir la lógica de negocio necesaria para trabajar con los datos
+
+Sin embargo, a menudo se considera que ActiveRecord sigue una variante del principio de responsabilidad única, llamada "Principio de responsabilidad única de dominio" (Single Responsibility Principle of Domain, en inglés), que establece que una clase debe tener una única responsabilidad dentro del dominio de la aplicación. En este sentido, ActiveRecord tiene la responsabilidad de modelar los datos dentro del dominio de la aplicación.
+
+El patrón Data Access Object (DAO) es un patrón de diseño de software que se utiliza comúnmente en el desarrollo de aplicaciones para separar la lógica de negocio de la lógica de acceso a datos.
+
+El objetivo principal del patrón DAO es proporcionar una interfaz unificada para acceder a los datos desde una variedad de fuentes de datos, como una base de datos, un archivo o un servicio web, entre otros. La clase DAO encapsula la lógica de acceso a datos y proporciona métodos para realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) en la fuente de datos correspondiente.
+
+Desde una perspectiva del principio de responsabilidad única (SRP), el patrón DAO cumple con este principio. Esto se debe a que la clase DAO tiene una única responsabilidad, que es la de encapsular la lógica de acceso a datos y proporcionar una interfaz unificada para acceder a los datos. La lógica de negocio se encuentra en otra clase o conjunto de clases, lo que permite separar las responsabilidades y facilita la reutilización del código.
+</details>
+
+
+### Ejemplo en C++: Circle (version original)
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) : radius { rad }, //... remaining data members
+    {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+    void draw ( Screen& s, /*...*/ );
+    void draw ( Printer& p, /*...*/ );
+    void serialize ( ByteStream& bs, /*...*/ );
+    //...
+
+  private:
+    double radius;
+    ///... remaining data members
+}
+```
+
+
+### Ejemplo en C++: Circle (refactor SRP 1)
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) :
+         radius { rad },
+         //... remaining data members
+    {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+```
+
+</div>
+<div>
+
+```cpp
+class CircleRenderer
+{
+  public:
+    virtual ~CircleRenderer() = default;
+    virtual void draw ( Circle const&, Screen& s,
+                        /*...*/ ) = 0;
+    virtual void draw ( Circle const&, Printer& p,
+                        /*...*/ ) = 0;
+};
+
+class CircleSerializer
+{
+  public:
+    void serialize ( Circle const&, ByteStream& bs,
+                     /*...*/ ) const;
+};
+```
+
+</div>
+</div>
+
+>[!NOTE]
+> El refactor 1 separa responsabilidades en clases (estrategias/servicios),
+lo que facilita sustituir implementaciones y testear.
+Pero no es una implementación típica en C++.
+El código parece hecho por un programador de Java.
+
+
+### Ejemplo en C++: Circle (refactor SRP 2)
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) : radius { rad }, /* ...*/ {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+
+// Same namespace as Circle
+void draw ( Circle const&, Screen& s, /*...*/ );
+void draw ( Circle const&, Printer& p, /*...*/ );
+void serialize ( Circle const&, ByteStream& bs, /*...*/ );
+//...
+```
+
+>[!NOTE]
+>El refactor 2 usa funciones libres en el mismo namespace: reduce acoplamiento sin inflar la interfaz de la clase, pero requiere coordinar puntos de extension fuera de
+la clase.
+
+
+## OCP: *Open-Closed Principle*
+
+
+### Principio de Abierto-Cerrado
+
+> Toda clase, módulo, aspecto o función debe quedar abierto para extensiones pero cerrado para modificaciones
+>
+> ––B. Meyer, [Object Oriented Software Construction](#meyer)
+
+Para que un sistema software sea fácil de cambiar, debe diseñarse para que permita cambiar su comportamiento añadiendo código, no cambiando código existente.
+
+- Si un cambio en un sitio origina una cascada de cambios en otros puntos del sistema, el resultado es un sistema frágil y rígido
+- Es difícil averiguar todos los puntos que requieren cambios
+- OCP mediante delegación en vertical (subclases) u horizontal (composición)
+
+
+### Ejemplo: Shapes versión 2 en C++
+
+¿Qué parte no cumple OCP en el ejemplo?
+
+
+#### Versión sin objetos
+
+<div class="cols">
+<div>
+
+```cpp
+enum ShapeType {circle, square};
+struct Shape
+{
+  ShapeType itsType;
+};
+
+struct Circle
+{
+  ShapeType itsType;
+  double itsRadius;
+  Point itsCenter;
+};
+void DrawCircle(struct Circle*);
+
+struct Square
+{
+  ShapeType itsType;
+  double itsSide;
+  Point itsTopLeft;
+};
+```
+
+</div>
+<div>
+
+```cpp
+void DrawSquare(struct Square*);
+
+typedef struct Shape *ShapePointer;
+
+void DrawAllShapes(ShapePointer list[], int n)
+{
+  int i;
+  for (i=0; i<n; i++)
+  {
+    struct Shape* s = list[i];
+    switch (s->itsType)
+    {
+      case square:
+        DrawSquare((struct Square*)s);
+        break;
+      case circle:
+        DrawCircle((struct Circle*)s);
+        break;
+    }
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### Problema:
+
+- `DrawAllShapes` no está cerrado para modificaciones cuando aparecen nuevos tipos de `Shape`
+
+#### Solución
+
+- __Abstracción__ (ocultación de la implementación): clase abstracta y métodos polimórficos.
+- __Patrones de diseño__: _template method_ y/o _strategy_
+
+
+__Aplicando el OCP...__
+
+<div class="cols">
+<div>
+
+```csharp
+public interface Shape
+{
+  void Draw();
+}
+
+public class Square: Shape
+{
+  public void Draw()
+  {
+    //draw a square
+  }
+}
+
+public class Circle: Shape
+{
+  public void Draw()
+  {
+    //draw a circle
+  }
+}
+```
+
+</div>
+<div>
+
+```csharp
+public void DrawAllShapes(IList shapes)
+{
+  foreach(Shape shape in shapes)
+    shape.Draw();
+}
+```
+
+- Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
+- Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
+
+</div>
+</div>
+
+
+### Ejercicio: Shapes and Circles
+
+<div class="cols">
+<div>
+
+Arreglar para que cumpla OCP
+
+</div>
+<div>
+
+```cpp
+enum ShapeType
+{
+  circle,
+  square,
+  rectangle
+};
+
+class Shape
+{
+  public:
+    explicit Shape ( ShapeType t )
+      : type { t }
+    {}
+    virtual ~Shape() = default;
+    ShapeType getType() const noexcept;
+
+  private:
+    ShapeType type;
+};
+```
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle: public Shape
+{
+  public:
+    explicit Circle ( double rad )
+      : Shape{ circle }
+      , radius { rad }
+      , //... remaining data members
+    {}
+
+    virtual ~Circle() = default;
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+
+void translate ( Circle&, Vector3D const& );
+void rotate ( Circle&, Quaternion const& ) ;
+void draw ( Circle const& );
+```
+
+</div>
+<div>
+
+```cpp
+class Square: public Shape
+{
+  public:
+    explicit Square ( double s )
+      : Shape{ square }
+      , side { s }
+      , // ... remaining data members
+    {}
+
+    virtual ~Square() = default;
+    double getSide() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+  private:
+    double side;
+    // ... remaining data members
+};
+
+void translate ( Square&, Vector3D const& );
+void rotate ( Square&, Quaternion const& ) ;
+void draw ( Square const& );
+```
+
+</div>
+</div>
+
+
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+    switch ( s-> getType() )
+    {
+      case circle:
+        draw ( *static_cast<Circle const*>( s.get() ) );
+        break;
+      case square:
+        draw ( *static_cast<Square const*>( s.get() ) );
+        break;
+      case rectangle:
+        draw ( *static_cast<Rectangle const*>( s.get() ) );
+        break;
+    }
+  }
+}
+```
+
+
+```cpp
+int main()
+{
+  using Shapes = std::vector<std::unique_ptr<Shape>>;
+  // Creating some shapes
+  Shapes shapes;
+  shapes.push_back (std::make:unique<Circle>( 2.0 ));
+  shapes.push_back (std::make:unique<Square>( 1.5 ));
+  shapes.push_back (std::make:unique<Circle>( 4.2 ));
+  // Drawing all shapes
+  draw ( shapes );
+}
+```
+
+
+### Cierre estratégico
+
+> In general, no matter how _closed_ a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
+>
+> Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
+>
+> –– Bob C. Martin
+
+### Implicaciones arquitectónicas
+
+OCP es un principio más arquitectónico que de diseño de clases y módulos.
+
+
+### Solución al ejercicio: Shapes and Circles
+
+Versión en C++ que cumple el OCP y SRP
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle : public Shape
+{
+  public:
+    explicit Circle (double rad )
+      : radius { rad }
+      , //... remaining data members
+    {}
+
+    virtual ~Circle() = default;
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double radius;
+    ///... remaining data members
+}
+```
+
+</div>
+<div>
+
+```cpp
+class Square : public Shape
+{
+  public:
+    explicit Square (double s )
+      : side { s }
+      , //... remaining data members
+    {}
+
+    virtual ~Square() = default;
+
+    double getSide() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double side;
+    ///... remaining data members
+}
+```
+
+</div>
+</div>
+
+
+```cpp
+class Shape
+{
+  public:
+    Shape() = default;
+    virtual ~Shape() = default;
+
+    virtual void translate ( Vector3D const& ) = 0;
+    virtual void rotate ( Quaternion const& ) = 0;
+    virtual void draw() const = 0; // check!
+};
+```
+
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+      s->draw();
+  }
+}
+```
+
+
+## ISP: *Interface Segregation Principle*
+
+
+### Principo de segregación de interfaces
+
+> Los clientes no deben depender de métodos que no usan.
+>
+> Bob C. Martin
+
+- Las interfaces son para los __clientes__, no para hacer jerarquías
+- Evitar interfaces __gruesas__ con muchos métodos (descohesionadas)
+- Los cambios en los métodos ignorados pueden provocar cambios en un cliente que no los usa
+
+
+- La interfaz de una clase puede dividirse en __bloques__ de métodos relacionados. Unos clientes usan un bloque y otros clientes usan otro bloque. Si un cliente necesita conocer una interfaz no cohesionada, debe hacerlo combinando una o más clases (o mejor, sus interfaces)
+- ISP es a las interfaces lo que SRP es a clases y métodos
+- Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos (Ruby, Scala) ayudan algo más a no violar el ISP (v.g. con los _mixins_)
+
+>[!NOTE]
+>En los lenguajes de tipos estáticos, los tipos deben ser declarados y especificados en tiempo de compilación. Esto significa que las interfaces deben ser definidas de antemano, antes de que se implementen las clases que las utilizan. En algunas ocasiones, esto puede llevar a la definición de interfaces grandes y complejas que contienen muchos métodos que no son necesarios para todos los clientes que utilizan la interfaz.
+
+En cambio, en los lenguajes de tipos dinámicos, las interfaces pueden ser definidas en tiempo de ejecución. Esto permite que las interfaces sean más pequeñas y específicas para cada cliente, ya que solo contienen los métodos necesarios para cada caso de uso particular.
+
+
+### Ejemplo: puertas de seguridad
+
+<div class="cols">
+<div>
+
+Una implementación de puertas de seguridad con temporizador `TimedDoor` que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
+
+</div>
+<div>
+
+#### Diseño:
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpVjzEOwjAMRXefwmORaI6AKsERuECUGmQpTZDjTMDd6yQMdLP--36yl6JetG4RQvSl4J03EnwDotCTi5JMnBTV4lz1PPg1MlkYIp_gC8ZJHj7QATbFb2tqraG_5Tzs-UXJcjRJLtQbnbnqPpd_EbR57Wyus7E2wjjTiTt2F0qr_bIDg3FHxg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Timer {
+  register(int timeout, TimerClient cli)
+}
+interface TimerClient {
+  timeout()
+}
+class Door {
+  open()
+  close()
+}
+Door .u.|> TimerClient
+TimedDoor -u-|> Door
+Timer .r.> TimerClient
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+- `TimedDoor` se comunica con `Timer` para registrar un temporizador
+- Cuando salta el temporizador, avisa a un `TimerClient`
+- Con la solución diseñada, un `TimerClient` puede registrarse a sí mismo en un `Timer` y recibir de éste un mensaje mediante `timeout()`.
+
+</div>
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpzKC5JLCopzc3h0tW1UwjJzE1NccnPL1KwUsgvSM3T0ORCCMEUgCSLUtMzi0tSizRKDHQUSjIyizUx9Cfn5BenQg1AaIbJlgDZ-aUlQPmU1OKSovxKhCyXQ2peCtBFADI7MrU)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+--> TimedDoor : open()
+TimedDoor --> Timer : register(t0, this)
+--> TimedDoor : close()
+Timer --> TimedDoor : timeout()
+destroy TimedDoor
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+#### Implementación inicial
+
+```csharp
+public class Timer {
+  public void register(int timeout, TimerClient client) {
+    /*code*/
+  }
+}
+
+public interface TimerClient {
+    void timeout();
+}
+```
+
+- Si se cierra la puerta antes de que venza el timeout $t_0$ y se vuelve a abrir, se registra uno nuevo $t_1$ antes de que el antiguo haya expirado.
+- Cuando el primer temporizador $t_0$ expira, se produce la llamada a `timeout()` de `TimedDoor` y no debería.
+- Así que cambiamos la implementación:
+
+
+#### Implementación mejorada
+
+```csharp
+public class Timer {
+  public void register(int timeout, int timeOutId, TimerClient client) {
+    /*code*/
+  }
+}
+public interface TimerClient {
+  void timeout(int timeOutID);
+}
+```
+
+¿En qué ha afectado el __cambio en la implementación__ de `TimerClient`?
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpzKC5JLCopzc3h0tW1UwjJzE1NccnPL1KwUsgvSM3T0OTiQojBVIBki1LTM4tLUos0Sgx1FDJTdBRKMjKLNTEMSc7JL04FmgLRhi5bAmTnl5ZoZKZocjmk5qUAnQEA7DMt6w)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+--> TimedDoor : open()
+
+TimedDoor --> Timer : register(t1, id, this)
+--> TimedDoor : close()
+Timer --> TimedDoor : timeout(id)
+@enduml
+```
+
+</details>
+
+
+- El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)
+- El problema es que `Door` depende de `TimerClient` y no todas las variedades de puerta son de seguridad (con temporizador)
+- Si hacen falta más variedades de puerta, todas ellas deberán implementar implementaciones degeneradas de `timeout()`
+- Las interfaces empiezan a engrosarse. Esto puede acabar violando también el LSP
+
+
+#### Rediseño: puertas de seguridad
+
+__Delegación__ a través del patrón adapter
+
+<div class="cols">
+<div>
+
+- Adaptador de clases (herencia):
+
+   ![](./img/isp-timer-door-class-adapter.png)
+
+</div>
+<div>
+
+- Adaptador de objetos (composición):
+
+  ![](./img/isp-timer-door-object-adapter.png)
+
+</div>
+</div>
+
+
+### Example: Shapes and Circles (1 de 2)
+
+```cpp
+class Circle;
+class Square;
+
+class DrawStrategy
+{
+  public:
+    virtual ~DrawStrategy() {}
+
+    virtual void draw ( const Circle& circle ) const = 0;
+    virtual void draw ( const Square& square ) const = 0;
+};
+
+class Shape
+{
+  public:
+    Shape() = default;
+    virtual ~Shape() = default;
+
+    virtual void translate ( Vector3D const& ) = 0;
+    virtual void rotate ( Quaternion const& ) = 0;
+    virtual void draw() const = 0;
+};
+```
+
+
+### Example: Shapes and Circles (2 de 2)
+
+```cpp
+class Circle : public Shape
+{
+  public:
+    explicit Circle ( double rad, std::unique_ptr<DrawStrategy> ds )
+      : radius { rad }
+      , //... remaining data members
+      , drawing { std::move(ds) }
+    {}
+
+    virtual ~Circle() = default;
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double radius;
+    ///... remaining data members
+    std::unique_ptr<DrawStrategy> drawing;
+};
+
+class Square: public Shape
+{
+  //...
+}
+```
+
+
+## Aplicación de OCP y SRP
+
+### Ejemplo: Shapes versión 1 en Java (misma versión que en SRP)
+
+<div class="cols">
+<div>
+
+```java
+interface Shape {
+  double area();
+  void draw();
+}
+
+class Point {
+  double getX() {...}
+  double getY() {...}
+}
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Triangle extends Polygon {
+  double area() {...}
+}
+
+abstract class RectParallelogram extends Polygon {
+  double area() {...}
+}
+```
+
+</div>
+<div>
+
+```java
+class Square extends RectParallelogram {...}
+class Rectangle extends RectParallelogram {...}
+
+abstract class ClosedCurve implements Shape {...}
+
+class Circle extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Ellipse extends ClosedCurve {
+  double getApogeeRadius() {...}
+  double getPerigeeRadius() {...}
+  Point getFocus1() {...}
+  Point getFocus2() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+```
+
+</div>
+</div>
+
+
+- Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP.
+- Saquémoslas fuera utilizando **aspectos**...
+
+
+### Orientación a aspectos
+
+La __orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es incrementar la modularidad (__ortogonalidad__) de los componentes mediante la separación de aspectos __transversales__ (_cross-cutting concerns_).
+
+![terminología sobre AOP](./img/aspectj-terminology.png)
+
+
+#### Terminología:
+
+- __aspect__ = modularización de un aspecto de interés (_concern_) que afecta a varias clases o módulos
+- __joinpoint__ = especificación declarativa de un punto en la ejecución de un programa (por ejemplo, la ejecución de un método, el manejo de una excepción, etc.)
+- __advice__ = acción a tomar por la especificación de un aspecto dado en un determinado _joinpoint_
+- __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
+
+
+### Ejemplo: Shapes versión 2 (misma versión que en OCP), pero con aspectos
+
+```aspectj
+// Ficheros <X>ToString.aj (uno por aspecto)
+package shapes.tostring; // para todos los toString()
+aspect PolygonToString {
+  String Polygon.toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append(getClass().getName());
+     //... añadir nombre y área...
+     //... añadir cada línea desde un vértice al siguiente
+    return buff.toString();
+  }
+}
+aspect CircleToString {
+  String Circle.toString() {...}
+}
+aspect EllipseToString {
+  String Ellipse.toString() {...}
+}
+
+// Drawable.java
+package drawing;
+interface Drawable {
+  void draw();
+}
+```
+
+
+```aspectj
+// Ficheros Drawable<X>.aj
+package shapes.drawing; // para todos los draw()...
+import drawing.Drawable;
+abstract aspect DrawableShape {
+  declare parents: Shape implements Drawable;
+  void Shape.draw () //template method
+  {
+    String drawCommand = makeDrawCommand();
+    // enviar orden al motor gráfico...
+  }
+  String Shape.makeDrawCommand() {
+    return getClass().getName() + "\n" + makeDetails("\t");
+  }
+  abstract String Shape.makeDetails (String indent);
+}
+aspect DrawablePolygon extends DrawableShape {
+  String Polygon.makeDetails (String indent){...}
+}
+aspect DrawableCircle extends DrawableShape {
+  String Circle.makeDetails (String indent){...}
+}
+aspect DrawableEllipse extends DrawableShape {
+  String Ellipse.makeDetails (String indent){...} }
+```
+
+
+## **LSP**: *Liskov Substitution Principle*
+
+
+### Principio de sustitución de Liskov
+
+> Un subtipo debe poder ser sustituible por sus tipos base
+>
+> ––Barbara Liskov,
+
+Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$, las instancias de $D$ no deben alterar el comportamiento definido por $B$ de modo que $f$ deje de funcionar
+
+
+### Ejemplo: Shapes versión 3
+
+<div class="cols">
+<div>
+
+```csharp
+struct Point {double x, y;}
+public enum ShapeType {square, circle};
+
+public class Shape {
+  private ShapeType type;
+  public Shape(ShapeType t){type = t;}
+  public static void DrawShape(Shape s) {
+    if(s.type == ShapeType.square)
+      (s as Square).Draw();
+    else if(s.type == ShapeType.circle)
+      (s as Circle).Draw();
+  }
+}
+```
+
+</div>
+<div>
+
+```csharp
+public class Circle: Shape {
+  private Point center;
+  private double radius;
+
+  public Circle(): base(ShapeType.circle) {}
+  public void Draw() {/* draws the circle */}
+}
+
+public class Square: Shape {
+  private Point topLeft;
+  private double side;
+  public Square(): base(ShapeType.square) {}
+  public void Draw() {/* draws the square */}
+}
+```
+
+</div>
+</div>
+
+
+#### Problemas:
+
+- `DrawShape` viola claramente el OCP
+- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
+- Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
+
+A continuación, una violación más sutil del LSP...
+
+
+### Ejemplo: Rectángulos versión 1
+
+De momento solo necesitamos rectángulos y escribimos esta versión:
+
+<div class="cols">
+<div>
+
+```csharp
+public class Rectangle {
+  private Point topLeft;
+  private double width;
+  private double height;
+
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
+
+  public double Width {
+    get { return width; }
+    set { width = value; }
+  }
+
+  public double Height {
+    get { return height; }
+    set { height = value; }
+  }
+}
+```
+
+</div>
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNpNj7EOwjAMRHd_hUcQqB_QAVVCSMwszG7qtpHcpCTOhPh3khKpbKez7_ncRaWgaREwQjHig42Sm4TxDYinpx10xhYHn3rh4tzZTrPu1gdq8iqWnf5i4yG0O-pYluq4CSXeXP4OtZgiATivjMKjoh8rLKNugmbTjDGt3jG-UulB2aeltxRw63jOXq22cljIsWG0UyJpgN2AhQ5dVvnVLwOLUDQ)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Client {
+  +f(r: Rectangle)
+}
+
+Client .right.> Rectangle : usa
+
+note left of Client
+  El cliente supone que
+  al cambiar Width,
+  Height permanece igual.
+end note
+@enduml
+```
+
+</details>
+
+Pero un día hace falta manejar cuadrados además de rectángulos. Geométricamente, un cuadrado es un rectángulo, así que utilizamos una relación __es-un__:
+
+```java
+public class Square: Rectangle {
+   ...
+}
+```
+
+</div>
+</div>
+
+
+#### Problema: cuadrados como rectángulos
+
+- Un cuadrado podría ser matemáticamente un rectángulo, pero definitivamente un objeto `Square` **no es un** objeto `Rectangle`
+
+- Un `Square` no tiene propiedades `height`y `width`. Pero supongamos que no nos importa el desperdicio de memoria.
+- `Square` heredará los métodos accesores de `Rectangle`.
+- Así que hacemos lo siguiente...
+
+
+### Ejemplo: rectángulos versión 2
+
+<div class="cols">
+<div>
+
+```csharp
+public class Square: Rectangle {
+  public new double Width
+  {
+    set {
+      base.Width = value;
+      base.Height = value;
+    }
+  }
+  public new double Height
+  {
+    set {
+      base.Height = value;
+      base.Width = value;
+    }
+  }
+}
+```
+
+Ver [`new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
+
+</div>
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptkT1uAyEQhXtOMWWsyHsAy15ZSpMilVOkHsPsGoll1jAkUn5OlS6tLxbIIpPCHXpv5nsP2EfBIGlySjuMEQ6kBf3oCD4UwP2LNXKCDRhOR0dFeSQ7nqRJX6puPp8ThptrsN16euv7G-tX64p5cJa8LJjhLmxao1UZqinrNK8_--aputaFgu_-OTkqY1ZKeRaCPxt4qG1zSAXy0dkRAeGcirpcYLeDpa8ib6AAKkZ4LpAlNI8PYP0ra4RI4-XHg8MsCIUB38FQK9Pl2ScE1skJanv59qDZQ36CMh_YJF3SNU8zB8Gp4DlbFGcKaLhrRfb5lL_tFzIBlUg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Square {
+  +Width : double <<new>>
+  +Height : double <<new>>
+}
+
+class Client {
+  +f(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+Client .right.> Rectangle : f(r)
+
+note right of Square
+  Square obliga a que
+  Width == Height
+end note
+
+note top of Client
+  f invoca según la interfaz de Rectangle.
+  La ocultación con new introduce
+  comportamiento inesperado.
+end note
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+- El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
+
+  ```csharp
+  Square s = new Square();
+  s.Width = 1;   // fija ambos
+  s.Height = 2;  // fija ambos
+
+  void f(Rectangle r)
+  {
+    r.Width = 3; // calls Rectangle.SetWidth
+  }
+  ```
+
+- ¿Qué sucede si pasamos un `Square` a la función `f`?
+
+  ¡No cambia `Height`!
+
+- Podría argumentarse que el error era que los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`.
+
+
+### Ejemplo: rectángulos versión 3
+
+<div class="cols">
+<div>
+
+```csharp
+public class Rectangle
+{
+  private Point topLeft;
+  private double width;
+  private double height;
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
+  public virtual double Width
+  {
+    get { return width; }
+    set { width = value; }
+  }
+  public virtual double Height
+  {
+    get { return height; }
+    set { height = value; }
+  }
+}
+```
+
+</div>
+<div>
+
+```csharp
+public class Square: Rectangle
+{
+  public override double Width
+  {
+    set {
+      base.Width = value;
+      base.Height = value;
+    }
+  }
+  public override double Height
+  {
+    set {
+      base.Height = value;
+      base.Width = value;
+    }
+  }
+}
+```
+
+</div>
+</div>
+
+Ver [redefinción con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
+
+
+<div class="cols">
+<div>
+
+#### Incumplimiento del contrato
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp1kU1OwzAQhfc-xSwTQbMqm6qNKiEklhUsWBv7JbFk7NQ_RQg4FUfgYtiNRYJEd6P3Zr43o9n7wF2IL5oJzb2nB4jATa9B74zo6knJMNCGpI3PSdtuTyp1c9222b2H6ofwv_3JCvHxGLm7hLMnOKckLvEW_i_wViuYMAH7ym3mnevcVPJWcVx9tLPHyljjckazcFJeXxm8zkp1c72ua8aMDaBgR7LdAkR0p0mcaSD4EY7TMWZ9Ou-Nyh0e3CRVGYkRRp4HfMNSSZlc-BpdyAHT3qn_AGdJc3KQ6JRRQn1_GRq4wJ-Y3a7kzMB9qtIrfwBCUJqR)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Rectangle {
+  +Width : double <<virtual>>
+  +Height : double <<virtual>>
+}
+
+class Square {
+  +Width : double <<override>>
+  +Height : double <<override>>
+}
+
+class Client {
+  +g(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+Client .right.> Rectangle : g(new Rectangle(5,4))
+
+note top of Rectangle
+  El cliente espera que
+  Width y Height sean
+  independientes.
+end note
+
+note left of Square
+  Pero la redefinición hace que
+  Width == Height
+end note
+@enduml
+```
+
+</details>
+
+</div>
+<div>
+
+#### Extensión y ocultación de métodos
+
+- Diferencia entre `new` y `override`: `new` oculta la implementación de la clase base y `override` la redefine.
+
+- Cuando una clase derivada realiza cambios en la clase base, es síntoma de un __mal diseño__.
+
+El LSP evidencia que la relación __es-un__ tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
+
+</div>
+</div>
+
+>[!NOTE]
+>No sólo es arriesgada la extensión (es-como-un) de los métodos de una clase, también lo es su redefinición (es-un). En el ejemplo, `Square` redefine el comportamiento de `Rectangle` de forma que los clientes de `Rectangle` dejan de funcionar correctamente.
+
+
+Ahora parece que funcionan `Square` y `Rectangle`, que matemáticamente quedan bien definidos.
+
+Pero consideremos esto:
+
+```csharp
+void g(Rectangle r)
+{
+  r.Width = 5;    // cree que es un Rectangle
+  r.Height = 4;   // cree que es un Rectangle
+  if(r.Area() != 20)
+    throw new Exception("Bad area!");
+}
+```
+
+
+<div class="cols">
+<div>
+
+Pero si llamamos a...
+
+```csharp
+g(new Square())
+```
+
+... el autor de `g` asume que cambiar el ancho de un rectángulo deja intacto el alto.
+
+Si pasamos un cuadrado esto no es así.
+
+__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`), de forma que `g` deja de funcionar correctamente.
+
+</div>
+<div>
+
+#### Secuencia del fallo
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkLuuwkAMRPv9irmpEgkKJKCIxBUPodDQkILaSkxYFDZhcQSfjwMRD1FRWfbMHK93ehby0hxLU2u1ma3JCRalZScfo2DDmZArSl6Ts3VTklQ-AJ2RfPrSU0Oe70pqzIOE_j8SxChCxxc8HGEUmaQVUhW2Npc9JhgZVwnD22IvqHZKQGcHHRp9a6yDp7mHFd-dbZBdjjb8gj7F4S_UYe89-E2deaYwMin63VGDcStq090aY3nNuBZbuTCYUw7dQ39BZKYK05--AYSKcSI)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+participant Client
+participant "RectangleManipulator" as G
+participant "Square" as S
+
+Client -> G : g(new Square())
+G -> S : Width = 5
+note right of S
+  Square ajusta:
+  Width = 5, Height = 5
+end note
+G -> S : Height = 4
+note right of S
+  Square ajusta:
+  Width = 4, Height = 4
+end note
+G -> S : Area()
+S --> G : 16
+G --> Client : Exception("Bad area!")
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+¿Quién tiene la culpa?
+
+- ¿El autor de `g` por asumir que "en un rectángulo su ancho y alto son independientes" (_invariante_)?
+- ¿El autor de `Square` por violar el invariante?
+- ¿De qué clase se ha violado el invariante? ¡De `Rectangle` y no de `Square`!
+
+Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución por sí sola, sino en términos de los _supuestos razonables_ que hagan los usuarios del diseño.
+
+
+### Ejercicios de LSP
+
+- Robert C. Martin & Micah Martin: [Agile Principles, Patterns and Practices in C#](#unclebob), Prentice Hall, 2006
+- Ejemplo de violación de LSP en [frameworks de videojuegos](https://medium.com/ingeniouslysimple/entities-components-and-systems-89c31464240d): Las interfaces HasPhysics, Collidable, Controllable incluyen una dependencia (por herencia) hacia Renderable, que no siempre es cierta (por ejemplo, para un objeto invisible). Solución: arquitectura Entity-Component-System.
+
+
+### Diseño por Contrato
+
+Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand Meyer*:
+
+> A routine redeclaration [in a derivative] may only replace the original precondition by one equal or weaker, and the original post-condition by one equal or stronger
+>
+> –– ––B. Meyer
+
+- Métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada
+  - las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas
+  - las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas
+
+
+#### Ejemplo: rectángulos
+
+- Postcondición del _setter_ de `Rectangle.Width`
+  (En C++ sería `Rectangle::SetWidth(double w)`):
+    `assert((Width == w) && (Height == old.Height));`
+
+- Postcondición del setter de `Square.Witdh`
+  (En C++ sería `Square::SetWidth(double w)`):
+    `assert(Width==w);`
+
+- La postcondición de `Square::SetWidth(double w)` viola el  contrato de la clase base porque es más débil que la de `Rectangle`
+
+
+## DIP: *Dependency Inversion Principle*
+
+
+### Principio de Inversión de Dependencias
+
+- Los módulos de alto nivel no deben depender de módulos de bajo nivel.
+Ambos deben depender de abstracciones.
+
+- Las abstracciones no deben depender de los detalles, sino los detalles de las abstracciones
+
+> Depend on abstractions
+>
+> –– Robert C. Martin
+
+
+### Ejemplo: estructura en capas
+
+<div class="cols">
+<div>
+
+__Diseño inicial__:
+
+ ![estructura en capas](./img/dip-1.png)
+
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNplkUFOwzAQRfc-xagbVuUIqALEqhGRUA4wcibOqM442A4oQhyGM3CEXoxJ0lah9cLS-L8__0vepYwxD5036cDSY8QOPAvlsScIMbdhJaQW6_DJ4qBBn8i0XBM0TL5OK6pHe0BHb3n0BJFsRnGejLmDVzt4jQMfEtggmYTqECmBrpneenwfKOv8wWlA35Eit4vhy4CeF13wFHyIkCNKUkTxWXlUzsUwSH2rf089nqlhYcvHX5mjUetgP92hC3Pl44-4QSuZc-amDJ7tCHscKW5A2XJ_KmLVn87AIk0xF2dBtkXh1K3MxZX5wizqP3-V2XNeR1dX7hOxaJO3hG1k1-bt_YMuK1ZTZcyOpNYP_wOfi6xg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+hide fields
+skinparam packageStyle rectangle
+
+' Ocultar los contenedores de los paquetes visualmente
+skinparam package {
+    FontColor transparent
+    BackgroundColor transparent
+}
+
+' Definición de las capas como rectángulos
+package "Policy Layer" as PL {
+    class "Policy" as P
+}
+
+package "Mechanism Layer" as ML {
+    class "Mechanism" as M
+}
+
+package "Utility Layer" as UL {
+    class "Utility" as U
+}
+
+P -right-.> M
+M -right-.> U
+
+@enduml
+```
+
+</details>
+
+- Las dependencias son transitivas
+- _Policy_ depende de todo lo que depende _Mechanism_.
+
+</div>
+<div>
+
+__Diseño invertido__:
+
+ ![capas invertidas](./img/dip-2.png)
+
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9kUFuwyAQRfecYuRNV-4RqhygSFYiH2CEx2YUDIghiay0d69NUzuN0rLk__fnD-wkY8qn0Sk5so-YcASx2IUL-wF6dEJ3imNPeYoEIWUblOWOoGdynSgV0RxxIKia4NhM8I4TpQquCuZjHIr8SBWgQFPu2WdKPZoNO1A6s6EKiumgPu-SNRmLnmV8Gr6qJV8_5m_wOmKx_Z7QZnacn5e_aQVrF-oF9uTQcPAkML-EQzAYEb43UQ3UiQeb67dljz_day-loT7F-vWj-PVG63_oWynVruzi3pHv5j_9Aiy8mXw)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+skinparam shadowing false
+skinparam linetype ortho
+hide fields
+
+package "Policy Layer" {
+    class "Policy" as P
+    interface "Policy Service"  as PS
+}
+
+package "Mechanism Layer" {
+    class "Mechanism" as M
+    interface "Mechanism Service" as MS
+}
+
+package "Utility Layer" {
+    class "Utility" as U
+}
+
+' Relaciones de la capa Policy
+P -right-> PS
+
+' Relaciones de la capa Mechanism
+M -up-.|> PS
+M -right-> MS
+
+' Relaciones de la capa Utility
+U -up-.|> MS
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+- Cada nivel declara una interfaz para lo que necesita de otros niveles inferiores
+- Los niveles inferiores dependen de interfaces definidas en los superiores
+- El cliente puede definir la abstracción que necesita (ISP)
+- Cada nivel es intercambiable por un sustituto
+
+
+### Heurística para construcción
+
+- Ninguna variable debería guardar una referencia a una clase concreta
+- Ninguna clase debería ser derivada de una clase concreta
+- Ningún método debería redefinir un método ya implementado de ninguna de sus clases base
+
+Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas (__inyección de dependencias__).
+
+Gracias a la __introspección__ o la carga dinámica de clases, en algunos lenguajes de programación se puede indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración XML o JSON).
+<!-- Source: patrones.md -->
+# PATRONES DE DISEÑO
+
+1. Introducción
+2. Patrones del GoF
+3. Otros patrones específicos
+
+
+## Introducción
+
+
+### Origen de los patrones de diseño
+
+![](./img/pattern_language.png)
+
+- Los patrones de diseño surgen a partir del libro *A Pattern Language: Towns, Buildings, Construction* de Cristopher Alexander.
+
+- La inspiración del libro fueron las ciudades medievales, atractivas y armoniosas, que fueron construidas según regulaciones locales que requerían ciertas características, pero que permitían al arquitecto adaptarlas a situaciones particulares.
+
+- En el libro se suministran reglas e imágenes y  se describen métodos exactos para construir diseños prácticos, seguros y atractivos a cualquier escala. También recopila modelos anteriores (con ventajas/desventajas) con el fin de usarlos en un futuro.
+
+- El libro recomienda que las decisiones sobre la construcción de edificios se tomen de acuerdo al entorno preciso de cada proyecto.
+
+
+### Diseño de software con patrones
+
+![Background image](./img/patronesGOF.jpg)
+
+- Conocer un lenguaje OO no te hace un buen diseñador. ¿Qué diferencia hay entre los diseñadores expertos y los novatos? Los primeros usan recetas exitosas para los problemas habituales y no reinventan la rueda continuamente.
+
+- Un grupo de expertos (_Gang of Four_) se basó en el trabajo de Alexander y lo aplicó al diseño de software, presentando el libro *Design Patterns* con un total de 23 patrones.
+
+
+### Patrones de diseño
+
+- Patrón de diseño: Una **solución general** a un **problema general** que puede adaptarse a un problema concreto
+
+- La aplicación de patrones depende del **contexto**.
+
+- Ofrece un **vocabulario** de patrones (una jerga entre ingenieros de software)
+
+- Los patrones **clásicos** son ampliamente conocidos: algunos muy aceptados y otros más discutidos...
+
+- Deben usarse con cuidado. Deben simplificar el modelo, **no complicarlo**, por lo que deben surgir de manera natural.
+
+- Han surgido nuevos patrones **específicos** de dominio: patrones de interfaces de usuario, patrones para la integración de aplicaciones empresariales, patrones de flujos de trabajo BPMN, patrones de concurrencia, etc.
+
+
+## Patrones del Gang of Four
+
+![](./img/patronesGOF.jpg)
+
+
+### Patrones creacionales
+
+Corresponden a patrones de diseño de software que solucionan problemas de creación de instancias. Nos ayudan a encapsular y abstraer dicha creación. Vamos a ver:
+
+- Factory Method
+- Abstract Factory
+
+Pero hay más...
+
+- *Prototype*
+- *Builder*
+- *Singleton*
+
+
+### Patrones estructurales
+
+Son los patrones de diseño software que solucionan problemas de composición/agregación de clases y objetos. Vamos a ver:
+
+- Composite
+- Decorator
+- Adapter
+
+Pero hay más...
+
+- *Facade*
+- *Bridge*
+- *Flyweight*
+- *Proxy*
+
+
+### Patrones de comportamiento
+
+Son los relativos a la interacción y responsabilidades entre clases y objetos. Vamos a ver:
+
+- Command
+- Observer
+- Strategy
+- Visitor
+
+Pero hay más...
+
+- *Template method*, *Chain of Responsibility*, *Interpreter*
+- *Iterator*, *Mediator*, *Memento*, *State*
+
+
+### [Factory Method](https://refactoring.guru/es/design-patterns/factory-method)
+
+![Factory Method, center](./img/guru/factory-method-mini-2x.png)
+
+
+#### Ejemplo: Juego de laberinto
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqFU11L7DAQfc-vGPapK1ZWUR8usijogyIqrvcHpM3YBptkSaYs96r_3Ula-rGCviTNmTNzzkzSy0DSU2saQW4L5KBwRM6A0h5L0s6KUMoG4Xh1cgo7rajugfOzFdSoq5pEeNN2K7000GiL9G-L4DzVbhIoGxnCFZHXRUt4Wzq70f8RVkKgbQ1cR7WS1eBdADw8Pr_c8L75-8zrzSYdHvv93SCXVp-grdIlZss__EXiU4ikAXctVu5eFugZdqnekGKkttlyipQepR_YHOM6sgjkZUmdadhoHsOsDFqO-47cc2QjE-VVY8MM7ilC06QK6V4qlw2tsvFUekoK-6TDjrP8Wf6pRU8zA8jXelXoCE_QwJ6O984n09KOvIsGrjEozGILvylLj-qX4QzjnfFk5bGSPmp8F-JhReyhNRknplp793qk3M4ercfiQsQMWDRsPyzgIG-3-bqfcFrh4iNv8JXyzvQI-viI836IIxwF8nSzYpRdxJGFxUGftO7iotYKwaBhWhChdjvoOukP4_OecZLhGdJ5GDBxiVbxv_kFhHY-Hg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+enum Direccion {
+  NORTE
+  SUR
+  ESTE
+  OESTE
+  {method} indice(): int
+}
+
+class JuegoLaberinto {
+  {method} main()
+  {method} crearLaberinto()
+}
+
+abstract class Sitio{
+  {method} entrar()
+}
+
+class Sala{
+  {field} numSala
+  {method} getLado(Direccion): Sitio
+  {method} setLado(Direccion, Sitio)
+  {method} entrar()
+}
+
+class Puerta{
+  {field} estaAbierta
+  {field} sala1
+  {field} sala2
+  {method} otroLadoDesde(Sala)
+  {method} entrar()
+}
+
+class Pared{
+  {method} entrar()
+}
+
+class Laberinto{
+  {method} agregarSala(Sala)
+  {method} getSalaNum(int)
+}
+
+JuegoLaberinto .down.> Laberinto
+
+Sala "lados" *-up-> Sitio
+Sitio <|-left- Pared
+Sitio <|-right- Puerta
+Sitio <|-down- Sala
+Laberinto "salas"*-right-> Sala
+
+hide members
+show methods
+show Direccion members
+show Sala members
+show Puerta members
+
+@enduml
+```
+
+</details>
+
+
+<div class="cols">
+<div>
+
+```java
+public enum Direccion {
+
+  NORTE(0), ESTE(1), SUR(2), OESTE(3);
+
+  private final int indice;
+
+  Direccion(int indice) {
+    this.indice = indice;
+  }
+
+  int indice() {
+    return indice;
+  }
+
+}
+```
+
+</div>
+<div>
+
+```java
+public class Laberinto {
+    Laberinto() {};
+    void agregarSala(Sala sala) { ... };
+    Sala getSalaNum(int numSala) { ... };
+}
+```
+
+```java
+public abstract class Sitio {
+    boolean entrar() { ... };
+}
+```
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+```java
+public class Sala extends Sitio {
+    private Sitio lados[];
+    int numSala;
+
+    Sala() {};
+    Sala(int numSala) {};
+    Sitio getLado(Direccion dir) {
+      return lados[dir.indice()];
+    };
+    void setLado(Direccion dir, Sitio sitio) {
+      lados[dir.indice()] = sitio;
+    };
+    boolean entrar() { ... };
+}
+```
+
+</div>
+<div>
+
+```java
+public class Pared extends Sitio {
+    Pared() {};
+    boolean entrar() { ... };
+}
+
+public class Puerta extends Sitio {
+    private Sala sala1;
+    private Sala sala2;
+    boolean estaAbierta;
+
+    Puerta(Sala sala1, Sala sala2) { ... };
+    boolean entrar() { ... };
+    Sala otroLadoDesde(Sala unaSala) { ... };
+}
+```
+
+</div>
+</div>
+
+
+##### ¿Cómo se crean los laberintos?
+
+
+```java
+Laberinto crearLaberinto () {
+  Laberinto miLab = new Laberinto();
+  Sala hab1 = new Sala(1);
+  Sala hab2 = new Sala(2);
+  Puerta unaPuerta = new Puerta(hab1, hab2);
+  miLab.agregarSala(hab1);
+  miLab.agregarSala(hab2);
+  hab1.setLado(Direccion.NORTE, new Pared());
+  hab1.setLado(Direccion.ESTE, unaPuerta);
+  hab1.setLado(Direccion.SUR, new Pared());
+  hab1.setLado(Direccion.OESTE, new Pared());
+  hab2.setLado(Direccion.NORTE, new Pared());
+  hab2.setLado(Direccion.ESTE, new Pared());
+  hab2.setLado(Direccion.SUR, new Pared());
+  hab2.setLado(Direccion.OESTE, unaPuerta);
+  return miLab;
+}
+```
+
+
+#### Críticas
+
+- Creación poco flexible: instancias concretas cableadas.
+- Supongamos $\exists$ `SalaHechizada`, `PuertaHechizada`. ¿Cómo cambiamos `crearLaberinto`?
+
+
+#### Método de factoría
+
+- El patrón _factory method_ define una interfaz para la creación de un objeto, pero dejando en manos de las subclases la decisión de qué clase concreta instanciar.
+
+- Permite que una clase delegue en sus subclases las instanciaciones.
+
+
+#### Factory method: Estructura
+
+![](./img/guru/factory-method-structure-2x.png)
+
+
+1. El **Producto** declara la interfaz, que es común a todos los objetos que puede producir la clase creadora y sus subclases.
+
+2. Los **Productos Concretos** son distintas implementaciones de la interfaz de producto.
+
+3. La clase **Creadora** declara el método fábrica que devuelve nuevos objetos de producto. Es importante que el tipo de retorno de este método coincida con la interfaz de producto.
+
+4. Los **Creadores Concretos** sobrescriben el Factory Method base, de modo que devuelva un tipo diferente de producto.
+
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9lL2O2zAMx3c9BccWSIO7G1qguOGKTh0O7dDRi2wzkVCbMkQaboAOeYeu7cvlSUrJH5ezg24ixY8f_5T9xGKj9G1jJHQgAcogElqofcRKfCDDlW0QPtzdweBrcZP9Xm2H_ujEmKqxzPAthrqvZLI-R7QS4mwFqiIKrmIm7xxrpgN8hIOt9HB6RnGhfvP26sbS1w6jTWjJ_7rEjcwl9fHX5fy7DgO92zSesG6FzMQrGx63VYzzNUKLbYmRDbswqJEo2BgKgpAUDodFmu8O5zN4BgujKuKsQBVIrCc2okG-7RpsUT1pajhovG2aVEpvzdQj7a615Lu-sdqrGzl5Z_BnhZ3krFRs0mdC2xukGhLdxBjTSteUtmSJmrcRV7GHhJtw5lG4L_MgyKbtWV7o_9NrpWRWZuVbynCeekWyUw5fOdUxKzYON0qpgb3yncwoCfKizQbocv5zo3VaTkTuArEv9emrkkUK0G3QEQIhaEwbIqat5cSXDvBFCvIZWSOb0_WOnR39PygMDdZHjTgUlJ6NrjLXx3TPV-Uu57-gWXS_eY_7_bV3Jh-9y3CfdE1zLXi9nIISCttWnxsJRtVXzTCS6pVOPC51ErrnDLeU03tLKtMBY8LPz3ausytICbJvUShXW-Z5MPQA-81Hl52zYZ50W_qj-gevjrUL)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 700 width
+scale 600 height
+
+class Product
+class Creator
+class ConcreteProduct
+class ConcreteCreator
+
+Creator : factoryMethod()
+Creator : anOperation()
+ConcreteCreator : factoryMethod()
+
+Creator <|–down- ConcreteCreator
+Product <|–down- ConcreteProduct
+ConcreteProduct <- ConcreteCreator
+
+hide members
+show methods
+
+note top of Creator
+The Creator is a class that contains
+the implementation for all of the
+methods to manipulate products,
+except for the factory method.
+end note
+
+note right of Creator
+The abstract factoryMethod()
+is what all Creator subclasses
+must implement.
+end note
+
+note right of ConcreteCreator
+The ConcreteCreator
+implements the
+factoryMethod(), which is
+the method that actually
+produces products.
+end note
+
+note “The ConcreteCreator is responsible for\ncreating one or more concrete products. It\nis the only class that has the knowledge of\nhow to create these products.” as n1
+ConcreteProduct .. n1
+ConcreteCreator .. n1
+
+note “All products must implement\nthe same interface so that the\nclasses which use the products\ncan refer to the interface,\nnot the concrete class.” as n2
+n2 . ConcreteProduct
+n2 . Product
+
+@enduml
+```
+
+</details>
+
+
+#### Factory method: Ventajas
+
+- Se evita un acoplamiento fuerte entre el creador y los productos concretos.
+- SRP: Se puede mover el código de creación de producto a un lugar del programa, haciendo que el código sea más fácil de mantener.
+- OCP: Se pueden incorporar nuevos tipos de productos en el programa sin descomponer el código cliente existente.
+
+
+#### Implementación de `JuegoLaberinto`
+
+```java
+public class JuegoLaberinto {
+  JuegoLaberinto() {};
+  // factory methods:
+  Laberinto makeLaberinto() { return new Laberinto(); }
+  Sala makeSala(int numSala) { return new Sala(numSala); }
+  Pared makePared() { return new Pared(); }
+  Puerta makePuerta(Sala sala1, Sala sala2) {
+    return new Puerta(sala1, sala2);
+  }
+  Laberinto crearLaberinto () { ... }
+}
+```
+
+
+```java
+Laberinto crearLaberinto () {
+  Laberinto miLab = makeLaberinto();
+  Sala hab1 = makeSala(1);
+  Sala hab2 = makeSala(2);
+  Puerta unaPuerta = makePuerta(hab1, hab2);
+  miLab.agregarSala(hab1);
+  miLab.agregarSala(hab2);
+  hab1.setLado(Direccion.NORTE, makePared());
+  hab1.setLado(Direccion.ESTE, unaPuerta);
+  hab1.setLado(Direccion.SUR, makePared());
+  hab1.setLado(Direccion.OESTE, makePared());
+  hab2.setLado(Direccion.NORTE, makePared());
+  hab2.setLado(Direccion.ESTE, makePared());
+  hab2.setLado(Direccion.SUR, makePared());
+  hab2.setLado(Direccion.OESTE, unaPuerta);
+  return miLab;
+}
+```
+
+
+```java
+public class JuegoLaberintoMinado extends JuegoLaberinto {
+  Pared makePared() {
+    return new ParedMinada();
+  }
+  Sala makeSala(int numSala) {
+    return new SalaMinada(numSala);
+  }
+}
+
+public class JuegoLaberintoHechizado extends JuegoLaberinto {
+  Sala makeSala(int numSala) {
+    return new SalaHechizada(numSala, lanzarHechizo());
+  }
+  Puerta makePuerta(Sala sala1, Sala sala2) {
+    return new PuertaHechizada(sala1, sala2);
+  }
+  private Hechizo lanzarHechizo() { ... }
+}
+```
+
+
+### [Strategy](https://refactoring.guru/es/design-patterns/strategy)
+
+![Strategy, center](./img/guru/strategy-mini-2x.png)
+
+
+<div class="cols">
+<div>
+
+#### Strategy: Estructura
+
+</div>
+<div>
+
+![](./img/guru/strategy-structure-2x.png)
+
+</div>
+</div>
+
+
+#### Strategy
+
+- Define una familia de algoritmos, encapsula cada uno de ellos y los hace intercambiables
+- Permite que el algoritmo varíe de forma independiente a quienes lo usan (el **Contexto**)
+
+**Ventajas:**
+
+- Ayuda a sacar factor común (factorizar) funcionalidades
+- La estrategia es sustituible en tiempo de ejecución
+- Alternativa a la herencia estática
+
+**Desventajas:**
+
+- Sobrecarga de la comunicación _Context_-_Strategy_
+
+
+### [Command](https://refactoring.guru/es/design-patterns/command)
+
+![Command, center](./img/guru/command-mini-2x.png)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNVEGO2zAMvOsVPHaBbh6QBsEWPfVa9AOyTceCbdEr0XGDtn8vJUty4rRAbzYpDmeGlN48a8fzOKh60N7Dl8Gg5fTz1V6pR5dTNI7aNnA6GcvoWl3j-Zxy37BGc707amuHjKlEqYQER_DIKfrhRWXII-APrGfGh9hsG5JAxpaIrtmQjYceGuwA9rkEpFZx8Hre-G6hPefS9vT6lMtyYtkaKu78Ohye9VtihAFbBmqzx987TJ9gPDj0E1lvqgGhJTHSoWZjL6D3aBAQxcaYNbyZf1Ao2dAqNayImcbQsugNTYuy3tLioaMFmNQkIyU3AsuJhVwPFrHBJqRq7dwNaOaYdPg-o-cDfLY3iPOWAzbMBrQXuv9BZ-9PtGKnssHWWAyAlbFN0FohL4jSyaZFUNGNrSEEnDybUfexOtGFSsjqYRAgVXYlWBk17ZsHxUbKDUfZ1U2lWiCLQIJODhMLL7EI8k_hefD5Pt3T7GhovNJQb8MFzcrTiDCR3DQxtfcBX-UjTJHfTQVq9wILybAV24UYkTtqnlgxTessHhe4QZmpC9ZZKBc9rCQIeKbpZfqFj2yviWqCl47mS_dIAFYCH9XSmbpb9QTaaQtFTt69ULaa-sTWmUvHf9md43ETGnxNf6lnIhb9y6-Hf1FpYIVCWXVo56E1ojP4nYz9pNQ0V4Op4UqmuZP1U0GBOJSn6bfaqL_Jl7ytfwD_TeSY)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Client
+class Invoker
+class Command <<interface>>
+class Receiver
+class ConcreteCommand
+
+Invoker : setCommand()
+Command : execute()
+Command : undo()
+Receiver : action()
+ConcreteCommand : execute()
+ConcreteCommand : undo()
+
+Client -> Receiver
+Client -> ConcreteCommand
+Receiver <- ConcreteCommand
+Invoker -> Command
+Command <|.. ConcreteCommand
+
+note left of Client
+The Client is responsible for
+creating a ConcreteCommand and
+setting its Receiver.
+end note
+
+note bottom of Receiver
+The Receiver knows how to
+perform the work needed to
+carry out the request. Any class
+can act as a Receiver.
+end note
+
+note bottom of ConcreteCommand
+The ConcreteCommand defines a binding between an action
+and a Receiver. The Invoker makes a request by calling
+execute() and the ConcreteCommand carries it out by
+calling one or more actions on the Receiver.
+end note
+
+note left of Invoker
+The Invoker holds
+a command and at
+some point asks the
+command to carry
+out a request by
+calling its execute()
+method.
+end note
+
+note top of Command
+Command declares an interface for all commands. A
+command is invoked through its execute() method,
+which asks a receiver to perform its action.
+end note
+
+note right of ConcreteCommand::execute()
+The execute method invokes the action(s)
+on the receiver needed to fulfill the
+request;
+
+public void execute() {
+  receiver.action()
+}
+
+end note
+@enduml
+```
+
+</details>
+
+
+#### Command: Estructura
+
+![](./img/guru/command-structure-2x.png)
+
+
+#### Command: Comportamiento
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptkrGOwyAMhneewup0HRp16klRFVVql663dkLwq0EXSEWc5B7_aAIJOd0Ctvls_7a4dCw997YRnZIN6PN4pNForqN_Cn4N86xZiFcgjTIv6Zh20IZbX9K1MXC8I9nRHNpiyuqbl2NJ7_PaWiudnuD4sKUtXH9n2JLubmi_4Sc0RbessfKJkr6gYIZITjEhHodDRUng-aw8JKOqhFRshmAmpfNFbzrKoZIcxlzsx1Rzv7AVrSI7cKJi_n7tsajW-Ns3iyyUKIoiKl8b4AeqZ6Qm_1UXyaJ1iiUxz0gLT5MGPK5QBzcn5y1mIlOquMDp8Fd-AQLiwx0)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 700 width
+scale 600 height
+
+participant "editor: Client" as editor
+participant "cmdDraw: DrawCommand" as cmdDraw
+participant "menuItem: Invoker" as menuItem
+participant "image: Receiver" as image
+
+[--> editor: <<create>>
+activate editor
+editor --> cmdDraw : new DrawCommand(image)
+editor -> menuItem: setCommand(cmdDraw)
+activate menuItem
+deactivate editor
+deactivate menuItem
+
+...
+
+[--> menuItem: executeCommand()
+activate menuItem
+
+menuItem -> cmdDraw: execute()
+activate cmdDraw
+cmdDraw -> image: draw()
+activate image
+deactivate cmdDraw
+
+@enduml
+```
+
+</details>
+
+
+<div class="cols">
+<div>
+
+#### Versión cliente/servidor
+
+</div>
+<div>
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNp9UkFuwyAQvPOKVU7OwVJOrWRFVaT0kmv7gi2sYhQbLLxx8vxCbTAoVk-IYXZ2ZpfTyOj43ndilNgRvB8O8NCK2-X-5u8t6WvLQgyeqaUe0DDITpPhAkJzMZO9kRPixz5h901uIrcrOWfb92hUCc7MEvsiSTqgZBR4PSFQsp6QKfaeD6g_kmoDhh5wtkY6YlrAar9WpvaKXrFcMEZpAJWq_iiBk0ultJnW4kykx9LdlfgTGTcdZTXHuk44QAP29q_fY72a8ezRD6yKpP3L1HKldWFZ9HkZXgilpIG3pOLCtpJH38HVTGuAniTvTBW3etzOHquCgbj54IC1NcW40rcQJ5_T_9tf89X2iA)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 700 width
+scale 600 height
+
+participant client
+participant anInvoker
+
+box "Server"
+participant aCommand
+participant aServer
+participant aReceiver
+end box
+
+activate client
+client -> aCommand: new ConcreteCommand()
+activate aCommand
+deactivate aCommand
+
+client -> anInvoker: add(aCommmand)
+activate anInvoker
+deactivate client
+
+anInvoker -> aCommand: getData()
+activate aCommand
+
+anInvoker <-- aCommand  : ok
+deactivate aCommand
+
+client <- anInvoker : send(aCommand)
+activate client
+deactivate anInvoker
+
+client -> aServer : accept(aCommand)
+activate aServer
+deactivate client
+
+aCommand <- aServer: execute(this)
+activate aCommand
+
+aCommand -> aReceiver: action()
+activate aReceiver
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+### [Adapter](https://refactoring.guru/es/design-patterns/adapter)
+
+![Adapter, center](./img/guru/adapter-mini-2x.png)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptUTtuwzAM3XUKju0QA1kDw0jQGxQeuygSnQjVxzUZBAE65CDt5XKS0rXkpEY3kXx8H2pLrAc-Ba-M10Tw4h1GzkWrhwMy1LWLjEOnDTZNHu2s7qX3p0KVFzYw4McJiZ-eVQb-00PpUY_Gdc68zjM1OYBVk-ULaf1ZVbNsYRVU0Y6JEVIE7-L7PHcEJoU-EVp1dnwEPmIhqRRGC-Oampb3iTkFSF25QitgM9khRBJ2fxkZiqX5LEum2_WrvQuBC73HIDT0FkcDy_Xqdv0GTRDXhVmiShHX8JB5abIE33lfbkswHsyix4NmtMDp125GPgTeyks-_QeIqbFT)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Client
+class Target <<interface>>
+class Adapter
+class Adaptee
+Target : request()
+Adapter : request()
+Adaptee : specificRequest()
+
+Client -> Target
+Target <|.. Adapter
+Adapter -> Adaptee
+note on link
+Adapter is composed
+with the Adapter.
+end note
+
+note bottom of Client
+The client sees only the
+Target interface
+end note
+
+note “The Adapter implements\nthe Target interface.” as n1
+Target .. n1
+n1 .. Adapter
+
+note bottom of Adaptee
+All requests get
+delegated to the
+Adaptee.
+end note
+@enduml
+```
+
+</details>
+
+
+#### Adaptador de objetos: Estructura
+
+![](./img/guru/object-adapter-structure-2x.png)
+
+
+#### Adaptador de clases: Estructura
+
+![](./img/guru/class-adapter-structure-2x.png)
+
+
+#### Adaptador de clases vs. objetos
+
+**Class adapter:**
+
+- No sirve para adaptar una clase y sus subclases
+- Se crea un único objeto, sin indirecciones adicionales
+
+**Object adapter:**
+
+- Un adapter puede funcionar con varios objetos _Service_ o _Adaptee_
+- Es más complicado heredar el comportamiento del objeto adaptado
+
+
+### [Composite](https://refactoring.guru/es/design-patterns/composite)
+
+![Composite, center](./img/guru/composite-mini-2x.png)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVVcFu2zAMvesrdEyGNNiuRTF06GnAsFOBnRWbjrTKoiHK3QrskH_YacD2c_mSkbItO0lbbKeYIqn3yPeE3FIyMfWtV5U3RPrOOwhpCrDtMMzxJzDNMkUugVKlSl9r7CCa5DCs1ifnpq5XJT5NRWjxEV7K7iHdWefrlZOMEgZnMKpQeQ5_PH8Of0y9gD9mz_CH9eir94vdzHRvfhwPP4ctnR_O-5ozx8Pvt9vtm-Phj77hGpSDdxItlhuQaSTsNDaTNvcWxk_dE5BOdnkp84TYmEq6VGuC63pv5A7uwt1XqBJxTW6qRhhe11ZBqLWAnUGWKTNqQamhcYGxTVAzYINRG-8XMEpQFzDXeofJnoAD31Fndl60DVgD_S-b1jxp13YeWomMYnam90nvwJpHx6wyM7bAejPJvd6oIu06U3DMuNjnkgITT9gKi6zvh_yjrSEuUpXcE-FyjR6aVHo-51GsSXnc3G88IW_QQhT4FpLFmrR3DzDyVRPfzHGmvNHfrKusqlHgdIAKiEx0_om3Id3aoyArgkCjNPOGt_oLl0RQe3Rhz-sVkXhGUz1IkKxj9Yh6-Mc1THaQuU6WLkrDoMtku6UftvojewmBVIbcLWTMvMSzRZJspvltUt91GNNrSs3v6H7Zejz8Ih3RA88o4w7sVSHOnYWn-IuUJJjPJPNgWdSUMMJwqubqC0LR7W16hc_ogmlyKva4YvXl8dYnxpxtRCIaa8z1rLG8AvGC6D_Kjkx1xtkowkEE7q0MydNT8L2CTm7Wbaa5Y1NAEDSoF5Pc8hf_S_wFVPsy7Q)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Client
+class Component
+class Leaf
+class Composite
+
+Component : operation()
+Component : add(Component)
+Component : remove(Component)
+Component : getChild(int)
+
+Leaf : operation()
+
+Composite : operation()
+Composite : add(Component)
+Composite : remove(Component)
+Composite : getChild(int)
+
+Client -> Component
+Component <|– Leaf
+Component <|– Composite
+Component “0..*” <–o “1” Composite
+
+note top of Client
+The Client uses the
+Component interface to
+manipulate the objects in the
+composition.
+end note
+
+note top of Component
+The Component defines an
+interface for all objects in
+the composition: both the
+composite and the leaf nodes.
+end note
+
+note top of Component
+The Component may implement a
+default behavior for add(), remove(),
+getChild() and its operations.
+end note
+
+note bottom of Leaf
+A Leaf has no
+children.
+end note
+
+note left of Leaf
+Note that the Leaf also
+inherits methods like add(),
+remove() and getChild(), which
+do not necessarily make a lot of
+sense for a leaf node. We are
+going to come back to this issue.
+end note
+
+note bottom of Leaf
+A Leaf defines the behavior for the
+elements in the composition. It does
+this by implementing the operations
+the Composite supports.
+end note
+
+note bottom of Composite
+The Composite’s role is to define
+behavior of the components
+having children and to store child
+components.
+end note
+
+note right of Composite
+The Composite also
+implements the Leaf-
+related operations.
+Note that some of
+these may not make
+sense on a Composite,
+so in that case an
+exception might be
+generated.
+end note
+@enduml
+```
+
+</details>
+
+
+<div class="cols">
+<div>
+
+#### Composite: Estructura
+
+</div>
+<div>
+
+![](./img/guru/composite-structure-2x.png)
+
+</div>
+</div>
+
+
+#### Composite
+
+- Permite construir objetos complejos componiendo de forma recursiva objetos similares en una estructura de **árbol**.
+- Permite manipular **uniformemente** todos los objetos contenidos en el árbol, ya que todos ellos poseen una interfaz común definida en la clase raíz.
+
+**Ventajas:**
+
+- El cliente trata a todos los objetos de la misma forma
+- La inclusión de nuevos tipos de hojas o compuestos no afecta a la estructura anterior
+
+**Desventajas:**
+
+- Si se desea restringir el tipo de objetos que pueden formar parte de otros $\Rightarrow$ Necesidad de comprobaciones dinámicas
+
+
+### [Decorator](https://refactoring.guru/es/design-patterns/decorator)
+
+![Decorator, center](./img/guru/decorator-mini-2x.png)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqlVctunEAQvM9X9NGWrLXkYxJFXhIfcohycH6ggWYZG2bQTHsJUg75h_xhviQ9wPJaWMfKbemu6a6pKpZ7z-j4pSyUf9amQoclJLasrCHDj9wUBNK8Uyop0Hv4dGoNzyZxxLSsf6bEOmTrFrihvt9qREoNw-AdlMS5TfdX1yvVaFG9vQXLObmvbddLV53xW4zc6kYb3ZUVA_PZ6PNqtKheYDuqJLhxfe2wqij9Fj9Rwuvg87uttKOttqE6ohyP2rotyL-wjt7COoC7Xlj_yMi0Drpwtejy1aIt3ieKH37--fV7JctLxJjq0cj52Um-X4VEE4gAPsI0aMM7qIxlAqcPOYM1UGjzrB4wyUcEJGgglvfUUxogmr2ytbkBmduLD3EDCOn4Ug7TyaQQNqhuT2yZbQk2W1Hje06hOi9qDyIr2M7BmgAdwcFqc1BsIW0MljrBopD9aRocVnGfMJC-5h18YaAfLDz8qPdum9eKBx50WRVUBi2EjPJYEmjD5DJMKMiAsWeHyenfCTvSo4Ly1KiBeWDWa0W71xVaM9S3pnT36jiFYIdTs8X_M7zXsw--f69yW9OR3E1bHVQOBjVV54GSM10Y0vaegceLENPWiC2ZdZ1YmSgHLX3tOeC6FUqbOfu3aLM_xWdehly8QCOjRSAjZh3RaYzlq5OFhMgRzkOWNA-OeLjidtTEvMmbFBLvryfU7uWXfML-ApQXe0A)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+skinparam componentStyle uml2
+
+class Component
+class ConcreteComponent
+class Decorator
+class ConcreteDecoratorA
+class ConcreteDecoratorB
+
+Component : methodA()
+Component : methodB()
+Component : // otherMethods()
+
+ConcreteComponent : methodA()
+ConcreteComponent : methodB()
+ConcreteComponent : // otherMethods()
+
+Decorator : methodA()
+Decorator : methodB()
+Decorator : // otherMethods()
+
+ConcreteDecoratorA : Component wrappedObject
+ConcreteDecoratorA : methodA()
+ConcreteDecoratorA : methodB()
+ConcreteDecoratorA : newBehavior()
+ConcreteDecoratorA : // otherMethods()
+
+ConcreteDecoratorB : Component wrappedObject
+ConcreteDecoratorB : Object newState
+ConcreteDecoratorB : methodA()
+ConcreteDecoratorB : methodB()
+ConcreteDecoratorB : // otherMethods()
+
+Component <|– ConcreteComponent
+Component <|– Decorator
+Decorator <|– ConcreteDecoratorA
+Decorator <|– ConcreteDecoratorB
+Decorator –> Component : component
+note right on link
+Each component can be used on its
+own, or wrapped by a decorator
+component
+end note
+
+note bottom of ConcreteComponent
+The ConreteComponent
+is the object we are going
+to dynamically add new
+behavior to it. It extends
+Component.
+end note
+
+note bottom of Decorator
+Decorators implement the
+same interface or abstract
+class as the component they
+are going to decorate.
+end note
+
+note bottom of ConcreteDecoratorB
+Decorators can extend the
+state of the component
+end note
+
+note bottom of ConcreteDecoratorB
+Decorators can add new methods;
+however, new behavior is typically
+added by doing computation
+before or after an existing method
+in the component.
+end note
+
+note bottom of ConcreteDecoratorA
+The ConcreteDecorator has an
+instance variable for the thing
+it decorates (the Component the
+Decorator wraps).
+end note
+@enduml
+```
+
+</details>
+
+
+<div class="cols">
+<div>
+
+#### Decorator: Estructura
+
+</div>
+<div>
+
+![](./img/guru/decorator-structure-2x.png)
+
+</div>
+</div>
+
+
+#### Ejemplo: `EnhancedWriter` original
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkTFPw0AMhXf_Co8wVAoImBiKEAMSYgGJ-XJn9azGd5HtKILS_06iMKC2A13t9_m9J6_Ng_ogHXjt0Su21b0KJlaKzrWAxdARXjXXNzhy8vw7uLttMBNvsoNtufRBg2DHhfyzJ6zquf5ZxC6YPbgrt4PTc6zljb8IG4DQmmuIvkjwqeRQIqUPZSfFHSDuhKZjaY_jPHuZLC5mn0vYAyzQ6yAtKZfNWdQ7C03tpT8XfMwUtzaI_B88qHX_vVodpj6pOc54UnacCCBzIhSaPQws1xGXfAawppKml_8AMiG2PQ)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+abstract class EnhancedWriter {
+  {method} writeLine(line)
+}
+
+class NumberingWriter {
+  {method} writeLine(line)
+}
+
+class TimestampingWriter {
+  {method} writeLine(line)
+}
+
+class ChecksummingWriter {
+  {method} writeLine(line)
+}
+
+EnhancedWriter <|-- NumberingWriter
+EnhancedWriter <|-- TimestampingWriter
+EnhancedWriter <|-- ChecksummingWriter
+
+hide members
+show methods
+
+@enduml
+```
+
+</details>
+
+
+#### Ejemplo: `EnhancedWriter` ampliado – herencia fuera de control
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkzFPwzAQhff7FTfC0CogYOpQhBiQEAtIzI59qk-N7ci-KIK2_x1HYQAnitr1-T6_987yNomK0rkGJLQoAesgEhwajqSFg4ekVUN4U93eYc9G7K_wcF-hJd5ZgbRn36qoHDbsSb5awhDFhj8HulEpPYpErjuhFx38O38TVgCqThKVlnEEn71VXpP5jCwU8QCIB0f5MnPCftBes8XV4HMNJ4AReutcTZH97iLqgx3l9q69FHyypPepc-58sKi1Oa5WZerZmWnG2bFpIoByKf89M1EAM602x_V6CZnZ4CR12XIaK3ssAbO5is5nmSwBYNkQOhrUBMmGHsfXTABb8iZ_kB-jziiD)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+abstract class EnhancedWriter {
+  {method} writeLine(line)
+}
+
+class NumberingWriter {
+  {method} writeLine(line)
+}
+
+class TimestampingWriter {
+  {method} writeLine(line)
+}
+
+class ChecksummingWriter {
+  {method} writeLine(line)
+}
+
+EnhancedWriter <|-- NumberingWriter
+EnhancedWriter <|-- TimestampingWriter
+EnhancedWriter <|-- ChecksummingWriter
+
+NumberingWriter <|-- NumberingCheksummingWriter
+ChecksummingWriter <|.. NumberingCheksummingWriter
+TimestampingWriter <|-- TimestampingNumberingWriter
+NumberingWriter <|.. TimestampingNumberingWriter
+ChecksummingWriter <|-- ChecksummingNumberingWriter
+NumberingWriter <|.. ChecksummingNumberingWriter
+
+hide members
+show methods
+
+@enduml
+```
+
+</details>
+
+
+#### Ejemplo: `EnhancedWriter` ampliado –  herencia fuera de control
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNq9lD1PwzAQhvf7FTfC0KogYOpQhBiQEAtIzI5zqk-N7ci-KIK2_51EYYDEWMnCat_j98Oyd1FUkMZWIL5G8Vh4EW-x5EBa2DuIWlWEV5vrG2y5FPO9cHe7QUO8NwLxwK5WQVms2JF81IQ-iPE_NnSlYrwXCVw0Qk_au1f-JNwAqCJKUFqGEXx0RjlN5XtgoYBHQDxa6g4rz9j2a8-dxEWvcwlngAF6aWxBgd1-EfXGlrr0tl4KPhjSh9hYOx8cxdqeVqux6-TM1GNybOoIYFzKb80EkYi1Pa3XWSbR4cT3OOfUWCeSA5LGRqlnieQAyMTMdJe4oGQnf_WY4P-nVMiUkal3Qd65PBguCS31ExGi8S0OLykC7MiV3ef0BVwcugY)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 1024 width
+scale 650 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+abstract class EnhancedWriter {
+  {method} writeLine(line)
+}
+
+class NumberingWriter {
+  {method} writeLine(line)
+}
+
+class TimestampingWriter {
+  {method} writeLine(line)
+}
+
+class ChecksummingWriter {
+  {method} writeLine(line)
+}
+
+EnhancedWriter <|-- NumberingWriter
+EnhancedWriter <|-- TimestampingWriter
+EnhancedWriter <|-- ChecksummingWriter
+
+NumberingWriter <|-- NumberingChecksummingWriter
+ChecksummingWriter <|.. NumberingChecksummingWriter
+TimestampingWriter <|-- TimestampingNumberingWriter
+NumberingWriter <|.. TimestampingNumberingWriter
+ChecksummingWriter <|-- ChecksummingNumberingWriter
+NumberingWriter <|.. ChecksummingNumberingWriter
+
+NumberingChecksummingWriter <|-- NumberingChecksummingTimestampingWriter
+TimestampingWriter <|.. NumberingChecksummingTimestampingWriter
+
+TimestampingWriter <|-- TimestampingNumberingWriter
+NumberingWriter <|.. TimestampingNumberingWriter
+
+ChecksummingNumberingWriter <|-- ChecksummingNumberingTimestampingWriter
+TimestampingWriter <|.. ChecksummingNumberingTimestampingWriter
+
+hide members
+show methods
+
+@enduml
+```
+
+</details>
+
+
+#### Decorator
+
+- El patrón decorator permite añadir responsabilidades a objetos concretos de forma **dinámica**.
+- Los decoradores ofrecen una **alternativa** más flexible que la herencia para extender funcionalidades.
+
+**Ventajas:**
+
+- Permite añadir o quitar responsabilidades a los objetos sin afectar a otros objetos
+
+**Desventajas:**
+
+- Rompe la identidad de objetos: un componente y su decorador no son el mismo objeto
+- Provoca la creación de muchos objetos pequeños y complica la depuración
+
+
+#### ¿Diferencia entre Strategy y Decorator?
+
+
+#### Diferencia entre Strategy y Decorator
+
+El _decorator_ cambia la piel, el _strategy_ cambia las tripas
+
+
+### [Observer](https://refactoring.guru/es/design-patterns/observer)
+
+![Observer, center](./img/guru/observer-mini-2x.png)
+
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNVEGO2zAMvOsVPHaBbh6QBsEWPfVa9AOyTceCbdEr0XGDtn8vJUty4rRAbzYpDmeGlN48a8fzOKh60N7Dl8Gg5fTz1V6pR5dTNI7aNnA6GcvoWl3j-Zxy37BGc707amuHjKlEqYQER_DIKfrhRWXII-APrGfGh9hsG5JAxpaIrtmQjYceGuwA9rkEpFZx8Hre-G6hPefS9vT6lMtyYtkaKu78Ohye9VtihAFbBmqzx987TJ9gPDj0E1lvqgGhJTHSoWZjL6D3aBAQxcaYNbyZf1Ao2dAqNayImcbQsugNTYuy3tLioaMFmNQkIyU3AsuJhVwPFrHBJqRq7dwNaOaYdPg-o-cDfLY3iPOWAzbMBrQXuv9BZ-9PtGKnssHWWAyAlbFN0FohL4jSyaZFUNGNrSEEnDybUfexOtGFSsjqYRAgVXYlWBk17ZsHxUbKDUfZ1U2lWiCLQIJODhMLL7EI8k_hefD5Pt3T7GhovNJQb8MFzcrTiDCR3DQxtfcBX-UjTJHfTQVq9wILybAV24UYkTtqnlgxTessHhe4QZmpC9ZZKBc9rCQIeKbpZfqFj2yviWqCl47mS_dIAFYCH9XSmbpb9QTaaQtFTt69ULaa-sTWmUvHf9md43ETGnxNf6lnIhb9y6-Hf1FpYIVCWXVo56E1ojP4nYz9pNQ0V4Op4UqmuZP1UxWEQ3mZfquN-Zt8ydP6ByLe5Hg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+class Client
+class Invoker
+class Command <<interface>>
+class Receiver
+class ConcreteCommand
+
+Invoker : setCommand()
+Command : execute()
+Command : undo()
+Receiver : action()
+ConcreteCommand : execute()
+ConcreteCommand : undo()
+
+Client -> Receiver
+Client -> ConcreteCommand
+Receiver <- ConcreteCommand
+Invoker -> Command
+Command <|.. ConcreteCommand
+
+note left of Client
+The Client is responsible for
+creating a ConcreteCommand and
+setting its Receiver.
+end note
+
+note bottom of Receiver
+The Receiver knows how to
+perform the work needed to
+carry out the request. Any class
+can act as a Receiver.
+end note
+
+note bottom of ConcreteCommand
+The ConcreteCommand defines a binding between an action
+and a Receiver. The Invoker makes a request by calling
+execute() and the ConcreteCommand carries it out by
+calling one or more actions on the Receiver.
+end note
+
+note left of Invoker
+The Invoker holds
+a command and at
+some point asks the
+command to carry
+out a request by
+calling its execute()
+method.
+end note
+
+note top of Command
+Command declares an interface for all commands. A
+command is invoked through its execute() method,
+which asks a receiver to perform its action.
+end note
+
+note right of ConcreteCommand::execute()
+The execute method invokes the action(s)
+on the receiver needed to fulfill the
+request;
+
+public void execute() {
+ receiver.action()
+}
+
+end note
+@enduml
+```
+
+</details>
+
+
+#### Observer
+
+- Define una dependencia 1:N entre objetos de modo que cuando el estado de un objeto cambia, se les notifica el cambio a todos los que de él dependen y estos se actualizan de forma automática.
+
+
+#### Observer: Estructura
+
+![](./img/guru/observer-structure-2x.png)
+
+
+#### Observer: Estructura (según GoF)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptUctOxDAMvPsrrJ66oEgL4tTDalecOHHoF6Sp2Qa6SRU7SLz-nZY0Atpeoow9nhnZRxYdJF56YKN7wrvbPXZkz50A8It1gw76gqbXzCeRYJso9GC8q-074R5ANyxBG0kUrGPzTCP6AMRrLaJNV_oKHxum8EphN5Vb2iw7L_bprdzB10o185JsHFotlIipf--dCST0111xArWM5GnsTOlf_rhxRjy9G1r_PJWfUVbL6tXSexlwGU3FQX0e8p5g5Tb3MwbIg8VNgV6F6TIKi6vidykV5nS8oacOq_VUOKcHOJJrx-N_A-l2rtw)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 420 height
+
+skinparam classAttributeIconSize 0
+
+abstract class Subject {
+  +attach(o: Observer)
+  +detach(o: Observer)
+  +notify()
+}
+
+abstract class Observer {
+  +update()
+}
+
+class ConcreteSubject {
+  -subjectState
+  +getState()
+  +setState(state)
+}
+
+class ConcreteObserver {
+  -observerState
+  -subject: ConcreteSubject
+  +update()
+}
+
+ConcreteSubject -up-|> Subject
+ConcreteObserver -up-|> Observer
+
+Subject "1" o-right- "*" Observer : observers
+ConcreteObserver --> ConcreteSubject : subject
+
+@enduml
+```
+
+</details>
+
+
+#### Observer: roles
+
+Sin distinguir entre `Observable` y `Subject`:
+
+- `Publisher` = `Observable` = `Subject`
+- `ConcreteSubscriber` $\dashrightarrow$ `Subject`
+
+Con `Subject` separado:
+
+- `Subscriber` = `Observer`
+- Distinguir entre `Observable` y `Subject`
+- Definir `Observer.update()`
+  - `ConcreteObserver` mantiene referencia a `ConcreteSubject`
+  - El estado se recupera desde `ConcreteSubject.getState()` (pull)
+
+
+#### Observer: Detalles de implementación
+
+- ¿Quién dispara la actualización?
+  - El publicador, tras cambiar de estado: menos eficiente si hay muchas notificaciones
+  - El cliente, tras una serie de cambios de estado: si se olvida puede provocar inconsistencias
+
+
+#### Observer: Comportamiento (síncrono) – disparo externo
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVkkEKwjAQRfdzisFVu7B0JwRRb6DQEyTtaAO1lmRa8fZGQezEtuA2k_fn5ZODZ-24vzbgS90QbvIc77biGqALA1vaTreMK90ejSc3aNOQwlNvGutrcivUHsezaYqcwqI3vnTWRBC5GLlxCF7gxBzgG4TrnXBBhf4DJ1xbn4Iu2Q6aaby-oqlTiBb9Fy4dxYZIP8sygH0UrjBcs-dHMmH8bhmEyogOogr7rgrEwpMFvV1L-kJc8ItP56uJl8uq5g3k43814pw5l6jEA7VV-MNP1yoCXg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 700 width
+
+participant "anObservable: Publisher" as anObservable
+participant "anObserver: Subscriber" as anObserver
+participant "anotherObserver: Subscriber" as anotherObserver
+
+anObserver -> anObservable : subscribe(this)
+activate anObserver
+deactivate anObserver
+
+anotherObserver -> anObservable : subscribe(this)
+activate anotherObserver
+deactivate anotherObserver
+
+...
+
+?-> anObservable: notify()
+activate anObservable
+
+anObservable -> anObserver : update(this)
+activate anObserver
+anObservable <- anObserver : getState()
+deactivate anObserver
+
+anObservable -> anotherObserver : update(this)
+activate anotherObserver
+anObservable <- anotherObserver : getState()
+deactivate anotherObserver
+
+@enduml
+```
+
+</details>
+
+
+#### Observer: Comportamiento (síncrono) – autodisparo
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqVk0EKwjAQRfdzisFVXVi6E4KoN1DwBEk72kCtJZkq3t5YEJ2YCG4zefNfPmTrWTsezx34WneEy6rCm224BRjCwNZ20D3jTPc748ldtelI4X40nfUtuRlqj5-zNEVO4WE0vnbWRBC5GLlwWPyDE3OA9yJcrIULKvQvuODW-jnomu1VM33GN5Q6hSjov-XSUSRE-mVZAmwSy4kPHIgiIT0VLe5HvMIQY4_3AGfvhScpHIfmmZEvR9CrhaRPb8dsiXG4LDVvIGv61oj35FyiuhOeU5uwpb4J3-AB3hgZ9Q)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 700 width
+
+participant "anObservable: Publisher" as anObservable
+participant "anObserver: Subscriber" as anObserver
+participant "anotherObserver: Subscriber" as anotherObserver
+
+anObserver -> anObservable : subscribe(this)
+activate anObserver
+deactivate anObserver
+
+anotherObserver -> anObservable : subscribe(this)
+activate anotherObserver
+deactivate anotherObserver
+
+...
+
+?-> anObservable : setState()
+activate anObservable
+anObservable -> anObservable: notify()
+
+anObservable -> anObserver : update(this)
+activate anObserver
+anObservable <- anObserver : getState()
+deactivate anObserver
+
+anObservable -> anotherObserver : update(this)
+activate anotherObserver
+anObservable <- anotherObserver : getState()
+deactivate anotherObserver
+
+deactivate anObservable
+
+@enduml
+```
+
+</details>
+
+
+#### Observer: Detalles de implementación
+
+- Los suscriptores necesitan información para hacer la actualización:
+  - `update(context)` para pasar la información necesaria al suscriptor
+  - `update(this)` para que el suscriptor extraiga la información necesaria pidiéndosela al publicador
+  - `ConcreteSubscriber.setPublisher()` para vincularlos permanentemente (opción menos flexible)
+
+
+### [Visitor](https://refactoring.guru/es/design-patterns/visitor)
+
+![Visitor, center](./img/guru/visitor-mini-2x.png)
+
+
+#### Visitor
+
+- Representa una **operación** que se lleva a cabo sobre los elementos de una **estructura** de objetos
+- Permite **definir nuevas** operaciones sin modificar las clases de los **elementos** sobre las que opera.
+
+
+<div class="cols">
+<div>
+
+#### Visitor: **Estructura**
+
+</div>
+<div>
+
+![](./img/guru/visitor-structure-2x.png)
+
+</div>
+</div>
+
+
+#### Visitor: **Comportamiento**
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNk0FPwzAMhe_-FdZO2WFSkbZLhWAz2pkDEveQWjSoS6vEHX-fDkjWsqzslsT-nv2elG0Q7aU_NBCMbhjXmwI_bSX1731TFFizfa8FoBs6rbGddoLaPb99sJEX8b2R3vOkutBu3_CBnexKjKcF6oDnwhWAEkBTgP4ArzZYaf1diU-tM56F48sPF28Aj6uHy32xxLZjr8W2Ti1BG7FHLZwxBpfst2A0MihpY7gTlWZO9JLhEXISiM0DfzwdY1FJbcMSKs5qpLezv5Hu_WqimxzuVH6l8ZAkmJ_8Twx0YwwEI2QmBpqJgeZjoKsxkMqvdHMMBLBlVw3_5QtHUSOE)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+scale 450 width
+scale 500 height
+
+participant anObjectStructure
+participant "anElementA: ElementA" as anElementA
+participant "anElementB: ElementB" as anElementB
+participant "aVisitor1: ConcreteVisitor1" as aVisitor1
+
+?-> anObjectStructure : operation()
+activate anObjectStructure
+
+anObjectStructure -> anElementA : accept(aVisitor1)
+activate anElementA
+anElementA -> aVisitor1 : visitElementA(this)
+deactivate anElementA
+activate aVisitor1
+
+anElementA <- aVisitor1 : operationA()
+activate anElementA
+deactivate aVisitor1
+deactivate anElementA
+
+anObjectStructure -> anElementB : accept(aVisitor1)
+activate anElementB
+anElementB -> aVisitor1 : visitElementB(this)
+deactivate anElementB
+activate aVisitor1
+
+anElementB <- aVisitor1 : operationB()
+activate anElementB
+deactivate aVisitor1
+deactivate anElementB
+
+@enduml
+```
+
+</details>
+
+
+**Ventajas:**
+
+- Permite implementar el _double dispatch_: la operación que se ejecuta tras el `accept()` depende del tipo de `Visitor` y del tipo de `Element`
+- Separa los datos y las operaciones de los elementos visitados, facilitando la inclusión de nuevas operaciones sin tener que cambiar las clases
+- Permite acumular el estado de una operación global sobre una estructura
+
+**Desventajas:**
+
+- Rompe la encapsulación (?)
+- Los tipos de `Element` visitados deben ser estables
+
+
+### [State](https://refactoring.guru/design-patterns/state)
+
+![State, center](./img/guru/state-mini-2x.png)
+
+
+#### State: Ejemplo
+
+<div class="cols">
+<div>
+
+![](./img/guru/state-example.png)
+
+</div>
+<div>
+
+```scala
+class Document {
+  var state: String = _
+  var expirationDate: Date = _
+  // ...
+
+  def publish(currentUser: User): Unit = state match {
+    case "draft" =>
+      if (currentUser.role == "admin") {
+        state = "published"
+      } else {
+        state = "moderation"
+      }
+    case "moderation" =>
+      if (currentUser.role == "admin") {
+        state = "published"
+      }
+    case "published" =>
+      if (new Date().after(expirationDate)) {
+        state = "draft"
+      }
+    case _ =>
+      // Handle any unexpected state.
+      throw new IllegalStateException(s"Invalid document state: $state")
+  }
+}
+```
+
+</div>
+</div>
+
+
+<div class="cols">
+<div>
+
+#### State: Estructura
+
+</div>
+<div>
+
+![](./img/guru/state-structure.png)
+
+</div>
+</div>
+
+
+#### Diferencia de State con Strategy
+
+- Cada estado puede ser consciente de la existencia de otros estados e iniciar transiciones de estado
+- Cada estrategia desconoce a las otras
+
+
+## Otros patrones específicos
+
+
+### Patrón _Active Record_
+
+<div class="cols">
+<div>
+
+El objeto de dominio mantiene el **estado** e incorpora la **lógica de persistencia** sobre ese estado.
+
+- La entidad representa los datos del dominio y expone operaciones CRUD (`save()`, `delete()`, etc.)
+- Lógica de acceso a datos acoplada al modelo persistente
+
+**Desventajas:**
+
+- **Mezcla de responsabilidades** en la misma clase
+- **Acoplamiento** al ORM o a la base de datos
+- **Pruebas más difíciles**: cuesta el _mocking_
+- **Escala peor** cuando aparecen reglas complejas
+
+</div>
+<div>
+
+#### Estructura
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNptkbFOw0AMhnc_hceyVBVjBlRCl65UfYBL7BKLu3N05zQKVd-doyUQJEb_32_7t7zN5pINwYNpj6bYqJkGJEncmmiE3DrP-LjZ4ChkHeR3ib1LLqCXyDb1jJqs0wVovcv52SxJMxjvW40H-WDcANwIHvPgkiheAPFyEvZ0RaEKJdpCiRqaxBUeypz4tgAcnPilHrjsLyC7M68eKjyr0FIn9mz_kpNEqqc9rYQK_c4F1zlovbtnnO0vr8cd3ov85ZoPWZOOcf1U_ACdEJeIvU3FGRpOGXKn40_brZgb_zjq39mw5UjlK5-RN4_s)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 200 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Usuario {
+  {field} id: int
+  {field} nombre: String
+  {field} email: String
+  {method} save(): void
+  {method} delete(): void
+  {method} findById(id): Usuario
+}
+
+class BD {
+  {method} CRUD methods
+}
+
+Usuario .down.> BD
+
+hide empty members
+show methods
+show Usuario members
+show BD methods
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+### Patrón _Data Access Object_ (DAO)
+
+<div class="cols">
+<div>
+
+El patrón **Data Access Object** se usa para abstraer y encapsular los accesos a las fuentes de datos, proporcionando una **capa de persistencia** con independencia del soporte concreto de almacenamiento (BD relacional, NoSQL, ficheros, etc.).
+
+**Problemas (sin DAO):**
+
+- Lógica de acceso a datos dispersa por la aplicación
+- Acoplamiento dependencias concretas (JDBC, Hibernate, etc.) en el código de negocio
+- Difícil cambiar la implementación de persistencia sin modificar todo el código
+
+</div>
+<div>
+
+#### DAO: Estructura
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNrVkjtPw0AMx3d_Co9laNWJIaqqRpQBCalDP8HlzmkM94juHKpS-t05kj4CSOxsZ__8-tu3SqKidM6ChBYlYBVEgkPDkbRw8JC0soT38znu2UgD6ZV9q6JyaNmTHFrCEKUJI6CtSqkUiVx1Qk86-C2_E84B2AvFWmnCtRJVak0pbaqX3AqPgHh0lCuZE-pISmhCXlgOdwW-BTZjnrGZsMnksQ8Zs641f-YaspR5n_2T1exNae0ko2dOshiqL-EE0Is6t1uXm2Hemsl-jRu8H9ZV4MP1_Y8EfVPDpsB8qJHHB1dFKnCbT-p3I0BOsb36c9FfZ118zGa3rcFtf9PIu0amy4tgaNgQOnIVxQSpCXscRJyN86CXAFiRN_nffgK_BPW-)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 600 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+interface DataAccessObject {
+  {method} create(entity): void
+  {method} read(id): Entity
+  {method} update(entity): void
+  {method} delete(id): void
+  {method} findAll(): List<Entity>
+}
+
+class EntityDAO {
+  {field} connection: Connection
+  {method} create(entity): void
+  {method} read(id): Entity
+  {method} update(entity): void
+  {method} delete(id): void
+  {method} findAll(): List<Entity>
+}
+
+class Entity {
+  {field} id: int
+  {field} nombre: String
+  {field} email: String
+}
+
+DataAccessObject <|.. EntityDAO
+EntityDAO -right-> Entity
+
+hide members
+show methods
+show Entity members
+
+@enduml
+```
+
+</details>
+
+</div>
+</div>
+
+
+#### Ejemplo: Usuario DAO (enfoque clásico)
+
+<div class="cols">
+<div>
+
+```java
+// Interfaz DAO - define el contrato
+public interface UsuarioDAO {
+  void create(Usuario usuario);
+  Usuario read(int id);
+  void update(Usuario usuario);
+  void delete(int id);
+  List<Usuario> findAll();
+}
+
+// Implementación JDBC
+public class UsuarioDAOImpl implements UsuarioDAO {
+  private Connection connection;
+
+  public UsuarioDAOImpl(Connection connection) {
+    this.connection = connection;
+  }
+
+  @Override
+  public void create(Usuario usuario) {
+    String sql =
+      "INSERT INTO usuarios (nombre, email) VALUES (?, ?)";
+    try (PreparedStatement stmt =
+            connection.prepareStatement(sql)) {
+      stmt.setString(1, usuario.getNombre());
+      stmt.setString(2, usuario.getEmail());
+      stmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+  }
+  ...
+```
+
+</div>
+<div>
+
+```java
+  ...
+  @Override
+  public Usuario read(int id) {
+    String sql =
+      "SELECT * FROM usuarios WHERE id = ?";
+    try (PreparedStatement stmt =
+            connection.prepareStatement(sql)) {
+      stmt.setInt(1, id);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          return new Usuario(
+            rs.getInt("id"),
+            rs.getString("nombre"),
+            rs.getString("email")
+          );
+        }
+      }
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+    return null;
+  }
+
+  // ... otros métodos (update, delete, findAll)
+}
+```
+
+</div>
+</div>
+
+
+#### DAO: Ventajas y Desventajas
+
+<div class="cols">
+<div>
+
+**Ventajas:**
+
+- **Separación de responsabilidades**: lógica de negocio desacoplada del acceso a datos
+- **Cambios de persistencia**: cambiar BD sin modificar la lógica de negocio
+- **Testabilidad**: fácil crear mocks del DAO para pruebas unitarias
+- **Centralización**: código de SQL/queries concentrado en una única ubicación
+
+</div>
+<div>
+
+**Desventajas:**
+
+- **Boilerplate**: mucho código repetitivo (CRUD methods en cada DAO)
+- **Mantenimiento**: cambios en la entidad requieren actualizar el DAO
+- **Inflexibilidad**: las consultas complejas requieren nuevos métodos en la interfaz
+
+</div>
+</div>
+
+
+### Patrón _Repository_
+
+Evolución moderna del DAO que surge con la popularidad de frameworks como _Spring Data JPA_. Ofrece una abstracción de más alto nivel que el DAO tradicional, proporcionando operaciones CRUD genéricas sin necesidad de implementación manual.
+
+**Relación Repository $\leftrightarrow$ DAO:**
+
+- Repository = DAO de alto nivel + convenciones + derivación de consultas
+- Ambos abstraen la persistencia, pero Repository reduce boilerplate
+
+
+#### Repository vs DAO
+
+<div class="cols">
+<div>
+
+**DAO (clásico)**
+
+- Interfaz + Implementación explícita
+- Métodos CRUD manuales
+- Control total sobre SQL
+- Verboso, bajo nivel
+
+</div>
+<div>
+
+**Repository (moderno)**
+
+- Hereda de interfaz genérica
+- Métodos CRUD automáticos
+- Queries derivadas del método
+- Conciso, alto nivel
+
+</div>
+</div>
+
+
+#### Repository: Estructura (Spring Data JPA)
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqNU01r3DAQvetXzK3OwbAthUIIS5w0hS2lhaY9lR5ka3Y9VNIYaZzgpvnvlexd4s26oRdjz7x5782HL6PoIL2zSrgDYahZhB0YCtgIsVex0Rbh9erNW7gnI-0-8G61ghZp14qKv8h3OmgHljzK0CFwkJZnicbqGCuRQHUvuGnY39JvhJVS5AXDVjcI16E3X7HjSMJhgAcF8OAw8ZhHiPoOixsvJMPZOUwv8_yWvLkaNqYgk_Jfuuxc24sJuH6OrKwtEmyTlHVtcQlm0KLMJO-YzGn-SXLMP87b-djpl7qpvPlg-9i-1NUksvFXWpo9kDAuuNmOTIs2vsdeB-J_WZkGd-M02QLzcz6-fe36tOAzuzrgNXvR5MnvCj8GUvEnivJUmKyMqz_YmMS3hDZRkUlw9rtZaKI5h9t0KUeJ0dtCvAmoBU0lmSod5vv09Y0cZuVnB3XxpyyPt7KIOBmYOh1hGfLhl-sDWKlXUPncadoZWD1wL1BEtgz5_iEXNnmm4Uwd30X5oyVj0P-cGP9PfblGqRRGcOhqDFHFlu9h2tr-47CDA0Jdojfp1_8LUhpvcg)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+top to bottom direction
+scale 1024 width
+scale 700 height
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+interface CrudRepository {
+  {method} save(Entity): Entity
+  {method} findById(id): Optional<Entity>
+  {method} findAll(): Iterable<Entity>
+  {method} delete(Entity): void
+  {method} deleteById(id): void
+}
+
+interface JpaRepository {
+  {method} saveAndFlush(Entity): Entity
+  {method} deleteInBatch(Entities): void
+  {method} flush(): void
+}
+
+interface UsuarioRepository {
+  {method} findByEmail(email): Optional<Usuario>
+  {method} findByNombreContaining(nombre): List<Usuario>
+}
+
+class Usuario {
+  {field} id: Long
+  {field} nombre: String
+  {field} email: String
+  {field} createdAt: LocalDateTime
+}
+
+CrudRepository <|-- JpaRepository
+CrudRepository <|-- UsuarioRepository
+UsuarioRepository -right-> Usuario
+
+' Anclas de layout (solo para posicionar)
+JpaRepository -[hidden]right- UsuarioRepository
+UsuarioRepository -[hidden]right- Usuario
+
+hide members
+show methods
+show Usuario members
+
+@enduml
+```
+
+</details>
+
+
+#### Ejemplo: Usuario Repository (Spring Data JPA)
+
+<div class="cols">
+<div>
+
+```java
+// Interfaz Repository - hereda CRUD automático
+@Repository
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+  // Métodos derivados (queries generadas automáticamente)
+  Optional<Usuario> findByEmail(String email);
+  List<Usuario> findByNombreContainingIgnoreCase(String nombre);
+  List<Usuario> findByCreatedAtAfter(LocalDateTime fecha);
+  boolean existsByEmail(String email);
+}
+
+// Entity con JPA
+@Entity
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+public class Usuario {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false)
+  private String nombre;
+
+  @Column(unique = true, nullable = false)
+  private String email;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+}
+```
+
+</div>
+<div>
+
+```java
+// Usando el Repository en un Servicio
+@Service
+public class UsuarioService {
+  private final UsuarioRepository usuarioRepository;
+
+  @Autowired
+  public UsuarioService(UsuarioRepository usuarioRepository) {
+    this.usuarioRepository = usuarioRepository;
+  }
+
+  public Usuario crearUsuario(Usuario usuario) {
+    if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+      throw new EmailYaExisteException();
+    }
+    return usuarioRepository.save(usuario);
+  }
+
+  public Usuario obtenerPorId(Long id) {
+    return usuarioRepository.findById(id)
+      .orElseThrow(() -> new UsuarioNoEncontradoException());
+  }
+
+  public List<Usuario> buscarPorNombre(String nombre) {
+    return usuarioRepository.
+             findByNombreContainingIgnoreCase(nombre);
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### Repository: Ventajas respecto a DAO
+
+- **Menos boilerplate**: Métodos CRUD heredados automáticamente de `CrudRepository`
+- **Query derivadas**: Métodos generados a partir del nombre (método query method)
+- **Transacciones automáticas**: Spring maneja `@Transactional` por defecto
+- **Testabilidad**: Fácil crear mocks con Mockito o usar `@DataJpaTest`
+- **Integración Spring**: Inyección de dependencias, AOP, etc.
+- **Convenciones**: Desarrollo más rápido siguiendo estándares
+
+
+### Data Transfer Object (DTO)
+
+Sirve para crear objetos planos o _Plain Old Java Objects_ (POJO) que se envían entre aplicaciones, capas, o servidores remotos. Un DTO **no tiene comportamiento** de negocio, solo almacena y entrega datos (*value object*).
+
+**Problema a resolver:**
+
+- Exponer entidades de BD directamente en APIs REST crea acoplamiento
+- Cambios en la BD obligan a cambios en clientes API
+- Puede exponerse información sensible (contraseñas, datos internos)
+- Diferentes vistas de datos requieren múltiples selecciones/proyecciones
+
+
+#### DTO: Estructura
+
+![PlantUML diagram](https://kroki.io/plantuml/svg/eNqtks9qwzAMxu9-Ch27Q0tPO-QwOthgg40duhdwYiURs60gq4Su9N3n_GlpoMcd9f2kT7LkXVIregjeeKwVlEGoaRUcCVZKHE2qrEd43G6hJ6etST8UOys2gKeIeuwQWLTlG1B5m9KzqlB5UHyvOO7pF2FrzEjgNSrpEU4G4FQTencGcgV8cGxupMihFCxgn30WAIMlf0fvsnfP4t5sau9giooSuYCS2aON5nyZ5-X765-GuVp-2q5DmVwD5vXkVOXcaIXj4x-KoeuSTmtZOeVMp2AwnK3Ww4HWT0NZAQ1GFHtF480ym4oKULEx1SzBGjMve7MZS41pySEEDCVKMqnlHqYJ5mBOXyQM-1kIc9-LZnYYXf5Df-nHy5o)
+
+<details>
+<summary>PlantUML source</summary>
+
+```plantuml
+@startuml
+left to right direction
+scale 600 width
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Entity {
+  {field} id: Long
+  {field} nombre: String
+  {field} email: String
+  {field} passwordHash: String
+  {field} interno: boolean
+}
+
+class DTO {
+  {field} id: Long
+  {field} nombre: String
+  {field} email: String
+}
+
+class Mapper {
+  {method} toDTO(entity): DTO
+  {method} toEntity(dto): Entity
+}
+
+Mapper -left-> DTO: genera
+Mapper -right-> Entity: transforma
+
+Entity ..> DTO
+
+hide members
+show methods
+show Entity members
+show DTO members
+show Mapper members
+
+@enduml
+```
+
+</details>
+
+
+#### Ejemplo: Usuario DTO (con ModelMapper)
+
+<div class="cols">
+<div>
+
+```java
+// Entity JPA (contiene datos + lógica de negocio)
+@Entity
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+public class Usuario {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false)
+  private String nombre;
+
+  @Column(unique = true, nullable = false)
+  private String email;
+
+  @JsonIgnore // No serializar en JSON
+  private String passwordHash;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
+  // Métodos de negocio
+  public boolean validarPassword(String rawPassword) {
+    return BCrypt.checkpw(rawPassword, this.passwordHash);
+  }
+}
+```
+
+</div>
+<div>
+
+```java
+// DTO - solo datos públicos (sin contraseña)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UsuarioDTO {
+  private Long id;
+  private String nombre;
+  private String email;
+  private LocalDateTime createdAt;
+}
+
+// Mapper usando ModelMapper (spring-boot-starter-modelmapper)
+@Component
+public class UsuarioMapper {
+  private final ModelMapper modelMapper;
+
+  @Autowired
+  public UsuarioMapper(ModelMapper modelMapper) {
+    this.modelMapper = modelMapper;
+  }
+
+  public UsuarioDTO toDTO(Usuario usuario) {
+    return modelMapper.map(usuario, UsuarioDTO.class);
+  }
+
+  public Usuario toEntity(UsuarioDTO usuarioDTO) {
+    return modelMapper.map(usuarioDTO, Usuario.class);
+  }
+
+  public List<UsuarioDTO> toDTOList(List<Usuario> usuarios) {
+    return usuarios.stream()
+      .map(this::toDTO)
+      .collect(Collectors.toList());
+  }
+}
+```
+
+</div>
+<div>
+
+```java
+// Controlador REST usando DTO
+@RestController
+@RequestMapping("/api/usuarios")
+public class UsuarioController {
+  private final UsuarioService usuarioService;
+  private final UsuarioMapper usuarioMapper;
+
+  @GetMapping("/{id}")
+  public ResponseEntity<UsuarioDTO>
+            obtenerUsuario(@PathVariable Long id) {
+    Usuario usuario = usuarioService.obtenerPorId(id);
+    return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<UsuarioDTO>>
+            listarUsuarios() {
+    List<Usuario> usuarios = usuarioService.listarTodos();
+    return ResponseEntity.ok(usuarioMapper.toDTOList(usuarios));
+  }
+
+  @PostMapping
+  public ResponseEntity<UsuarioDTO>
+            crearUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+    Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
+    Usuario creado = usuarioService.crearUsuario(usuario);
+    return ResponseEntity.created(URI.create("/api/usuarios/" +
+                                  creado.getId()))
+      .body(usuarioMapper.toDTO(creado));
+  }
+}
+```
+
+</div>
+</div>
+
+
+#### DTO: Ventajas y desventajas
+
+**Ventajas:**
+
+- **Separación de responsabilidades**: Entidad y DTO pueden evolucionar independientemente
+- **Seguridad**: control sobre qué datos se exponen (ej: no exponer contraseñas)
+- **Versionado API**: diferentes versiones de DTO para diferentes clientes
+- **Performance**: seleccionar solo datos necesarios (proyecciones)
+- **Contrato de API**: DTOs actúan como contrato entre cliente-servidor
+
+**Desventajas:**
+
+- **Duplicación**: mantener Entity y DTO con mapeos entre ambos
+- **Boilerplate**: código repetitivo si hay muchos DTOs
+- **Overhead**: conversión Entity $\leftrightarrow$ DTO tiene coste de CPU/memoria
+
+
+#### Repository + DTO + Servicio integrados
+
+```java
+@Service
+public class UsuarioService {
+    private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
+
+    @Autowired
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                         UsuarioMapper usuarioMapper) {
+        this.usuarioRepository = usuarioRepository;
+        this.usuarioMapper = usuarioMapper;
+    }
+
+    public UsuarioDTO obtenerPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+            .orElseThrow(() -> new UsuarioNoEncontradoException());
+        return usuarioMapper.toDTO(usuario);  // Entity → DTO
+    }
+
+    public List<UsuarioDTO> buscarPorNombre(String nombre) {
+        List<Usuario> usuarios = usuarioRepository
+            .findByNombreContainingIgnoreCase(nombre);
+        return usuarioMapper.toDTOList(usuarios);  // List<Entity> → List<DTO>
+    }
+
+    public UsuarioDTO crearUsuario(UsuarioDTO usuarioDTO) {
+        Usuario usuario = usuarioMapper.toEntity(usuarioDTO);  // DTO → Entity
+        Usuario creado = usuarioRepository.save(usuario);
+        return usuarioMapper.toDTO(creado);  // Entity → DTO
+    }
+}
+```
+
+
+## Para profundizar sobre patrones
+
+- Martin Fowler – [Patterns in Enterprise Software](https://martinfowler.com/articles/enterprisePatterns.html): Catálogos de patrones a distintos niveles
+  - Martin Fowler – [Patterns of Enterprise Application Architecture (EAA)](https://martinfowler.com/eaaCatalog/)
+  - Hohpe y Woolf – [Enterprise Integration Patterns (EIP)](http://www.enterpriseintegrationpatterns.com/)
+  - Buschmann y otros – [Pattern-Oriented Software Architecture (POSA)](http://www.amazon.com/exec/obidos/ASIN/0471958697) Volume 1: A system of patterns
+- Peter Norvig – [Design Patterns in Dynamic Programming](http://www.norvig.com/design-patterns/design-patterns.pdf): Implementaciones más simples para los patrones de diseño del GoF en lenguajes dinámicos
+
+
+## Para profundizar sobre patrones
+
+- David Arno – [Are design patterns compatible with modern software techniques?](http://www.davidarno.org/2013/06/17/are-design-patterns-compatible-with-modern-software-techniques/)
+- Implementaciones de los patrones de diseño del GoF en diversos lenguajes de programación:
+  - Kamran Ahmed – [Design Patterns for Humans!](https://github.com/kamranahmedse/design-patterns-for-humans/blob/master/README.md): Explicación de los patrones de diseño del GoF implementados en PHP
+  - Márk Török – [Design Patterns in TypeScript](https://github.com/torokmark/design_patterns_in_typescript)
+  - Bogdab Vliv - [Design Patterns in Ruby](https://bogdanvlviv.com/posts/ruby/patterns/design-patterns-in-ruby.html)
+- Lewis y Fowler – [Microservicios](https://martinfowler.com/articles/microservices.html)
+- Chris Richardson - [Microservices patterns](https://microservices.io/)
+- Spring Data JPA – [Query Methods Documentation](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
+- ModelMapper – [Documentation and Examples](http://modelmapper.org/)

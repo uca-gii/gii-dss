@@ -1,0 +1,35 @@
+@startuml
+abstract class Empleado {
+  + getDatosContables(): void
+  + seguimientoActividad(): void
+}
+
+class Ingeniero {
+  - presupuestos: String
+  - gastosProyectos: String
+}
+
+class Programador {
+  - horasTrabajo: int
+  - desplazamientos: String
+  - dietas: String
+}
+
+class Tecnico {
+  - horasFacturadas: int
+  - piezasAlmacen: String
+}
+
+class Administrativo {
+  - piezasAlmacen: String
+  - materialOficina: String
+  - horario: String
+}
+
+Empresa o-> Empleado
+
+Empleado <|-- Ingeniero
+Empleado <|-- Programador
+Empleado <|-- Tecnico
+Empleado <|-- Administrativo
+@enduml

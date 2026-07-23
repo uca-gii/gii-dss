@@ -1,0 +1,44 @@
+@startuml
+' Componente base
+abstract class Empleado {
+}
+
+' Nodo Compuesto (Composite)
+class GrupoEmpleados {
+  - subordinados: List<Empleado>
+  + add(e: Empleado): void
+  + remove(e: Empleado): void
+}
+
+' Nodos Hoja (Leaves)
+class Ingeniero {
+}
+class Programador {
+}
+class Tecnico {
+}
+class Administrativo {
+}
+
+' Relaciones de herencia (todos son Empleados)
+Empleado <|-- GrupoEmpleados
+Empleado <|-- Ingeniero
+Empleado <|-- Programador
+Empleado <|-- Tecnico
+Empleado <|-- Administrativo
+
+' Relación de agregación del Composite
+GrupoEmpleados o--> Empleado : contiene >
+
+GrupoEmpleados <|-- Departamento
+GrupoEmpleados <|-- Seccion
+
+Empresa ..> Empleado
+
+note right of GrupoEmpleados
+  Representa un departamento,
+  equipo o a la propia Empresa,
+  conteniendo múltiples empleados
+  o subgrupos.
+end note
+@enduml

@@ -1,0 +1,1814 @@
+---
+marp: true
+author:
+- Juan Manuel Dodero
+date: Enero 2026
+subject: Diseño de Sistemas Software, curso 2025/26
+title: Principios de Diseño
+description: Apuntes de Diseño de Sistemas Software - Principios de diseño
+---
+
+<!-- size: 16:9 -->
+<!-- theme: default -->
+
+<style>
+h1 {
+  text-align: center;
+  color: #005877;
+}
+h2 {
+  color: #E87B00;
+}
+h3 {
+  color: #005877;
+}
+img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+emph {
+  color: #E87B00;
+}
+.cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.cols > div {
+  align-self: start;
+}
+</style>
+
+<style scoped>
+h2 {
+  color: #005877;
+  text-align: center;
+}
+</style>
+
+# PRINCIPIOS DE DISEÑO
+
+## ORIENTADO A OBJETOS
+
+---
+
+<!-- paginate: true -->
+
+## Principios SOLID
+
+Los principios SOLID de [Uncle Bob Martin](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) nos dicen:
+
+- Cómo organizar en __módulos__ (en OO, __clases__) las estructuras de datos y las funciones
+- Cómo deben quedar _interconectadas_ las clases (vía __dependencias__)
+
+El objetivo de SOLID es crear estructuras software de nivel intermedio que sean:
+
+- _flexibles_: tolerantes a los cambios
+- _poco complejas_: fáciles de comprender
+- _reutilizables_: la base de componentes útiles para muchos sistemas software
+
+En C++: [Breaking Dependencies: The SOLID Principles](https://www.youtube.com/watch?v=Ntraj80qN2k) by Klaus Iglberger
+
+---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## SRP: *Single Responsibility Principle*
+
+---
+
+<!-- paginate: true -->
+
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Principio de responsabilidad única
+
+> A class should have only one reason to change
+> –– Bob Martin
+
+- Una clase que modela múltiples aspectos genera acoplamiento entre los distintos aspectos
+- Un cambio en algún aspecto obligará a cambios accidentales en los clientes que no dependen de dicho aspecto
+
+SRP es lo mismo que el principio de __cohesión__ de [DeMarco](bibliografia.html#demarco)
+
+---
+
+SRP es aplicación directa de la [ley de Conway](http://www.melconway.com/Home/Conways_Law.html):
+> Any organization that designs a system (...) will produce a design whose structure is a copy of the organization's communication structure.
+> –– M. Conway, _Datamation_, April 1968
+
+- Cuando se diseña software, hace falta conocer los grupos/equipos/roles a los que éste sirve, y dividir el sistema en componentes separados, de forma similar a como estos grupos de personas se comunican normalmente en la vida real.
+
+- Es necesario tener conocimiento del __dominio__ para poder dividir bien las responsabilidades
+
+- Tiene que ver con la __variabilidad__ de los requisitos
+
+<!-- Los módulos enmarañados que nunca cambian no son problemáticos -->
+
+---
+<!-- paginate: false -->
+
+<style scoped>
+h2,h3 {
+  text-align: center;
+}
+</style>
+
+## CASO PRÁCTICO 4
+
+### Figuras geométricas
+
+---
+
+<!-- paginate: true -->
+
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+</style>
+
+### Ejemplo: Shapes versión 1 en Java
+
+<div class="cols">
+<div>
+
+```java
+package shapes;
+
+interface Shape {
+  double area();
+  void draw();
+}
+
+class Point {
+  double getX() {...}
+  double getY() {...}
+}
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Triangle extends Polygon {
+  double area() {...}
+}
+abstract class RectParallelogram extends Polygon {
+  double area() {...}
+}
+```
+
+</div>
+<div>
+
+```java
+class Square extends RectParallelogram {...}
+
+class Rectangle extends RectParallelogram {...}
+
+abstract class ClosedCurve implements Shape {...}
+
+class Circle extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Ellipse extends ClosedCurve {
+  double getApogeeRadius() {...}
+  double getPerigeeRadius() {...}
+  Point getFocus1() {...}
+  Point getFocus2() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+```
+
+</div>
+</div>
+
+---
+
+<style scoped>
+h4 {
+  color: red;
+}
+</style>
+
+#### Preguntas
+
+- ¿Cuántas responsabilidades tienen las clases que implementan la interfaz `Shape`?
+- ¿Cuáles son estas responsabilidades?
+- ¿Qué parte no cumple SRP en el ejemplo? 
+
+---
+
+#### Respuestas
+
+- Dos responsabilidades: geometría computacional + dibujo en pantalla
+- Todas las figuras tienen métodos `draw` y `toString` (dibujar en pantalla) además del método `area` que calcula el área (geometría computacional) $\rightarrow$ Violación del SRP
+
+#### Solución
+
+Patrón de diseño __Visitor__
+
+---
+
+<style scoped>
+h3 {
+  color: red;
+  text-align: center;
+}
+</style>
+
+### Ejercicio
+
+- Buscar información de los patrones _ActiveRecord_ y _Data Access Object (DAO)_.
+- Discutir si cumplen o violan el SRP.
+
+<!--
+<details>
+<summary>ActiveRecord y SRP</summary>
+En general, ActiveRecord tiene la responsabilidad de modelar los datos en la base de datos, proporcionar una interfaz para acceder y manipular esos datos, y también puede incluir la lógica de negocio necesaria para trabajar con los datos.
+
+Desde una perspectiva del principio de responsabilidad única (SRP), ActiveRecord no cumple completamente con este principio porque tiene varias responsabilidades. Específicamente, ActiveRecord tiene la responsabilidad de:
+- Representar y manipular datos en la base de datos
+- Proporcionar una interfaz para acceder y manipular esos datos
+- Incluir la lógica de negocio necesaria para trabajar con los datos
+
+Sin embargo, a menudo se considera que ActiveRecord sigue una variante del principio de responsabilidad única, llamada "Principio de responsabilidad única de dominio" (Single Responsibility Principle of Domain, en inglés), que establece que una clase debe tener una única responsabilidad dentro del dominio de la aplicación. En este sentido, ActiveRecord tiene la responsabilidad de modelar los datos dentro del dominio de la aplicación.
+
+El patrón Data Access Object (DAO) es un patrón de diseño de software que se utiliza comúnmente en el desarrollo de aplicaciones para separar la lógica de negocio de la lógica de acceso a datos.
+
+El objetivo principal del patrón DAO es proporcionar una interfaz unificada para acceder a los datos desde una variedad de fuentes de datos, como una base de datos, un archivo o un servicio web, entre otros. La clase DAO encapsula la lógica de acceso a datos y proporciona métodos para realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) en la fuente de datos correspondiente.
+
+Desde una perspectiva del principio de responsabilidad única (SRP), el patrón DAO cumple con este principio. Esto se debe a que la clase DAO tiene una única responsabilidad, que es la de encapsular la lógica de acceso a datos y proporcionar una interfaz unificada para acceder a los datos. La lógica de negocio se encuentra en otra clase o conjunto de clases, lo que permite separar las responsabilidades y facilita la reutilización del código.
+</details>
+-->
+
+---
+
+### Ejemplo en C++: Circle (version original)
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) : radius { rad }, //... remaining data members
+    {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+    void draw ( Screen& s, /*...*/ );
+    void draw ( Printer& p, /*...*/ );
+    void serialize ( ByteStream& bs, /*...*/ );
+    //...
+
+  private:
+    double radius;
+    ///... remaining data members 
+}
+```
+
+---
+
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 45% 55%;
+}
+</style>
+
+### Ejemplo en C++: Circle (refactor SRP 1)
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) :
+         radius { rad },
+         //... remaining data members
+    {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+```
+
+</div>
+<div>
+
+```cpp
+class CircleRenderer
+{
+  public:
+    virtual ~CircleRenderer() = default;
+    virtual void draw ( Circle const&, Screen& s,
+                        /*...*/ ) = 0;
+    virtual void draw ( Circle const&, Printer& p,
+                        /*...*/ ) = 0;
+};
+
+class CircleSerializer
+{
+  public:
+    void serialize ( Circle const&, ByteStream& bs, 
+                     /*...*/ ) const;
+};
+```
+
+</div>
+</div>
+
+<!-- El refactor 1 separa responsabilidades en clases (estrategias/servicios),
+lo que facilita sustituir implementaciones y testear.
+Pero no es una implementación típica en C++.
+El código parece hecho por un programador de Java. -->
+
+---
+
+### Ejemplo en C++: Circle (refactor SRP 2)
+
+```cpp
+class Circle
+{
+  public:
+    explicit Circle (double rad ) : radius { rad }, /* ...*/ {}
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate (Vector3D const& );
+    void rotate ( Quaternion const& );
+
+  private:
+    double radius;
+    ///... remaining data members
+};
+
+// Same namespace as Circle
+void draw ( Circle const&, Screen& s, /*...*/ );
+void draw ( Circle const&, Printer& p, /*...*/ );
+void serialize ( Circle const&, ByteStream& bs, /*...*/ );
+//...
+```
+
+<!--
+El refactor 2 usa funciones libres en el mismo namespace: reduce acoplamiento sin inflar la interfaz de la clase, pero requiere coordinar puntos de extension fuera de
+la clase.
+-->
+
+---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## OCP: *Open-Closed Principle*
+
+---
+
+<!-- paginate: true -->
+
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Principio de Abierto-Cerrado
+
+> Toda clase, módulo, aspecto o función debe quedar abierto para extensiones pero cerrado para modificaciones
+> 
+> ––B. Meyer, [Object Oriented Software Construction](#meyer)
+
+Para que un sistema software sea fácil de cambiar, debe diseñarse para que permita cambiar su comportamiento añadiendo código, no cambiando código existente.
+
+- Si un cambio en un sitio origina una cascada de cambios en otros puntos del sistema, el resultado es un sistema frágil y rígido
+- Es difícil averiguar todos los puntos que requieren cambios
+- OCP mediante delegación en vertical (subclases) u horizontal (composición)
+
+---
+
+<style scoped>
+h3 {
+  text-align: center;
+}
+p {
+  color: red;
+  text-align: center;
+}
+</style>
+
+### Ejemplo: Shapes versión 2 en C++
+
+¿Qué parte no cumple OCP en el ejemplo?
+
+---
+
+<style scoped>
+.cols {
+  display: grid;
+  grid-template-columns: 43% 57%;
+}
+</style>
+
+#### Versión sin objetos
+
+<div class="cols">
+<div>
+
+```cpp
+enum ShapeType {circle, square};
+struct Shape
+{
+  ShapeType itsType;
+};
+
+struct Circle
+{
+  ShapeType itsType;
+  double itsRadius;
+  Point itsCenter;
+};
+void DrawCircle(struct Circle*);
+
+struct Square
+{
+  ShapeType itsType;
+  double itsSide;
+  Point itsTopLeft;
+};
+```
+
+</div>
+<div>
+
+```cpp
+void DrawSquare(struct Square*);
+
+typedef struct Shape *ShapePointer;
+
+void DrawAllShapes(ShapePointer list[], int n)
+{
+  int i;
+  for (i=0; i<n; i++)
+  {
+    struct Shape* s = list[i];
+    switch (s->itsType)
+    {
+      case square:
+        DrawSquare((struct Square*)s);
+        break;
+      case circle:
+        DrawCircle((struct Circle*)s);
+        break;
+    }
+  }
+}
+```
+
+</div>
+</div>
+
+---
+
+#### Problema:
+
+- `DrawAllShapes` no está cerrado para modificaciones cuando aparecen nuevos tipos de `Shape`
+
+#### Solución
+
+- __Abstracción__ (ocultación de la implementación): clase abstracta y métodos polimórficos.
+- __Patrones de diseño__: _template method_ y/o _strategy_
+
+---
+
+__Aplicando el OCP...__
+
+<div class="cols">
+<div>
+
+```csharp
+public interface Shape
+{
+  void Draw();
+}
+
+public class Square: Shape
+{
+  public void Draw()
+  {
+    //draw a square
+  }
+}
+
+public class Circle: Shape
+{
+  public void Draw()
+  {
+    //draw a circle
+  }
+}
+```
+
+</div>
+<div>
+
+```csharp
+public void DrawAllShapes(IList shapes)
+{
+  foreach(Shape shape in shapes)
+    shape.Draw();
+}
+```
+
+- Si queremos ampliar el comportamiento de `DrawAllShapes`, solo tenemos que añadir una nueva clase derivada de `Shape`
+- Si se aplica bien OCP, los cambios de un cierto tipo obligan a añadir nuevo código, no a modificar el existente
+
+</div>
+</div>
+
+---
+
+### Ejercicio: Shapes and Circles
+
+<div class="cols">
+<div>
+
+Arreglar para que cumpla OCP
+
+</div>
+<div>
+
+```cpp
+enum ShapeType
+{
+  circle,
+  square,
+  rectangle
+};
+
+class Shape
+{
+  public:
+    explicit Shape ( ShapeType t )
+      : type { t }
+    {}
+    virtual ~Shape() = default;
+    ShapeType getType() const noexcept;
+
+  private:
+    ShapeType type;
+};
+```
+
+</div>
+</div>
+
+---
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle: public Shape
+{
+  public:
+    explicit Circle ( double rad )
+      : Shape{ circle }
+      , radius { rad }
+      , //... remaining data members
+    {}
+
+    virtual ~Circle() = default;
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+  private:
+    double radius;
+    ///... remaining data members 
+};
+
+void translate ( Circle&, Vector3D const& );
+void rotate ( Circle&, Quaternion const& ) ;
+void draw ( Circle const& );
+```
+
+</div>
+<div>
+
+```cpp
+class Square: public Shape
+{
+  public:
+    explicit Square ( double s )
+      : Shape{ square }
+      , side { s }
+      , // ... remaining data members
+    {}
+
+    virtual ~Square() = default;
+    double getSide() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+  private:
+    double side;
+    // ... remaining data members
+};
+
+void translate ( Square&, Vector3D const& );
+void rotate ( Square&, Quaternion const& ) ;
+void draw ( Square const& );
+```
+
+</div>
+</div>
+
+---
+
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+    switch ( s-> getType() )
+    {
+      case circle:
+        draw ( *static_cast<Circle const*>( s.get() ) );
+        break;
+      case square:
+        draw ( *static_cast<Square const*>( s.get() ) );
+        break;  
+      case rectangle:
+        draw ( *static_cast<Rectangle const*>( s.get() ) );
+        break;  
+    }
+  }
+}
+```
+
+---
+
+```cpp
+int main()
+{
+  using Shapes = std::vector<std::unique_ptr<Shape>>;
+  // Creating some shapes
+  Shapes shapes;
+  shapes.push_back (std::make:unique<Circle>( 2.0 ));
+  shapes.push_back (std::make:unique<Square>( 1.5 ));
+  shapes.push_back (std::make:unique<Circle>( 4.2 ));
+  // Drawing all shapes
+  draw ( shapes );
+}
+```
+
+---
+
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Cierre estratégico
+
+> In general, no matter how _closed_ a module is, there will always be some kind of change against which it is not closed. There is no model that is natural to all contexts!
+> 
+> Since closure cannot be complete, it must be strategic. That is, the designer must choose the kinds of changes against which to close the design, must guess at the kinds of changes that are most likely, and then construct abstractions to protect against those changes.
+> 
+> –– Bob C. Martin
+
+### Implicaciones arquitectónicas
+
+OCP es un principio más arquitectónico que de diseño de clases y módulos.
+
+---
+
+### Solución al ejercicio: Shapes and Circles
+
+Versión en C++ que cumple el OCP y SRP
+
+<div class="cols">
+<div>
+
+```cpp
+class Circle : public Shape
+{
+  public:
+    explicit Circle (double rad )
+      : radius { rad }
+      , //... remaining data members
+    {}
+
+    virtual ~Circle() = default;
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double radius;
+    ///... remaining data members 
+}
+```
+
+</div>
+<div>
+
+```cpp
+class Square : public Shape
+{
+  public:
+    explicit Square (double s )
+      : side { s }
+      , //... remaining data members
+    {}
+
+    virtual ~Square() = default;
+
+    double getSide() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double side;
+    ///... remaining data members 
+}
+```
+
+</div>
+</div>
+
+---
+
+```cpp
+class Shape
+{
+  public:
+    Shape() = default;
+    virtual ~Shape() = default;
+
+    virtual void translate ( Vector3D const& ) = 0;
+    virtual void rotate ( Quaternion const& ) = 0;
+    virtual void draw() const = 0; // check!
+};
+```
+
+```cpp
+void draw ( std::vector<std::unique_ptr<<Shape>>>) const & shapes )
+{
+  for ( auto const& s : shapes )
+  {
+      s->draw();
+  }
+}
+```
+
+---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## ISP: *Interface Segregation Principle*
+
+---
+
+<!-- paginate: true -->
+
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Principo de segregación de interfaces
+
+> Los clientes no deben depender de métodos que no usan. 
+>
+> Bob C. Martin
+
+- Las interfaces son para los __clientes__, no para hacer jerarquías
+- Evitar interfaces __gruesas__ con muchos métodos (descohesionadas)
+- Los cambios en los métodos ignorados pueden provocar cambios en un cliente que no los usa
+
+---
+
+- La interfaz de una clase puede dividirse en __bloques__ de métodos relacionados. Unos clientes usan un bloque y otros clientes usan otro bloque. Si un cliente necesita conocer una interfaz no cohesionada, debe hacerlo combinando una o más clases (o mejor, sus interfaces)
+- ISP es a las interfaces lo que SRP es a clases y métodos
+- Violar el ISP es muy común en lenguajes de tipos estáticos (C++, Java, C#). Los lenguajes dinámicos (Ruby, Scala) ayudan algo más a no violar el ISP (v.g. con los _mixins_)
+
+<!--
+En los lenguajes de tipos estáticos, los tipos deben ser declarados y especificados en tiempo de compilación. Esto significa que las interfaces deben ser definidas de antemano, antes de que se implementen las clases que las utilizan. En algunas ocasiones, esto puede llevar a la definición de interfaces grandes y complejas que contienen muchos métodos que no son necesarios para todos los clientes que utilizan la interfaz.
+
+En cambio, en los lenguajes de tipos dinámicos, las interfaces pueden ser definidas en tiempo de ejecución. Esto permite que las interfaces sean más pequeñas y específicas para cada cliente, ya que solo contienen los métodos necesarios para cada caso de uso particular.
+-->
+
+---
+
+### Ejemplo: puertas de seguridad
+
+<div class="cols">
+<div>
+
+Una implementación de puertas de seguridad con temporizador `TimedDoor` que hace sonar una alarma cuando la puerta está abierta durante un cierto tiempo.
+
+</div>
+<div>
+
+#### Diseño:
+
+@startuml
+class Timer {
+  register(int timeout, TimerClient cli)
+}
+interface TimerClient {
+  timeout()
+}
+class Door {
+  open()
+  close()
+}
+Door .u.|> TimerClient
+TimedDoor -u-|> Door
+Timer .r.> TimerClient
+@enduml
+
+</div>
+</div>
+
+---
+
+<div class="cols">
+<div>
+
+- `TimedDoor` se comunica con `Timer` para registrar un temporizador
+- Cuando salta el temporizador, avisa a un `TimerClient`
+- Con la solución diseñada, un `TimerClient` puede registrarse a sí mismo en un `Timer` y recibir de éste un mensaje mediante `timeout()`.
+
+</div>
+<div>
+
+@startuml
+--> TimedDoor : open()
+TimedDoor --> Timer : register(t0, this)
+--> TimedDoor : close()
+Timer --> TimedDoor : timeout()
+destroy TimedDoor
+@enduml
+
+</div>
+</div>
+
+---
+
+#### Implementación inicial
+
+```csharp
+public class Timer {
+  public void register(int timeout, TimerClient client) {
+    /*code*/ 
+  }
+}
+
+public interface TimerClient {
+    void timeout();
+}
+```
+
+- Si se cierra la puerta antes de que venza el timeout $t_0$ y se vuelve a abrir, se registra uno nuevo $t_1$ antes de que el antiguo haya expirado.
+- Cuando el primer temporizador $t_0$ expira, se produce la llamada a `timeout()` de `TimedDoor` y no debería.
+- Así que cambiamos la implementación:
+
+---
+
+#### Implementación mejorada
+
+```csharp
+public class Timer {
+  public void register(int timeout, int timeOutId, TimerClient client) {
+    /*code*/
+  }
+}
+public interface TimerClient {
+  void timeout(int timeOutID);
+}
+```
+
+¿En qué ha afectado el __cambio en la implementación__ de `TimerClient`?
+
+@startuml
+--> TimedDoor : open()
+
+TimedDoor --> Timer : register(t1, id, this)
+--> TimedDoor : close()
+Timer --> TimedDoor : timeout(id)
+@enduml
+
+---
+
+- El cambio afecta a los usuarios de `TimerClient`, pero también a `Door` y a los clientes de `Door` (y no debería)
+- El problema es que `Door` depende de `TimerClient` y no todas las variedades de puerta son de seguridad (con temporizador)
+- Si hacen falta más variedades de puerta, todas ellas deberán implementar implementaciones degeneradas de `timeout()`
+- Las interfaces empiezan a engrosarse. Esto puede acabar violando también el LSP
+
+---
+
+#### Rediseño: puertas de seguridad
+
+__Delegación__ a través del patrón adapter
+
+<div class="cols">
+<div>
+
+- Adaptador de clases (herencia):
+
+   ![Puertas de seguridad - adaptador de clases, width:700px](./img/isp-timer-door-class-adapter.png)
+
+</div>
+<div>
+
+- Adaptador de objetos (composición):
+
+  ![Puertas de seguridad - adaptador de objetos, width:700px](./img/isp-timer-door-object-adapter.png)  
+
+</div>
+</div>
+
+---
+
+### Example: Shapes and Circles (1 de 2)
+
+```cpp
+class Circle;
+class Square;
+
+class DrawStrategy
+{
+  public:
+    virtual ~DrawStrategy() {}
+
+    virtual void draw ( const Circle& circle ) const = 0;
+    virtual void draw ( const Square& square ) const = 0;
+};
+
+class Shape
+{
+  public:
+    Shape() = default;
+    virtual ~Shape() = default;
+
+    virtual void translate ( Vector3D const& ) = 0;
+    virtual void rotate ( Quaternion const& ) = 0;
+    virtual void draw() const = 0; 
+};
+```
+
+---
+
+### Example: Shapes and Circles (2 de 2)
+
+```cpp
+class Circle : public Shape
+{
+  public:
+    explicit Circle ( double rad, std::unique_ptr<DrawStrategy> ds )
+      : radius { rad }
+      , //... remaining data members
+      , drawing { std::move(ds) }
+    {}
+
+    virtual ~Circle() = default;
+
+    double getRadius() const noexcept;
+    //... getCenter(), getRotation(), ...
+
+    void translate ( Vector3D const& ) override;
+    void rotate ( Quaternion const& ) override;
+    void draw () const override;
+
+  private:
+    double radius;
+    ///... remaining data members 
+    std::unique_ptr<DrawStrategy> drawing;
+};
+
+class Square: public Shape
+{
+  //...
+}
+```
+
+---
+
+## Aplicación de OCP y SRP
+
+### Ejemplo: Shapes versión 1 en Java (misma versión que en SRP)
+
+<div class="cols">
+<div>
+
+```java
+interface Shape {
+  double area();
+  void draw();
+}
+
+class Point {
+  double getX() {...}
+  double getY() {...}
+}
+
+abstract class Polygon implements Shape {
+  Point getVertex(index i) {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Triangle extends Polygon {
+  double area() {...}
+}
+
+abstract class RectParallelogram extends Polygon {
+  double area() {...}
+}
+```
+
+</div>
+<div>
+
+```java
+class Square extends RectParallelogram {...}
+class Rectangle extends RectParallelogram {...}
+
+abstract class ClosedCurve implements Shape {...}
+
+class Circle extends ClosedCurve {
+  double getRadius() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+
+class Ellipse extends ClosedCurve {
+  double getApogeeRadius() {...}
+  double getPerigeeRadius() {...}
+  Point getFocus1() {...}
+  Point getFocus2() {...}
+  Point getCenter() {...}
+  double area() {...}
+  void draw() {...}
+  String toString() {...}
+}
+```
+
+</div>
+</div>
+
+---
+
+- Las funcionalidades para pintar (`draw`) y para imprimir (`toString`) pueden descohesionar las clases y atentar contra OCP y SRP.
+- Saquémoslas fuera utilizando **aspectos**...
+
+---
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Orientación a aspectos
+
+La __orientación a aspectos__ (_AOD_/_AOP_) es un paradigma cuyo objetivo es incrementar la modularidad (__ortogonalidad__) de los componentes mediante la separación de aspectos __transversales__ (_cross-cutting concerns_).
+
+![terminología sobre AOP](./img/aspectj-terminology.png)
+
+---
+
+#### Terminología:
+
+- __aspect__ = modularización de un aspecto de interés (_concern_) que afecta a varias clases o módulos
+- __joinpoint__ = especificación declarativa de un punto en la ejecución de un programa (por ejemplo, la ejecución de un método, el manejo de una excepción, etc.)
+- __advice__ = acción a tomar por la especificación de un aspecto dado en un determinado _joinpoint_
+- __pointcut__ = predicado que define cuándo se aplica un _advice_ de un aspecto en un _jointpoint_ determinado. Se asocia un _advice_ con la expresión de un _pointcut_ y se ejecuta el _advice_ en todos los _joinpoint_ que cumplan la expresión del _pointcut_.
+
+---
+
+### Ejemplo: Shapes versión 2 (misma versión que en OCP), pero con aspectos
+
+```aspectj
+// Ficheros <X>ToString.aj (uno por aspecto)
+package shapes.tostring; // para todos los toString()
+aspect PolygonToString {
+  String Polygon.toString() {
+    StringBuffer buff = new StringBuffer();
+    buff.append(getClass().getName());
+     //... añadir nombre y área...
+     //... añadir cada línea desde un vértice al siguiente
+    return buff.toString();
+  }
+}
+aspect CircleToString {
+  String Circle.toString() {...}
+}
+aspect EllipseToString {
+  String Ellipse.toString() {...}
+}
+
+// Drawable.java
+package drawing;
+interface Drawable {
+  void draw();
+}
+```
+
+---
+
+```aspectj
+// Ficheros Drawable<X>.aj
+package shapes.drawing; // para todos los draw()...
+import drawing.Drawable;
+abstract aspect DrawableShape {
+  declare parents: Shape implements Drawable;
+  void Shape.draw () //template method
+  {
+    String drawCommand = makeDrawCommand();
+    // enviar orden al motor gráfico...
+  }
+  String Shape.makeDrawCommand() {
+    return getClass().getName() + "\n" + makeDetails("\t");
+  }
+  abstract String Shape.makeDetails (String indent);
+}
+aspect DrawablePolygon extends DrawableShape {
+  String Polygon.makeDetails (String indent){...}
+}
+aspect DrawableCircle extends DrawableShape {
+  String Circle.makeDetails (String indent){...}
+}
+aspect DrawableEllipse extends DrawableShape {
+  String Ellipse.makeDetails (String indent){...} }
+```
+
+---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2 {
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## <emph>LSP</emph>: *Liskov Substitution Principle*
+
+---
+
+<!-- paginate: true -->
+
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Principio de sustitución de Liskov
+
+> Un subtipo debe poder ser sustituible por sus tipos base
+> 
+> ––Barbara Liskov, 
+
+Si una función $f$ depende de una clase base $B$ y hay una $D$ derivada de $B$, las instancias de $D$ no deben alterar el comportamiento definido por $B$ de modo que $f$ deje de funcionar
+
+---
+
+### Ejemplo: Shapes versión 3
+
+<div class="cols">
+<div>
+
+```csharp
+struct Point {double x, y;}
+public enum ShapeType {square, circle};
+
+public class Shape {
+  private ShapeType type;
+  public Shape(ShapeType t){type = t;}
+  public static void DrawShape(Shape s) {
+    if(s.type == ShapeType.square)
+      (s as Square).Draw();
+    else if(s.type == ShapeType.circle)
+      (s as Circle).Draw();
+  }
+}
+```
+
+</div>
+<div>
+
+```csharp
+public class Circle: Shape {
+  private Point center;
+  private double radius;
+
+  public Circle(): base(ShapeType.circle) {}
+  public void Draw() {/* draws the circle */}
+}
+
+public class Square: Shape {
+  private Point topLeft;
+  private double side;
+  public Square(): base(ShapeType.square) {}
+  public void Draw() {/* draws the square */}
+}
+```
+
+</div>
+</div>
+
+---
+
+#### Problemas:
+
+- `DrawShape` viola claramente el OCP
+- Además `Square` y `Circle` no son sustuibles por `Shape`: no redefinen ninguna función de `Shape`, sino que añaden `Draw()` (violación del LSP)
+- Esta violación de LSP es la que provoca la violación de OCP en `DrawShape`
+
+A continuación, una violación más sutil del LSP...
+
+---
+
+### Ejemplo: Rectángulos versión 1
+
+De momento solo necesitamos rectángulos y escribimos esta versión:
+
+<div class="cols">
+<div>
+
+```csharp
+public class Rectangle {
+  private Point topLeft;
+  private double width;
+  private double height;
+
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
+
+  public double Width {
+    get { return width; }
+    set { width = value; }
+  }
+
+  public double Height {
+    get { return height; }
+    set { height = value; }
+  }
+}
+```
+
+</div>
+<div>
+
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Client {
+  +f(r: Rectangle)
+}
+
+Client .right.> Rectangle : usa
+
+note left of Client
+  El cliente supone que
+  al cambiar Width,
+  Height permanece igual.
+end note
+@enduml
+
+Pero un día hace falta manejar cuadrados además de rectángulos. Geométricamente, un cuadrado es un rectángulo, así que utilizamos una relación __es-un__:
+
+```java
+public class Square: Rectangle {
+   ...
+}
+```
+
+</div>
+</div>
+
+---
+
+#### Problema: cuadrados como rectángulos
+
+- Un cuadrado podría ser matemáticamente un rectángulo, pero definitivamente un objeto `Square` **no es un** objeto `Rectangle`
+
+- Un `Square` no tiene propiedades `height`y `width`. Pero supongamos que no nos importa el desperdicio de memoria.
+- `Square` heredará los métodos accesores de `Rectangle`.
+- Así que hacemos lo siguiente...
+
+---
+
+### Ejemplo: rectángulos versión 2
+
+<div class="cols">
+<div>
+
+```csharp
+public class Square: Rectangle {
+  public new double Width
+  {
+    set {
+      base.Width = value;
+      base.Height = value;
+    }
+  }
+  public new double Height
+  {
+    set {
+      base.Height = value;
+      base.Width = value;
+    }
+  }
+}
+```
+
+Ver [`new` y `override` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords)
+
+</div>
+<div>
+
+@startuml
+class Rectangle {
+  +Width : double
+  +Height : double
+}
+
+class Square {
+  +Width : double <<new>>
+  +Height : double <<new>>
+}
+
+class Client {
+  +f(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+Client .right.> Rectangle : f(r)
+
+note right of Square
+  Square obliga a que
+  Width == Height
+end note
+
+note top of Client
+  f invoca según la interfaz de Rectangle.
+  La ocultación con new introduce
+  comportamiento inesperado.
+end note
+@enduml
+
+</div>
+</div>
+
+---
+
+- El comportamiento de un objeto `Square` no es consistente con el de un objeto `Rectangle`:
+
+  ```csharp
+  Square s = new Square();
+  s.Width = 1;   // fija ambos
+  s.Height = 2;  // fija ambos
+
+  void f(Rectangle r)
+  {
+    r.Width = 3; // calls Rectangle.SetWidth
+  }
+  ```
+
+- ¿Qué sucede si pasamos un `Square` a la función `f`?
+
+  ¡No cambia `Height`!
+
+- Podría argumentarse que el error era que los métodos `Width`y `Height` no se declararon `virtual` en `Rectangle`.
+
+---
+
+### Ejemplo: rectángulos versión 3
+
+<div class="cols">
+<div>
+
+```csharp
+public class Rectangle
+{
+  private Point topLeft;
+  private double width;
+  private double height;
+  public Rectangle(double width, double height) {
+    this.topLeft = default(Point);
+    this.width = width;
+    this.height = height;
+  }
+  public virtual double Width
+  {
+    get { return width; }
+    set { width = value; }
+  }
+  public virtual double Height
+  {
+    get { return height; }
+    set { height = value; }
+  }
+}
+```
+
+</div>
+<div>
+
+```csharp
+public class Square: Rectangle
+{
+  public override double Width
+  {
+    set {
+      base.Width = value;
+      base.Height = value;
+    }
+  }
+  public override double Height
+  {
+    set {
+      base.Height = value;
+      base.Width = value;
+    }
+  }
+}
+```
+
+</div>
+</div>
+
+Ver [redefinción con `virtual` en C#](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/virtual)
+
+---
+
+<div class="cols">
+<div>
+
+#### Incumplimiento del contrato
+
+@startuml
+class Rectangle {
+  +Width : double <<virtual>>
+  +Height : double <<virtual>>
+}
+
+class Square {
+  +Width : double <<override>>
+  +Height : double <<override>>
+}
+
+class Client {
+  +g(r: Rectangle)
+}
+
+Square -up-|> Rectangle
+Client .right.> Rectangle : g(new Rectangle(5,4))
+
+note top of Rectangle
+  El cliente espera que
+  Width y Height sean
+  independientes.
+end note
+
+note left of Square
+  Pero la redefinición hace que
+  Width == Height
+end note
+@enduml
+
+</div>
+<div>
+
+#### Extensión y ocultación de métodos
+
+- Diferencia entre `new` y `override`: `new` oculta la implementación de la clase base y `override` la redefine.
+
+- Cuando una clase derivada realiza cambios en la clase base, es síntoma de un __mal diseño__.
+
+El LSP evidencia que la relación __es-un__ tiene que ver con el comportamiento público extrínseco, del que los clientes dependen.
+
+</div>
+</div>
+
+<!--
+No sólo es arriesgada la extensión (es-como-un) de los métodos de una clase, también lo es su redefinición (es-un). En el ejemplo, `Square` redefine el comportamiento de `Rectangle` de forma que los clientes de `Rectangle` dejan de funcionar correctamente.
+-->
+
+---
+
+Ahora parece que funcionan `Square` y `Rectangle`, que matemáticamente quedan bien definidos.
+
+Pero consideremos esto:
+
+```csharp
+void g(Rectangle r)
+{
+  r.Width = 5;    // cree que es un Rectangle
+  r.Height = 4;   // cree que es un Rectangle
+  if(r.Area() != 20)
+    throw new Exception("Bad area!");
+}
+```
+
+---
+
+<div class="cols">
+<div>
+
+Pero si llamamos a...
+
+```csharp
+g(new Square())
+```
+
+... el autor de `g` asume que cambiar el ancho de un rectángulo deja intacto el alto.
+
+Si pasamos un cuadrado esto no es así.
+
+__Violación de LSP__: Si pasamos una instancia de una clase derivada (`Square`), se altera el comportamiento definido por la clase base (`Rectangle`), de forma que `g` deja de funcionar correctamente.
+
+</div>
+<div>
+
+#### Secuencia del fallo
+
+@startuml
+participant Client
+participant "RectangleManipulator" as G
+participant "Square" as S
+
+Client -> G : g(new Square())
+G -> S : Width = 5
+note right of S
+  Square ajusta:
+  Width = 5, Height = 5
+end note
+G -> S : Height = 4
+note right of S
+  Square ajusta:
+  Width = 4, Height = 4
+end note
+G -> S : Area()
+S --> G : 16
+G --> Client : Exception("Bad area!")
+@enduml
+
+</div>
+</div>
+
+---
+
+¿Quién tiene la culpa?
+
+- ¿El autor de `g` por asumir que "en un rectángulo su ancho y alto son independientes" (_invariante_)?
+- ¿El autor de `Square` por violar el invariante?
+- ¿De qué clase se ha violado el invariante? ¡De `Rectangle` y no de `Square`!
+
+Para evaluar si un diseño es apropiado, no se debe tener en cuenta la solución por sí sola, sino en términos de los _supuestos razonables_ que hagan los usuarios del diseño.
+
+---
+
+### Ejercicios de LSP
+
+- Robert C. Martin & Micah Martin: [Agile Principles, Patterns and Practices in C#](#unclebob), Prentice Hall, 2006
+- Ejemplo de violación de LSP en [frameworks de videojuegos](https://medium.com/ingeniouslysimple/entities-components-and-systems-89c31464240d): Las interfaces HasPhysics, Collidable, Controllable incluyen una dependencia (por herencia) hacia Renderable, que no siempre es cierta (por ejemplo, para un objeto invisible). Solución: arquitectura Entity-Component-System.
+
+---
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Diseño por Contrato
+
+Relación entre LSP y el **_Design-By-Contract_** (DBC) de *Bertrand Meyer*:
+
+> A routine redeclaration [in a derivative] may only replace the original precondition by one equal or weaker, and the original post-condition by one equal or stronger
+> 
+> –– ––B. Meyer
+
+- Métodos de clase declaran *precondiciones* y *postcondiciones* al redefinir una operación en una subclase derivada
+  - las **precondiciones** sólo pueden sustituirse por otras más débiles/laxas
+  - las **postcondiciones** sólo pueden sustituirse por otras más fuertes/estrictas
+
+---
+
+#### Ejemplo: rectángulos
+
+- Postcondición del _setter_ de `Rectangle.Width`
+  (En C++ sería `Rectangle::SetWidth(double w)`):
+    `assert((Width == w) && (Height == old.Height));`
+
+- Postcondición del setter de `Square.Witdh` 
+  (En C++ sería `Square::SetWidth(double w)`):
+    `assert(Width==w);`
+
+- La postcondición de `Square::SetWidth(double w)` viola el  contrato de la clase base porque es más débil que la de `Rectangle`
+
+---
+
+<!-- paginate: false -->
+
+<style scoped>
+h2{
+  text-align: center;
+  color: #005877;
+}
+</style>
+
+## DIP: *Dependency Inversion Principle*
+
+---
+
+<!-- paginate: true -->
+
+<style scoped>
+h3 {
+  color: blue;
+}
+</style>
+
+### Principio de Inversión de Dependencias
+
+- Los módulos de alto nivel no deben depender de módulos de bajo nivel.
+Ambos deben depender de abstracciones.
+
+- Las abstracciones no deben depender de los detalles, sino los detalles de las abstracciones
+
+> Depend on abstractions
+> 
+> –– Robert C. Martin
+
+---
+
+### Ejemplo: estructura en capas
+
+<div class="cols">
+<div>
+
+__Diseño inicial__:
+
+<!-- ![estructura en capas](./img/dip-1.png) -->
+
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+hide fields
+skinparam packageStyle rectangle
+
+' Ocultar los contenedores de los paquetes visualmente
+skinparam package {
+    FontColor transparent
+    BackgroundColor transparent
+}
+
+' Definición de las capas como rectángulos
+package "Policy Layer" as PL {
+    class "Policy" as P
+}
+
+package "Mechanism Layer" as ML {
+    class "Mechanism" as M
+}
+
+package "Utility Layer" as UL {
+    class "Utility" as U
+}
+
+P -right-.> M
+M -right-.> U
+
+@enduml
+
+- Las dependencias son transitivas
+- _Policy_ depende de todo lo que depende _Mechanism_. 
+
+</div>
+<div>
+
+__Diseño invertido__:
+
+<!-- ![capas invertidas](./img/dip-2.png) -->
+
+@startuml
+skinparam shadowing false
+skinparam linetype ortho
+hide fields
+
+package "Policy Layer" {
+    class "Policy" as P
+    interface "Policy Service"  as PS
+}
+
+package "Mechanism Layer" {
+    class "Mechanism" as M
+    interface "Mechanism Service" as MS
+}
+
+package "Utility Layer" {
+    class "Utility" as U
+}
+
+' Relaciones de la capa Policy
+P -right-> PS
+
+' Relaciones de la capa Mechanism
+M -up-.|> PS
+M -right-> MS
+
+' Relaciones de la capa Utility
+U -up-.|> MS
+
+@enduml
+
+</div>
+</div>
+
+---
+
+- Cada nivel declara una interfaz para lo que necesita de otros niveles inferiores
+- Los niveles inferiores dependen de interfaces definidas en los superiores
+- El cliente puede definir la abstracción que necesita (ISP)
+- Cada nivel es intercambiable por un sustituto
+
+---
+
+### Heurística para construcción
+
+- Ninguna variable debería guardar una referencia a una clase concreta
+- Ninguna clase debería ser derivada de una clase concreta
+- Ningún método debería redefinir un método ya implementado de ninguna de sus clases base
+
+Hay que violar alguna vez estas heurísticas, pues alguien tiene que crear las instancias de las clases concretas. El módulo que lo haga presentará una dependencia de dichas clases concretas (__inyección de dependencias__).
+
+Gracias a la __introspección__ o la carga dinámica de clases, en algunos lenguajes de programación se puede indicar el nombre de la clase a instanciar (por ejemplo, en un fichero de configuración XML o JSON).
